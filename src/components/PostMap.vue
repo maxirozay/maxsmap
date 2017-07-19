@@ -1,6 +1,10 @@
 <template>
   <section class="h-100">
     <div id="map"></div>
+    <button @click="createPost"
+      class="fab mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+      <i class="material-icons">add</i>
+    </button>
   </section>
 </template>
 
@@ -18,14 +22,21 @@ export default {
         center: {lat: 46.2, lng: 6.1667},
         zoom: 11,
         zoomControl: true,
-        mapTypeControl: false,
+        zoomControlOptions: {
+          position: google.maps.ControlPosition.RIGHT_TOP
+        },
+        mapTypeControl: true,
         scaleControl: true,
-        streetViewControl: false,
-        rotateControl: true,
-        fullscreenControl: true
+        streetViewControl: true,
+        streetViewControlOptions: {
+          position: google.maps.ControlPosition.RIGHT_TOP
+        },
+        rotateControl: true
       })
       map.addListener('drag', function (e) {})
       map.addListener('dragend', function (e) {})
+    },
+    createPost () {
     }
   }
 }
@@ -34,5 +45,12 @@ export default {
 <style>
 #map {
   height: 100%;
+}
+
+.fab {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  margin-left: -28px;
 }
 </style>
