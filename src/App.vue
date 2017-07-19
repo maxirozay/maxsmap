@@ -1,22 +1,18 @@
 <template>
   <div id="app">
-    <header>
-      <span>Vue.js PWA</span>
-    </header>
     <main>
-      <img src="./assets/logo.png" alt="Vue.js PWA">
-      <hello></hello>
+      <post-map></post-map>
     </main>
   </div>
 </template>
 
 <script>
-import Hello from './components/Hello'
+import PostMap from './components/PostMap'
 
 export default {
   name: 'app',
   components: {
-    Hello
+    PostMap
   }
 }
 </script>
@@ -31,11 +27,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+  width: 100%;
+  height: 100%;
 }
 
 main {
-  text-align: center;
-  margin-top: 40px;
+  width: 100%;
+  height: 100%;
 }
 
 header {
