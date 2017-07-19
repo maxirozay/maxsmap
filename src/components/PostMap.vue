@@ -1,16 +1,30 @@
 <template>
   <section class="h-100">
     <div id="map"></div>
-    <button @click="createPost"
+    <button @click="togglePostEditor"
       class="fab mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
       <i class="material-icons">add</i>
     </button>
+    <post-editor class="post-editor"
+      v-if="showPostEditor"
+      @cancel="togglePostEditor">
+    </post-editor>
   </section>
 </template>
 
 <script>
+import PostEditor from './PostEditor'
+
 export default {
   name: 'post-map',
+  components: {
+    PostEditor
+  },
+  data: function () {
+    return {
+      showPostEditor: false
+    }
+  },
   mounted () {
     this.initMap()
   },
@@ -36,7 +50,8 @@ export default {
       map.addListener('drag', function (e) {})
       map.addListener('dragend', function (e) {})
     },
-    createPost () {
+    togglePostEditor () {
+      this.showPostEditor = !this.showPostEditor
     }
   }
 }
@@ -52,5 +67,13 @@ export default {
   bottom: 24px;
   left: 50%;
   margin-left: -28px;
+}
+
+.post-editor {
+  position: absolute;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+  margin: auto
 }
 </style>
