@@ -7,9 +7,9 @@
           <input class="mdl-textfield__input"
             type="text"
             maxlength="40"
-            id="title">
+            v-model="title">
           <label class="mdl-textfield__label"
-            for="title">Title</label>
+            v-if="!title">Title</label>
         </div>
       </form>
       <form action="#">
@@ -18,14 +18,15 @@
             type="text"
             rows= "14"
             maxlength="400"
-            id="details"></textarea>
-          <label class="mdl-textfield__label" for="details">Details...</label>
+            v-model="details"></textarea>
+          <label class="mdl-textfield__label" v-if="!details">Details...</label>
         </div>
       </form>
     </div>
     <div class="mdl-card__actions mdl-card--border">
-      <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-        Post
+      <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
+        @click="post">
+        {{postButtonText}}
       </a>
       <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
         @click="cancel">
@@ -36,12 +37,31 @@
 </template>
 
 <script>
+import database from '../database'
+
 export default {
   name: 'post-editor',
   props: ['marker'],
+  data: function () {
+    return {
+      title: '',
+      details: '',
+      postButtonText: 'post'
+    }
+  },
   methods: {
     cancel () {
       this.$emit('cancel')
+    },
+    post () {
+      database
+          .createPost(this.title, this.details, this.marker.position)
+          .then((value) => {
+            this.$emit('cancel')
+          })
+          .catch((error) => {
+            if (error) this.postButtonText = 'retry'
+          })
     }
   }
 }
