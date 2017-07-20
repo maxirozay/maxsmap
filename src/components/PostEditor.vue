@@ -1,5 +1,5 @@
 <template>
-  <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+  <div class="mdl-card mdl-shadow--2dp">
     <div class="mdl-card__supporting-text">
       <h2 class="mdl-card__title-text">New Post</h2>
       <form action="#">
@@ -29,7 +29,7 @@
         {{postButtonText}}
       </a>
       <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
-        @click="cancel">
+        @click="$emit('cancel')">
         Cancel
       </a>
     </div>
@@ -50,9 +50,6 @@ export default {
     }
   },
   methods: {
-    cancel () {
-      this.$emit('cancel')
-    },
     post () {
       database
           .createPost(this.title, this.details, this.marker.position)
