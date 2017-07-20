@@ -1,10 +1,17 @@
 <template>
   <section class="h-100">
     <div id="map"></div>
-    <button @click="togglePostEditor"
-      class="fab mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
-      <i class="material-icons">add</i>
-    </button>
+    <div class="fab">
+      <button @click="locate"
+        class=" mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+        <i class="material-icons">gps_fixed</i>
+      </button>
+      <br><br>
+      <button @click="togglePostEditor"
+        class=" mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+        <i class="material-icons">add</i>
+      </button>
+    </div>
     <post-editor class="post-editor"
       v-if="showPostEditor"
       @cancel="togglePostEditor">
@@ -22,7 +29,8 @@ export default {
   },
   data: function () {
     return {
-      showPostEditor: false
+      showPostEditor: false,
+      map: null
     }
   },
   mounted () {
@@ -32,7 +40,7 @@ export default {
     initMap () {
       /* global google */
       /* eslint no-undef: "error" */
-      const map = new google.maps.Map(document.getElementById('map'), {
+      this.map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 46.2, lng: 6.1667},
         zoom: 11,
         zoomControl: true,
@@ -47,11 +55,23 @@ export default {
         },
         rotateControl: true
       })
-      map.addListener('drag', function (e) {})
-      map.addListener('dragend', function (e) {})
+      this.map.addListener('drag', function (e) {})
+      this.map.addListener('dragend', function (e) {})
+
+      this.locate()
     },
     togglePostEditor () {
       this.showPostEditor = !this.showPostEditor
+    },
+    locate () {
+      if (navigator.geolocation) {
+        const self = this
+        navigator.geolocation.getCurrentPosition(function (position) {
+          const pos = new google.maps.LatLng(position.coords.latitude,
+            position.coords.longitude)
+          self.map.setCenter(pos)
+        })
+      }
     }
   }
 }
@@ -64,9 +84,15 @@ export default {
 
 .fab {
   position: absolute;
-  bottom: 24px;
-  left: 50%;
-  margin-left: -28px;
+  bottom: 16px;
+  right: 16px;
+}
+@media only screen and (min-width: 600px) {
+  .fab {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+  }
 }
 
 .post-editor {
