@@ -14,7 +14,8 @@
     </div>
     <post-editor class="post-editor"
       v-if="showPostEditor"
-      @cancel="togglePostEditor">
+      @cancel="togglePostEditor"
+      :marker="postMarker">
     </post-editor>
   </section>
 </template>
@@ -30,7 +31,8 @@ export default {
   data: function () {
     return {
       showPostEditor: false,
-      map: null
+      map: null,
+      postMarker: null
     }
   },
   mounted () {
@@ -62,6 +64,20 @@ export default {
     },
     togglePostEditor () {
       this.showPostEditor = !this.showPostEditor
+      if (this.postMarker === null) {
+        this.postMarker = new google.maps.Marker({
+          position: this.map.getCenter(),
+          draggable: true,
+          animation: google.maps.Animation.DROP,
+          map: this.map
+        })
+        const self = this
+        this.postMarker.addListener('click', function () {
+          self.showPostEditor = true
+        })
+      } else {
+        this.postMarker.setPosition(this.map.getCenter())
+      }
     },
     locate () {
       if (navigator.geolocation) {
