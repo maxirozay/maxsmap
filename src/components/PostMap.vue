@@ -12,27 +12,38 @@
         <i class="material-icons">add</i>
       </button>
     </div>
-    <post-editor class="post-editor"
+    <post-editor class="post"
       v-if="showPostEditor"
-      @cancel="togglePostEditor"
-      :marker="postMarker">
+      @cancel="showPostEditor = false"
+      :marker="newPostMarker">
     </post-editor>
+    <post class="post"
+      v-if="showPost"
+      @close="showPost = false"
+      :post="post">
+    </post>
   </section>
 </template>
 
 <script>
 import PostEditor from './PostEditor'
+import Post from './Post'
+import database from '../database'
 
 export default {
   name: 'post-map',
   components: {
-    PostEditor
+    PostEditor,
+    Post
   },
   data: function () {
     return {
       showPostEditor: false,
       map: null,
-      postMarker: null
+      newPostMarker: null,
+      postMarkers: [],
+      showPost: false,
+      post: { title: '', details: '' }
     }
   },
   mounted () {
@@ -59,24 +70,27 @@ export default {
       })
       this.map.addListener('drag', function (e) {})
       this.map.addListener('dragend', function (e) {})
+      const self = this
+      this.map.addListener('bounds_changed', function (e) { self.getPosts() })
 
       this.locate()
     },
     togglePostEditor () {
-      this.showPostEditor = !this.showPostEditor
-      if (this.postMarker === null) {
-        this.postMarker = new google.maps.Marker({
+      this.showPost = false
+      this.showPostEditor = true
+      if (this.newPostMarker === null) {
+        this.newPostMarker = new google.maps.Marker({
           position: this.map.getCenter(),
           draggable: true,
           animation: google.maps.Animation.DROP,
           map: this.map
         })
         const self = this
-        this.postMarker.addListener('click', function () {
+        this.newPostMarker.addListener('click', function () {
           self.showPostEditor = true
         })
       } else {
-        this.postMarker.setPosition(this.map.getCenter())
+        this.newPostMarker.setPosition(this.map.getCenter())
       }
     },
     locate () {
@@ -88,6 +102,29 @@ export default {
           self.map.setCenter(pos)
         })
       }
+    },
+    getPosts () {
+      this.postMarkers.map((marker) => {
+        marker.setMap(null)
+        return marker
+      })
+      this.postMarkers = []
+      const self = this
+      database.getPosts(this.map.getCenter(),
+          (post) => {
+            const latlng = new google.maps.LatLng(post.lat, post.lng)
+            const marker = new google.maps.Marker({
+              position: latlng,
+              map: this.map
+            })
+            marker.addListener('click', function () {
+              self.showPostEditor = false
+              self.post.title = post.title
+              self.post.details = post.details
+              self.showPost = true
+            })
+            self.postMarkers.push(marker)
+          })
     }
   }
 }
@@ -111,7 +148,7 @@ export default {
   }
 }
 
-.post-editor {
+.post {
   position: absolute;
   bottom: 24px;
   left: 0;

@@ -33,4 +33,8 @@ html, body {
 .h-100 {
   height: 100%;
 }
+
+.mdl-card {
+  min-height: 0px;
+}
 </style>

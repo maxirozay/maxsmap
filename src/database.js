@@ -11,8 +11,8 @@ export default {
       newPostRef
           .set({
             createdAt: timestamp,
-            latitude: position.lat(),
-            longitude: position.lng(),
+            lat: position.lat(),
+            lng: position.lng(),
             title: title,
             details: details
           })
@@ -22,6 +22,14 @@ export default {
           .catch((error) => {
             reject(error)
           })
+    })
+  },
+  getPosts (position, newPostCallback) {
+    const regionId = geohash.encode(position.lat(), position.lng(), 4)
+    const regionRef = database.ref('regions-posts/' + regionId)
+        .orderByChild('createdAt')
+    regionRef.on('child_added', function (data) {
+      newPostCallback(data.val())
     })
   }
 }
