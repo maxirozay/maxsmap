@@ -1,8 +1,8 @@
 module.exports = {
-  apiKey: 'AIzaSyBa6w4Fze9nAvQ5-dFxzYCuyCC6YQ-bswo',
-  authDomain: 'post-it-4163c.firebaseapp.com',
-  databaseURL: 'https://post-it-4163c.firebaseio.com',
-  projectId: 'post-it-4163c',
+  apiKey: 'AIzaSyDhV0SbEq0mxTxLR6ydAiw2jfjWPqQzPH0',
+  authDomain: 'props-dd456.firebaseapp.com',
+  databaseURL: 'https://props-dd456.firebaseio.com',
+  projectId: 'props-dd456',
   storageBucket: '',
-  messagingSenderId: '834624394530'
+  messagingSenderId: '757120167992'
 }
