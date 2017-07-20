@@ -1,4 +1,4 @@
-# post-it
+# Props
 
 > A Vue.js project
 
