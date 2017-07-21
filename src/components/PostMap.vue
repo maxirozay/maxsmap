@@ -1,27 +1,29 @@
 <template>
   <section class="h-100">
-    <div id="map"></div>
-    <div class="fab">
+    <div id="map" class="h-100"></div>
+    <div class="fab-position">
       <button @click="locate"
-        class=" mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+        class="button is-primary round fab">
         <i class="material-icons">gps_fixed</i>
       </button>
       <br><br>
       <button @click="togglePostEditor"
-        class=" mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+        class="button is-primary round fab">
         <i class="material-icons">add</i>
       </button>
     </div>
-    <post-editor class="post"
+  <transition name="slide-up">
+    <post-editor class="post-position"
       v-if="showPostEditor"
       @cancel="showPostEditor = false"
       :marker="newPostMarker">
     </post-editor>
-    <post class="post"
+    <post class="post-position"
       v-if="showPost"
       @close="showPost = false"
       :post="post">
     </post>
+    </transition>
   </section>
 </template>
 
@@ -130,29 +132,25 @@ export default {
 }
 </script>
 
-<style>
-#map {
-  height: 100%;
-}
+<style lang="sass">
+@import ../style/variables
 
-.fab {
-  position: absolute;
-  bottom: 16px;
-  right: 16px;
-}
-@media only screen and (min-width: 600px) {
-  .fab {
-    position: absolute;
-    bottom: 24px;
-    right: 24px;
-  }
-}
+.fab-position
+  position: absolute
+  bottom: 16px
+  right: 16px
+  @media only screen and (min-width: $md)
+    bottom: 24px
+    right: 24px
 
-.post {
-  position: absolute;
-  bottom: 24px;
-  left: 0;
-  right: 0;
+.fab
+  height: 56px
+  width: 56px
+
+.post-position
+  position: absolute
+  bottom: 0
+  left: 0
+  right: 0
   margin: auto
-}
 </style>

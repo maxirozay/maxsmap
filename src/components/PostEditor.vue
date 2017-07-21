@@ -1,38 +1,33 @@
 <template>
-  <div class="mdl-card mdl-shadow--2dp">
-    <div class="mdl-card__supporting-text">
-      <h2 class="mdl-card__title-text">New Post</h2>
-      <form action="#">
-        <div class="mdl-textfield mdl-js-textfield">
-          <input class="mdl-textfield__input"
-            type="text"
-            maxlength="40"
-            v-model="title">
-          <label class="mdl-textfield__label"
-            v-if="!title">Title</label>
-        </div>
-      </form>
-      <form action="#">
-        <div class="mdl-textfield mdl-js-textfield">
-          <textarea class="mdl-textfield__input"
-            type="text"
-            rows= "14"
-            maxlength="400"
-            v-model="details"></textarea>
-          <label class="mdl-textfield__label" v-if="!details">Details...</label>
-        </div>
-      </form>
+  <div class="card mw-md">
+    <header class="card-header">
+      <p class="card-header-title">New Post</p>
+    </header>
+    <div class="card-content">
+      <div class="field">
+        <input class="input"
+          type="text"
+          maxlength="40"
+          v-model="title"
+          placeholder="Title">
+      </div>
+        <textarea class="textarea"
+          type="text"
+          rows= "14"
+          maxlength="400"
+          v-model="details"
+          placeholder="Content"></textarea>
     </div>
-    <div class="mdl-card__actions mdl-card--border">
-      <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
+    <footer class="card-footer">
+      <a class="card-footer-item"
         @click="post">
         {{postButtonText}}
       </a>
-      <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
+      <a class="card-footer-item"
         @click="$emit('cancel')">
         Cancel
       </a>
-    </div>
+    </footer>
   </div>
 </template>
 
@@ -46,7 +41,7 @@ export default {
     return {
       title: '',
       details: '',
-      postButtonText: 'post'
+      postButtonText: 'Post'
     }
   },
   methods: {
@@ -57,7 +52,7 @@ export default {
             this.$emit('cancel')
           })
           .catch((error) => {
-            if (error) this.postButtonText = 'retry'
+            if (error) this.postButtonText = 'Retry'
           })
     }
   }

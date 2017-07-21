@@ -1,33 +1,33 @@
 <template>
-  <div class="mdl-card mdl-shadow--2dp">
-    <div class="mdl-card__supporting-text">
-      <h2 class="mdl-card__title-text">{{post.title}}</h2>
-      <p>{{post.details}}</p>
-      <p>Comments</p>
-      <template v-for="comment in comments">
-        <p>{{ comment.msg }}</p>
-      </template>
-      <form action="#">
-        <div class="mdl-textfield mdl-js-textfield">
-          <textarea class="mdl-textfield__input"
-            type="text"
-            rows= "5"
-            maxlength="200"
-            v-model="newComment"></textarea>
-          <label class="mdl-textfield__label" v-if="!newComment">Comment...</label>
-        </div>
-      </form>
+  <div class="card mw-md">
+    <div class="card-content mh-75 scrollable">
+      <h2 class="title is-4">{{post.title}}</h2>
+      <div class="content">
+        <p>{{post.details}}</p>
+        <p class="title is-6">Comments</p>
+        <p v-for="comment in comments">- {{ comment.msg }}</p>
+      </div>
     </div>
-    <div class="mdl-card__actions mdl-card--border">
-      <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
+    <div class="mh-25">
+      <div class="card-content field pt-0">
+        <textarea class="textarea"
+          type="text"
+          rows= "5"
+          maxlength="200"
+          v-model="newComment"
+          placeholder="Your comment..."></textarea>
+      </div>
+    </div>
+    <footer class="card-footer">
+      <a class="card-footer-item"
         @click="sendComment">
         {{commentButtonText}}
       </a>
-      <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
+      <a class="card-footer-item"
         @click="$emit('close')">
         Close
       </a>
-    </div>
+    </footer>
   </div>
 </template>
 
@@ -38,7 +38,7 @@ export default {
   data: function () {
     return {
       newComment: '',
-      commentButtonText: 'send',
+      commentButtonText: 'Send',
       comments: [{msg: 'aaa'}, {msg: 'lll'}]
     }
   },

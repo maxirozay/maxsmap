@@ -17,24 +17,18 @@ export default {
 }
 </script>
 
-<style>
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
+<style lang="sass">
+@import ./style/app
 
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+html,
+body
+  height: 100%
+  margin: 0
+  padding: 0
+  overflow: hidden
 
-.h-100 {
-  height: 100%;
-}
-
-.mdl-card {
-  min-height: 0px;
-}
+#app
+  font-family: 'Avenir', Helvetica, Arial, sans-serif
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
 </style>
