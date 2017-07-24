@@ -64,7 +64,7 @@ import database from '../database'
 export default {
   name: 'post',
   props: ['post'],
-  data: function () {
+  data () {
     return {
       newComment: { username: '', text: '' },
       commentButtonText: 'Send',

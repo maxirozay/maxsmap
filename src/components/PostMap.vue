@@ -41,7 +41,7 @@ export default {
     PostEditor,
     Post
   },
-  data: function () {
+  data () {
     return {
       showPostEditor: false,
       map: null,

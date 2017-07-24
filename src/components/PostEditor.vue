@@ -41,7 +41,7 @@ import database from '../database'
 export default {
   name: 'post-editor',
   props: ['marker'],
-  data: function () {
+  data () {
     return {
       post: { username: '', text: '' },
       sendPostButtonText: 'Post',
