@@ -2,6 +2,8 @@ import { database } from './main'
 import geohash from './util/geohash'
 
 export default {
+  commentRef: null,
+  regionRefs: [],
   createPost (title, details, position) {
     const regionId = geohash.encode(position.lat(), position.lng(), 4)
     const timestamp = Date.now()
@@ -33,6 +35,13 @@ export default {
     regionRef.on('child_removed', function (data) {
       postRemovedCallback(data.key)
     })
+    this.regionRefs.push(regionRef)
+  },
+  removeRegionsListeners () {
+    this.regionRefs.map((ref) => {
+      ref.off()
+    })
+    this.regionRefs = []
   },
   deletePost (post) {
     const regionId = geohash.encode(post.lat, post.lng, 4)
@@ -66,9 +75,12 @@ export default {
     })
   },
   getComments (postId, newCommentCallback) {
-    const postCommentsRef = database.ref('post-comments/' + postId)
-    postCommentsRef.on('child_added', function (data) {
+    this.commentsRef = database.ref('post-comments/' + postId)
+    this.commentsRef.on('child_added', function (data) {
       newCommentCallback(data.val())
     })
+  },
+  removeCommentsListener () {
+    if (this.commentsRef) this.commentsRef.off()
   }
 }

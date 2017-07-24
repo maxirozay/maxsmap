@@ -51,6 +51,9 @@ export default {
   mounted () {
     this.initMap()
   },
+  beforeDestroy () {
+    database.removeRegionsListeners()
+  },
   methods: {
     initMap () {
       /* global google */
@@ -108,10 +111,10 @@ export default {
     getPosts () {
       this.postMarkers.forEach((marker, key, map) => {
         marker.setMap(null)
-        return marker
       })
       this.postMarkers.clear()
       const self = this
+      database.removeRegionsListeners()
       database.getPosts(this.map.getCenter(),
           (key, post) => {
             const latlng = new google.maps.LatLng(post.lat, post.lng)
@@ -128,8 +131,10 @@ export default {
             self.postMarkers.set(key, marker)
           },
           (key) => {
-            self.postMarkers.get(key).setMap(null)
-            self.postMarkers.delete(key)
+            if (self.postMarkers.has(key)) {
+              self.postMarkers.get(key).setMap(null)
+              self.postMarkers.delete(key)
+            }
           })
     }
   }

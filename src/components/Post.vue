@@ -70,6 +70,9 @@ export default {
   mounted () {
     this.getComments()
   },
+  beforeDestroy () {
+    database.removeCommentsListener()
+  },
   methods: {
     getComments () {
       database.getComments(this.post.id,
