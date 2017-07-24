@@ -1,9 +1,7 @@
 <template>
   <div class="card mw-md">
-    <header class="card-header">
-      <p class="card-header-title">New Post</p>
-    </header>
     <div class="card-content">
+      <p class="title is-4">New Post</p>
       <div class="field">
         <input class="input"
           type="text"
@@ -11,12 +9,12 @@
           v-model="title"
           placeholder="Title">
       </div>
-        <textarea class="textarea"
-          type="text"
-          rows= "14"
-          maxlength="400"
-          v-model="details"
-          placeholder="Content"></textarea>
+      <textarea class="textarea"
+        type="text"
+        rows= "14"
+        maxlength="400"
+        v-model="details"
+        placeholder="Content"></textarea>
     </div>
     <footer class="card-footer">
       <a class="card-footer-item"

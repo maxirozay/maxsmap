@@ -9,8 +9,7 @@
       </div>
       <div class="content">
         <p>{{post.details}}</p>
-        <p class="title is-6" v-show="comments.length > 0">Comments</p>
-        <div class="content" v-for="comment in comments">
+        <div v-for="comment in comments">
           <p>
             <strong>{{ comment.username }}</strong>
             <small>{{ dateAgo(comment.createdAt) }}</small>
