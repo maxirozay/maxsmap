@@ -45,6 +45,10 @@
         @click="$emit('close')">
         Close
       </a>
+      <a class="card-footer-item"
+        @click="deletePost">
+        {{ deleteButtonText }}
+      </a>
     </footer>
   </div>
 </template>
@@ -59,6 +63,7 @@ export default {
     return {
       newComment: {username: '', text: ''},
       commentButtonText: 'Send',
+      deleteButtonText: 'Delete',
       comments: []
     }
   },
@@ -92,6 +97,16 @@ export default {
       }
       const daysAgo = Math.floor(hoursAgo / 24)
       return daysAgo === 1 ? daysAgo + ' day' : daysAgo + ' days'
+    },
+    deletePost () {
+      database
+          .deletePost(this.post)
+          .then((value) => {
+            this.$emit('close')
+          })
+          .catch((error) => {
+            if (error) this.deleteButtonText = 'Retry'
+          })
     }
   }
 }

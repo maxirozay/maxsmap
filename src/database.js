@@ -24,11 +24,27 @@ export default {
           })
     })
   },
-  getPosts (position, newPostCallback) {
+  getPosts (position, newPostCallback, postRemovedCallback) {
     const regionId = geohash.encode(position.lat(), position.lng(), 4)
     const regionRef = database.ref('regions-posts/' + regionId)
     regionRef.on('child_added', function (data) {
       newPostCallback(data.key, data.val())
+    })
+    regionRef.on('child_removed', function (data) {
+      postRemovedCallback(data.key)
+    })
+  },
+  deletePost (post) {
+    const regionId = geohash.encode(post.lat, post.lng, 4)
+    return new Promise((resolve, reject) => {
+      database.ref(`regions-posts/${regionId}/${post.id}`)
+          .remove()
+          .then((value) => {
+            resolve(value)
+          })
+          .catch((error) => {
+            reject(error)
+          })
     })
   },
   comment (postId, comment) {

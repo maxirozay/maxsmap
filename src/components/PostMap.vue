@@ -43,7 +43,7 @@ export default {
       showPostEditor: false,
       map: null,
       newPostMarker: null,
-      postMarkers: [],
+      postMarkers: new Map(),
       showPost: false,
       post: { id: '', title: '', details: '' }
     }
@@ -106,11 +106,11 @@ export default {
       }
     },
     getPosts () {
-      this.postMarkers.map((marker) => {
+      this.postMarkers.forEach((marker, key, map) => {
         marker.setMap(null)
         return marker
       })
-      this.postMarkers = []
+      this.postMarkers.clear()
       const self = this
       database.getPosts(this.map.getCenter(),
           (key, post) => {
@@ -125,7 +125,11 @@ export default {
               self.post.id = key
               self.showPost = true
             })
-            self.postMarkers.push(marker)
+            self.postMarkers.set(key, marker)
+          },
+          (key) => {
+            self.postMarkers.get(key).setMap(null)
+            self.postMarkers.delete(key)
           })
     }
   }
