@@ -31,6 +31,7 @@
 import PostEditor from './PostEditor'
 import Post from './Post'
 import database from '../database'
+import geohash from '../util/geohash'
 
 export default {
   name: 'post-map',
@@ -61,6 +62,7 @@ export default {
       this.map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 46.2, lng: 6.1667},
         zoom: 11,
+        minZoom: 3,
         zoomControl: true,
         zoomControlOptions: {
           position: google.maps.ControlPosition.RIGHT_TOP
@@ -115,7 +117,15 @@ export default {
       this.postMarkers.clear()
       const self = this
       database.removeRegionsListeners()
-      database.getPosts(this.map.getCenter(),
+      let precision = 4
+      if (this.map.zoom < 6) precision = 1
+      else if (this.map.zoom < 9) precision = 2
+      else if (this.map.zoom < 12) precision = 3
+      const regionId = geohash.encode(
+        this.map.getCenter().lat(),
+        this.map.getCenter().lng(),
+        precision)
+      database.getPosts(regionId,
           (key, post) => {
             const latlng = new google.maps.LatLng(post.lat, post.lng)
             const marker = new google.maps.Marker({

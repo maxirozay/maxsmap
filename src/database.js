@@ -1,11 +1,18 @@
 import { database } from './main'
 import geohash from './util/geohash'
 
+const GEOHASH_PRECISION = 4
+
 export default {
   commentRef: null,
+  regionsRef: null,
   regionRefs: [],
   createPost (title, details, position) {
-    const regionId = geohash.encode(position.lat(), position.lng(), 4)
+    const regionId = geohash.encode(
+      position.lat(),
+      position.lng(),
+      GEOHASH_PRECISION
+    )
     const timestamp = Date.now()
     const regionRef = database.ref('regions-posts/' + regionId)
     const newPostRef = regionRef.push()
@@ -26,25 +33,35 @@ export default {
           })
     })
   },
-  getPosts (position, newPostCallback, postRemovedCallback) {
-    const regionId = geohash.encode(position.lat(), position.lng(), 4)
-    const regionRef = database.ref('regions-posts/' + regionId)
-    regionRef.on('child_added', function (data) {
-      newPostCallback(data.key, data.val())
-    })
-    regionRef.on('child_removed', function (data) {
-      postRemovedCallback(data.key)
-    })
-    this.regionRefs.push(regionRef)
+  getPosts (regionId, newPostCallback, postRemovedCallback) {
+    if (regionId.length < GEOHASH_PRECISION) {
+      this.regionsRef = database.ref('regions-posts')
+      const self = this
+      this.regionsRef.on('child_added', function (data) {
+        if (data.key.startsWith(regionId)) {
+          self.getPosts(data.key, newPostCallback, postRemovedCallback)
+        }
+      })
+    } else {
+      const regionRef = database.ref('regions-posts/' + regionId)
+      regionRef.on('child_added', function (data) {
+        newPostCallback(data.key, data.val())
+      })
+      regionRef.on('child_removed', function (data) {
+        postRemovedCallback(data.key)
+      })
+      this.regionRefs.push(regionRef)
+    }
   },
   removeRegionsListeners () {
+    if (this.regionsRef) this.regionsRef.off()
     this.regionRefs.map((ref) => {
       ref.off()
     })
     this.regionRefs = []
   },
   deletePost (post) {
-    const regionId = geohash.encode(post.lat, post.lng, 4)
+    const regionId = geohash.encode(post.lat, post.lng, GEOHASH_PRECISION)
     return new Promise((resolve, reject) => {
       database.ref(`regions-posts/${regionId}/${post.id}`)
           .remove()
