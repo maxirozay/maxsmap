@@ -18,6 +18,8 @@
       @cancel="showPostEditor = false"
       :marker="newPostMarker">
     </post-editor>
+  </transition>
+  <transition name="slide-up">
     <post class="post-position"
       v-if="showPost"
       @close="showPost = false"
@@ -95,6 +97,7 @@ export default {
         const self = this
         this.newPostMarker.addListener('click', function () {
           self.showPostEditor = true
+          self.showPost = false
         })
       } else {
         this.newPostMarker.setPosition(this.map.getCenter())
