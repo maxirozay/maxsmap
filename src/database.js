@@ -27,7 +27,6 @@ export default {
   getPosts (position, newPostCallback) {
     const regionId = geohash.encode(position.lat(), position.lng(), 4)
     const regionRef = database.ref('regions-posts/' + regionId)
-        .orderByChild('createdAt')
     regionRef.on('child_added', function (data) {
       newPostCallback(data.key, data.val())
     })
@@ -52,7 +51,6 @@ export default {
   },
   getComments (postId, newCommentCallback) {
     const postCommentsRef = database.ref('post-comments/' + postId)
-        .orderByChild('createdAt')
     postCommentsRef.on('child_added', function (data) {
       newCommentCallback(data.val())
     })
