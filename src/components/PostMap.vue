@@ -59,6 +59,9 @@ export default {
   },
   methods: {
     initMap () {
+      if (!window.mapIsLoaded) {
+        return setTimeout(() => { this.initMap() }, 500)
+      }
       /* global google */
       /* eslint no-undef: "error" */
       this.map = new google.maps.Map(document.getElementById('map'), {
