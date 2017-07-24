@@ -18,19 +18,19 @@ export default {
     const newPostRef = regionRef.push()
     return new Promise((resolve, reject) => {
       newPostRef
-          .set({
-            createdAt: timestamp,
-            lat: position.lat(),
-            lng: position.lng(),
-            title: title,
-            details: details
-          })
-          .then((value) => {
-            resolve(value)
-          })
-          .catch((error) => {
-            reject(error)
-          })
+      .set({
+        createdAt: timestamp,
+        lat: position.lat(),
+        lng: position.lng(),
+        title: title,
+        details: details
+      })
+      .then((value) => {
+        resolve(value)
+      })
+      .catch((error) => {
+        reject(error)
+      })
     })
   },
   getPosts (regionId, newPostCallback, postRemovedCallback) {
@@ -63,14 +63,15 @@ export default {
   deletePost (post) {
     const regionId = geohash.encode(post.lat, post.lng, GEOHASH_PRECISION)
     return new Promise((resolve, reject) => {
-      database.ref(`regions-posts/${regionId}/${post.id}`)
-          .remove()
-          .then((value) => {
-            resolve(value)
-          })
-          .catch((error) => {
-            reject(error)
-          })
+      database
+      .ref(`regions-posts/${regionId}/${post.id}`)
+      .remove()
+      .then((value) => {
+        resolve(value)
+      })
+      .catch((error) => {
+        reject(error)
+      })
     })
   },
   comment (postId, comment) {
@@ -78,17 +79,17 @@ export default {
     const newCommentRef = postCommentsRef.push()
     return new Promise((resolve, reject) => {
       newCommentRef
-          .set({
-            createdAt: Date.now(),
-            username: comment.username,
-            text: comment.text
-          })
-          .then((value) => {
-            resolve(value)
-          })
-          .catch((error) => {
-            reject(error)
-          })
+      .set({
+        createdAt: Date.now(),
+        username: comment.username,
+        text: comment.text
+      })
+      .then((value) => {
+        resolve(value)
+      })
+      .catch((error) => {
+        reject(error)
+      })
     })
   },
   getComments (postId, newCommentCallback) {

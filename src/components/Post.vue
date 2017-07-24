@@ -75,21 +75,22 @@ export default {
   },
   methods: {
     getComments () {
-      database.getComments(this.post.id,
-          (comment) => {
-            this.comments.unshift(comment)
-          })
+      database
+      .getComments(this.post.id,
+        (comment) => {
+          this.comments.unshift(comment)
+        })
     },
     sendComment () {
       database
-          .comment(this.post.id, this.newComment)
-          .then((value) => {
-            this.newComment.text = ''
-            this.commentButtonText = 'Send'
-          })
-          .catch((error) => {
-            if (error) this.commentButtonText = 'Retry'
-          })
+      .comment(this.post.id, this.newComment)
+      .then((value) => {
+        this.newComment.text = ''
+        this.commentButtonText = 'Send'
+      })
+      .catch((error) => {
+        if (error) this.commentButtonText = 'Retry'
+      })
     },
     dateAgo (timestamp) {
       const minutesAgo = Math.floor((Date.now() - timestamp) / 60000)
@@ -103,13 +104,13 @@ export default {
     },
     deletePost () {
       database
-          .deletePost(this.post)
-          .then((value) => {
-            this.$emit('close')
-          })
-          .catch((error) => {
-            if (error) this.deleteButtonText = 'Retry'
-          })
+      .deletePost(this.post)
+      .then((value) => {
+        this.$emit('close')
+      })
+      .catch((error) => {
+        if (error) this.deleteButtonText = 'Retry'
+      })
     }
   }
 }

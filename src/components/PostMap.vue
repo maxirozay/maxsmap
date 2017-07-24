@@ -126,26 +126,26 @@ export default {
         this.map.getCenter().lng(),
         precision)
       database.getPosts(regionId,
-          (key, post) => {
-            const latlng = new google.maps.LatLng(post.lat, post.lng)
-            const marker = new google.maps.Marker({
-              position: latlng,
-              map: this.map
-            })
-            marker.addListener('click', function () {
-              self.showPostEditor = false
-              self.post = post
-              self.post.id = key
-              self.showPost = true
-            })
-            self.postMarkers.set(key, marker)
-          },
-          (key) => {
-            if (self.postMarkers.has(key)) {
-              self.postMarkers.get(key).setMap(null)
-              self.postMarkers.delete(key)
-            }
+        (key, post) => {
+          const latlng = new google.maps.LatLng(post.lat, post.lng)
+          const marker = new google.maps.Marker({
+            position: latlng,
+            map: this.map
           })
+          marker.addListener('click', function () {
+            self.showPostEditor = false
+            self.post = post
+            self.post.id = key
+            self.showPost = true
+          })
+          self.postMarkers.set(key, marker)
+        },
+        (key) => {
+          if (self.postMarkers.has(key)) {
+            self.postMarkers.get(key).setMap(null)
+            self.postMarkers.delete(key)
+          }
+        })
     }
   }
 }

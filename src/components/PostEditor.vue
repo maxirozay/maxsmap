@@ -45,13 +45,13 @@ export default {
   methods: {
     post () {
       database
-          .createPost(this.title, this.details, this.marker.position)
-          .then((value) => {
-            this.$emit('cancel')
-          })
-          .catch((error) => {
-            if (error) this.postButtonText = 'Retry'
-          })
+      .createPost(this.title, this.details, this.marker.position)
+      .then((value) => {
+        this.$emit('cancel')
+      })
+      .catch((error) => {
+        if (error) this.postButtonText = 'Retry'
+      })
     }
   }
 }
