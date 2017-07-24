@@ -1,5 +1,5 @@
 <template>
-  <div class="card mw-md">
+  <div class="card">
     <div class="card-content mh-75 scrollable">
       <div class="media">
         <div class="media-content">

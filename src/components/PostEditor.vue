@@ -1,5 +1,5 @@
 <template>
-  <div class="card mw-md">
+  <div class="card">
     <div class="card-content">
       <p class="title is-4">New Post</p>
       <div class="field">
@@ -11,7 +11,7 @@
       </div>
       <textarea class="textarea"
         type="text"
-        rows= "14"
+        rows= "10"
         maxlength="400"
         v-model="details"
         placeholder="Content"></textarea>

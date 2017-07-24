@@ -12,19 +12,19 @@
         <i class="material-icons">add</i>
       </button>
     </div>
-  <transition name="slide-up">
-    <post-editor class="post-position"
-      v-if="showPostEditor"
-      @cancel="showPostEditor = false"
-      :marker="newPostMarker">
-    </post-editor>
-  </transition>
-  <transition name="slide-up">
-    <post class="post-position"
-      v-if="showPost"
-      @close="showPost = false"
-      :post="post">
-    </post>
+    <transition name="slide-up">
+      <post-editor class="post mw-md"
+        v-if="showPostEditor"
+        @cancel="showPostEditor = false"
+        :marker="newPostMarker">
+      </post-editor>
+    </transition>
+    <transition name="slide-up">
+      <post class="post mw-md"
+        v-if="showPost"
+        @close="showPost = false"
+        :post="post">
+      </post>
     </transition>
   </section>
 </template>
@@ -169,10 +169,10 @@ export default {
   height: 56px
   width: 56px
 
-.post-position
+.post
   position: absolute
   bottom: 0
   left: 0
   right: 0
-  margin: auto
+  margin-right: auto
 </style>
