@@ -66,7 +66,7 @@ export default {
   props: ['post'],
   data: function () {
     return {
-      newComment: {username: '', text: ''},
+      newComment: { username: '', text: '' },
       commentButtonText: 'Send',
       deleteButtonText: 'Delete',
       comments: [],
@@ -76,6 +76,7 @@ export default {
   },
   mounted () {
     this.getComments()
+    this.newComment.username = database.getUsername() ? database.getUsername() : ''
   },
   beforeDestroy () {
     database.removeCommentsListener()
@@ -97,6 +98,7 @@ export default {
         this.textError = 'Please write at least 3 characters.'
         return
       } else this.textError = ''
+      database.setUsername(this.newComment.username)
 
       database
       .comment(this.post.id, this.newComment)

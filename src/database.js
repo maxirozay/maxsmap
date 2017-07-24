@@ -100,5 +100,13 @@ export default {
   },
   removeCommentsListener () {
     if (this.commentsRef) this.commentsRef.off()
+  },
+  setUsername (username) {
+    /* global localStorage */
+    /* eslint no-undef: "error" */
+    localStorage.setItem('username', username)
+  },
+  getUsername () {
+    return localStorage.getItem('username')
   }
 }

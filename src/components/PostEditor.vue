@@ -43,11 +43,14 @@ export default {
   props: ['marker'],
   data: function () {
     return {
-      post: {username: '', text: ''},
+      post: { username: '', text: '' },
       sendPostButtonText: 'Post',
       usernameError: null,
       textError: null
     }
+  },
+  mounted () {
+    this.post.username = database.getUsername() ? database.getUsername() : ''
   },
   methods: {
     sendPost () {
@@ -59,6 +62,7 @@ export default {
         this.textError = 'Please write at least 20 characters.'
         return
       } else this.textError = ''
+      database.setUsername(this.post.username)
 
       database
       .createPost(this.post, this.marker.position)
