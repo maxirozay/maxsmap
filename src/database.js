@@ -7,7 +7,7 @@ export default {
   commentRef: null,
   regionsRef: null,
   regionRefs: [],
-  createPost (title, details, position) {
+  createPost (post, position) {
     const regionId = geohash.encode(
       position.lat(),
       position.lng(),
@@ -22,8 +22,8 @@ export default {
         createdAt: timestamp,
         lat: position.lat(),
         lng: position.lng(),
-        title: title,
-        details: details
+        text: post.text,
+        username: post.username
       })
       .then((value) => {
         resolve(value)

@@ -1,14 +1,13 @@
 <template>
   <div class="card">
     <div class="card-content mh-75 scrollable">
-      <div class="media">
-        <div class="media-content">
-          <p class="title is-4">{{post.title}}</p>
-          <p class="subtitle is-6"><small>{{ dateAgo(post.createdAt) }}</small></p>
-        </div>
-      </div>
       <div class="content">
-        <p>{{post.details}}</p>
+        <p>
+          <strong>{{ post.username }}</strong>
+          <small>{{ dateAgo(post.createdAt) }}</small>
+          <br>
+          {{ post.text }}
+        </p>
         <div v-for="comment in comments">
           <p>
             <strong>{{ comment.username }}</strong>
@@ -27,6 +26,9 @@
             maxlength="40"
             v-model="newComment.username"
             placeholder="Username">
+            <p class="help is-danger" v-show="usernameError">
+              {{ usernameError }}
+            </p>
         </div>
         <textarea class="textarea"
           type="text"
@@ -34,6 +36,9 @@
           maxlength="200"
           v-model="newComment.text"
           placeholder="Your comment..."></textarea>
+          <p class="help is-danger" v-show="textError">
+            {{ textError }}
+          </p>
       </div>
     </div>
     <footer class="card-footer">
@@ -64,7 +69,9 @@ export default {
       newComment: {username: '', text: ''},
       commentButtonText: 'Send',
       deleteButtonText: 'Delete',
-      comments: []
+      comments: [],
+      usernameError: null,
+      textError: null
     }
   },
   mounted () {
@@ -82,6 +89,15 @@ export default {
         })
     },
     sendComment () {
+      if (this.newComment.username.length < 3) {
+        this.usernameError = 'Please write at least 3 characters.'
+        return
+      } else this.usernameError = null
+      if (this.newComment.text.length < 3) {
+        this.textError = 'Please write at least 3 characters.'
+        return
+      } else this.textError = ''
+
       database
       .comment(this.post.id, this.newComment)
       .then((value) => {

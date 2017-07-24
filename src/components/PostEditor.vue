@@ -6,20 +6,26 @@
         <input class="input"
           type="text"
           maxlength="40"
-          v-model="title"
-          placeholder="Title">
+          v-model="post.username"
+          placeholder="Username">
+          <p class="help is-danger" v-show="usernameError">
+            {{ usernameError }}
+          </p>
       </div>
       <textarea class="textarea"
         type="text"
         rows= "10"
         maxlength="400"
-        v-model="details"
-        placeholder="Content"></textarea>
+        v-model="post.text"
+        placeholder="Write something that you want to share."></textarea>
+        <p class="help is-danger" v-show="textError">
+          {{ textError }}
+        </p>
     </div>
     <footer class="card-footer">
       <a class="card-footer-item"
-        @click="post">
-        {{postButtonText}}
+        @click="sendPost">
+        {{sendPostButtonText}}
       </a>
       <a class="card-footer-item"
         @click="$emit('cancel')">
@@ -37,20 +43,30 @@ export default {
   props: ['marker'],
   data: function () {
     return {
-      title: '',
-      details: '',
-      postButtonText: 'Post'
+      post: {username: '', text: ''},
+      sendPostButtonText: 'Post',
+      usernameError: null,
+      textError: null
     }
   },
   methods: {
-    post () {
+    sendPost () {
+      if (this.post.username.length < 3) {
+        this.usernameError = 'Please write at least 3 characters.'
+        return
+      } else this.usernameError = null
+      if (this.post.text.length < 20) {
+        this.textError = 'Please write at least 20 characters.'
+        return
+      } else this.textError = ''
+
       database
-      .createPost(this.title, this.details, this.marker.position)
+      .createPost(this.post, this.marker.position)
       .then((value) => {
         this.$emit('cancel')
       })
       .catch((error) => {
-        if (error) this.postButtonText = 'Retry'
+        if (error) this.sendPostButtonText = 'Retry'
       })
     }
   }
