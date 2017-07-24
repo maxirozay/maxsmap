@@ -29,7 +29,32 @@ export default {
     const regionRef = database.ref('regions-posts/' + regionId)
         .orderByChild('createdAt')
     regionRef.on('child_added', function (data) {
-      newPostCallback(data.val())
+      newPostCallback(data.key, data.val())
+    })
+  },
+  comment (postId, comment) {
+    const postCommentsRef = database.ref('post-comments/' + postId)
+    const newCommentRef = postCommentsRef.push()
+    return new Promise((resolve, reject) => {
+      newCommentRef
+          .set({
+            createdAt: Date.now(),
+            username: comment.username,
+            text: comment.text
+          })
+          .then((value) => {
+            resolve(value)
+          })
+          .catch((error) => {
+            reject(error)
+          })
+    })
+  },
+  getComments (postId, newCommentCallback) {
+    const postCommentsRef = database.ref('post-comments/' + postId)
+        .orderByChild('createdAt')
+    postCommentsRef.on('child_added', function (data) {
+      newCommentCallback(data.val())
     })
   }
 }

@@ -45,7 +45,7 @@ export default {
       newPostMarker: null,
       postMarkers: [],
       showPost: false,
-      post: { title: '', details: '' }
+      post: { id: '', title: '', details: '' }
     }
   },
   mounted () {
@@ -113,7 +113,7 @@ export default {
       this.postMarkers = []
       const self = this
       database.getPosts(this.map.getCenter(),
-          (post) => {
+          (key, post) => {
             const latlng = new google.maps.LatLng(post.lat, post.lng)
             const marker = new google.maps.Marker({
               position: latlng,
@@ -121,8 +121,8 @@ export default {
             })
             marker.addListener('click', function () {
               self.showPostEditor = false
-              self.post.title = post.title
-              self.post.details = post.details
+              self.post = post
+              self.post.id = key
               self.showPost = true
             })
             self.postMarkers.push(marker)
