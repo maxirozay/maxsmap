@@ -1,7 +1,12 @@
 <template>
   <div class="card mw-md">
     <div class="card-content mh-75 scrollable">
-      <h2 class="title is-4">{{post.title}}</h2>
+      <div class="media">
+        <div class="media-content">
+          <p class="title is-4">{{post.title}}</p>
+          <p class="subtitle is-6"><small>{{ dateAgo(post.createdAt) }}</small></p>
+        </div>
+      </div>
       <div class="content">
         <p>{{post.details}}</p>
         <p class="title is-6" v-show="comments.length > 0">Comments</p>
