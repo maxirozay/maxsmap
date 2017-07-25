@@ -34,6 +34,8 @@ import PostEditor from './PostEditor'
 import Post from './Post'
 import database from '../database'
 import geohash from '../util/geohash'
+import postIcon from '../assets/post-icon.png'
+import newPostIcon from '../assets/new-post-icon.png'
 
 export default {
   name: 'post-map',
@@ -96,11 +98,19 @@ export default {
       this.showPost = false
       this.showPostEditor = true
       if (this.newPostMarker === null) {
+        const icon = {
+          url: newPostIcon,
+          size: new google.maps.Size(128, 64),
+          scaledSize: new google.maps.Size(64, 32),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(32, 32)
+        }
         this.newPostMarker = new google.maps.Marker({
           position: this.map.getCenter(),
           draggable: true,
           animation: google.maps.Animation.DROP,
-          map: this.map
+          map: this.map,
+          icon: icon
         })
         const self = this
         this.newPostMarker.addListener('click', function () {
@@ -138,10 +148,18 @@ export default {
         precision)
       database.getPosts(regionId,
         (key, post) => {
+          const icon = {
+            url: postIcon,
+            size: new google.maps.Size(96, 96),
+            scaledSize: new google.maps.Size(32, 32),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(0, 16)
+          }
           const latlng = new google.maps.LatLng(post.lat, post.lng)
           const marker = new google.maps.Marker({
             position: latlng,
-            map: this.map
+            map: this.map,
+            icon: icon
           })
           marker.addListener('click', function () {
             self.showPostEditor = false
