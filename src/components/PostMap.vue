@@ -80,7 +80,8 @@ export default {
         streetViewControlOptions: {
           position: google.maps.ControlPosition.RIGHT_TOP
         },
-        rotateControl: true
+        rotateControl: true,
+        fullscreenControl: false
       })
       this.map.addListener('drag', function (e) {})
       this.map.addListener('dragend', function (e) {})
