@@ -13,14 +13,14 @@
       </button>
     </div>
     <transition name="slide-up">
-      <post-editor class="post mw-md"
+      <post-editor class="post"
         v-if="showPostEditor"
         @cancel="showPostEditor = false"
         :marker="newPostMarker">
       </post-editor>
     </transition>
     <transition name="slide-up">
-      <post class="post mw-md"
+      <post class="post"
         v-if="showPost"
         @close="showPost = false"
         :post="post">
@@ -169,7 +169,7 @@ export default {
   position: absolute
   bottom: 16px
   right: 16px
-  @media only screen and (min-width: $md)
+  @media only screen and (min-width: $small)
     bottom: 24px
     right: 24px
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card  mw-sm">
     <div class="card-content">
       <p class="title is-4">New Post</p>
       <div class="field">

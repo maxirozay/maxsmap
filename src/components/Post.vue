@@ -1,25 +1,13 @@
 <template>
-  <div class="card">
-    <div class="card-content mh-75 scrollable">
+  <div class="card h-100 mw-sm scrollable">
+    <div class="card-content">
       <div class="content">
-        <p>
+        <p class="break-word">
           <strong>{{ post.username }}</strong>
           <small>{{ dateAgo(post.createdAt) }}</small>
           <br>
           {{ post.text }}
         </p>
-        <div v-for="comment in comments">
-          <p>
-            <strong>{{ comment.username }}</strong>
-            <small>{{ dateAgo(comment.createdAt) }}</small>
-            <br>
-            {{ comment.text }}
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="mh-25">
-      <div class="card-content field pt-0">
         <div class="field">
           <input class="input"
             type="text"
@@ -30,18 +18,28 @@
               {{ usernameError }}
             </p>
         </div>
-        <textarea class="textarea"
-          type="text"
-          rows= "5"
-          maxlength="200"
-          v-model="newComment.text"
-          placeholder="Your comment..."></textarea>
+        <div class="field">
+          <textarea class="textarea"
+            type="text"
+            rows= "3"
+            maxlength="200"
+            v-model="newComment.text"
+            placeholder="Your comment..."></textarea>
           <p class="help is-danger" v-show="textError">
             {{ textError }}
           </p>
+        </div>
+        <div v-for="comment in comments">
+          <p class="break-word">
+            <strong>{{ comment.username }}</strong>
+            <small>{{ dateAgo(comment.createdAt) }}</small>
+            <br>
+            {{ comment.text }}
+          </p>
+        </div>
       </div>
     </div>
-    <footer class="card-footer">
+    <footer class="card-footer sticky-footer bg-white mw-sm">
       <a class="card-footer-item"
         @click="sendComment">
         {{commentButtonText}}
