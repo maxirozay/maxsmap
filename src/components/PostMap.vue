@@ -65,8 +65,8 @@ export default {
       /* global google */
       /* eslint no-undef: "error" */
       this.map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 46.2, lng: 6.1667},
-        zoom: 11,
+        center: new google.maps.LatLng(database.getLocation().lat, database.getLocation().lng),
+        zoom: database.getZoom(),
         minZoom: 3,
         zoomControl: true,
         zoomControlOptions: {
@@ -83,9 +83,14 @@ export default {
       this.map.addListener('drag', function (e) {})
       this.map.addListener('dragend', function (e) {})
       const self = this
-      this.map.addListener('bounds_changed', function (e) { self.getPosts() })
-
-      this.locate()
+      this.map.addListener('bounds_changed', function (e) {
+        database.setLocation({
+          lat: self.map.getCenter().lat(),
+          lng: self.map.getCenter().lng()
+        })
+        database.setZoom(self.map.getZoom())
+        self.getPosts()
+      })
     },
     togglePostEditor () {
       this.showPost = false

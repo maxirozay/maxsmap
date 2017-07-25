@@ -108,5 +108,21 @@ export default {
   },
   getUsername () {
     return localStorage.getItem('username')
+  },
+  setLocation (location) {
+    localStorage.setItem('location', JSON.stringify(location))
+  },
+  getLocation () {
+    if (localStorage.getItem('location')) {
+      return JSON.parse(localStorage.getItem('location'))
+    } else return { lat: 40.7414835, lng: -73.976287 }
+  },
+  setZoom (zoom) {
+    localStorage.setItem('zoom', zoom)
+  },
+  getZoom () {
+    if (localStorage.getItem('zoom')) {
+      return parseInt(localStorage.getItem('zoom'))
+    } else return 13
   }
 }
