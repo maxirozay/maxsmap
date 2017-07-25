@@ -26,6 +26,7 @@ body
   margin: 0
   padding: 0
   overflow: hidden
+  -webkit-tap-highlight-color: transparent
 
 #app
   font-family: 'Avenir', Helvetica, Arial, sans-serif
