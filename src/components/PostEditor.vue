@@ -1,5 +1,5 @@
 <template>
-  <div class="card  mw-sm">
+  <div class="card mw-sm">
     <div class="card-content">
       <p class="title is-4">New Post</p>
       <div class="field">
@@ -21,6 +21,11 @@
         <p class="help is-danger" v-show="textError">
           {{ textError }}
         </p>
+        <input type="file" name="image" @change="uploadImage" accept="image/*"/>
+        <p class="help is-danger" v-show="uploadImageError">
+          {{ uploadImageError }}
+        </p>
+        <img v-for="url in post.imagesUrls" :src="url"/>
     </div>
     <footer class="card-footer">
       <a class="card-footer-item"
@@ -37,20 +42,29 @@
 
 <script>
 import database from '../database'
+import storage from '../storage'
 
 export default {
   name: 'post-editor',
   props: ['marker'],
   data () {
     return {
-      post: { username: '', text: '' },
+      post: { id: null, username: '', text: '', imagesUrls: [] },
       sendPostButtonText: 'Post',
       usernameError: null,
-      textError: null
+      textError: null,
+      uploadImageError: null,
+      imageToDelete: 0
     }
   },
   mounted () {
     this.post.username = database.getUsername() ? database.getUsername() : ''
+    this.post.id = `${Date.now()}-${Math.round(this.marker.position.lat())}-${Math.round(this.marker.position.lng())}-${Math.round(Math.random() * 99)}`
+  },
+  beforeDestroy () {
+    for (let i = 0; i < this.imageToDelete; i++) {
+      storage.delete(`posts/${this.post.id}/${i}.jpg`)
+    }
   },
   methods: {
     sendPost () {
@@ -67,10 +81,24 @@ export default {
       database
       .createPost(this.post, this.marker.position)
       .then((value) => {
+        this.imageToDelete = 0
         this.$emit('cancel')
       })
       .catch((error) => {
         if (error) this.sendPostButtonText = 'Retry'
+      })
+    },
+    uploadImage (event) {
+      storage.uploadImage(
+        event.target.files[0],
+        `posts/${this.post.id}/0.jpg`)
+      .then((url) => {
+        this.post.imagesUrls = [ url ]
+        this.uploadImageError = null
+        this.imageToDelete = 1
+      })
+      .catch((error) => {
+        if (error) this.uploadImageError = `Your image couldn't be uploaded.`
       })
     }
   }

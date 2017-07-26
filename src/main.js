@@ -7,6 +7,7 @@ import firebaseConfig from '../config/firebase'
 
 firebase.initializeApp(firebaseConfig)
 export const database = firebase.database()
+export const storage = firebase.storage()
 
 Vue.config.productionTip = false
 

@@ -14,17 +14,18 @@ export default {
       GEOHASH_PRECISION
     )
     const timestamp = Date.now()
-    const regionRef = database.ref('regions-posts/' + regionId)
-    const newPostRef = regionRef.push()
+    const newPostRef = database.ref(`regions-posts/${regionId}/${post.id}`)
     return new Promise((resolve, reject) => {
-      newPostRef
-      .set({
+      let newPost = {
         createdAt: timestamp,
         lat: position.lat(),
         lng: position.lng(),
         text: post.text,
         username: post.username
-      })
+      }
+      if (post.imagesUrls.length > 0) newPost.imageCount = post.imagesUrls.length
+      newPostRef
+      .set(newPost)
       .then((value) => {
         resolve(value)
       })

@@ -3,6 +3,6 @@ module.exports = {
   authDomain: 'props-dd456.firebaseapp.com',
   databaseURL: 'https://props-dd456.firebaseio.com',
   projectId: 'props-dd456',
-  storageBucket: '',
+  storageBucket: 'gs://props-dd456.appspot.com/',
   messagingSenderId: '757120167992'
 }
