@@ -75,9 +75,12 @@ export default {
       })
     })
   },
-  comment (postId, comment) {
-    const postCommentsRef = database.ref('post-comments/' + postId)
-    const newCommentRef = postCommentsRef.push()
+  comment (post, comment) {
+    if (!this.commentRegionId) {
+      return new Promise((resolve, reject) => { reject('no region') })
+    }
+    const newCommentRef = database
+    .ref(`regions-posts/${this.commentRegionId}/${post.id}/comments`).push()
     return new Promise((resolve, reject) => {
       newCommentRef
       .set({
@@ -86,6 +89,13 @@ export default {
         text: comment.text
       })
       .then((value) => {
+        database
+        .ref(`regions-posts/${this.commentRegionId}/${post.id}`)
+        .transaction((post) => {
+          if (post.commentsCount === undefined) post.commentsCount = 0
+          else post.commentsCount++
+          return post
+        })
         resolve(value)
       })
       .catch((error) => {
@@ -93,8 +103,14 @@ export default {
       })
     })
   },
-  getComments (postId, newCommentCallback) {
-    this.commentsRef = database.ref('post-comments/' + postId)
+  getComments (post, newCommentCallback) {
+    this.commentRegionId = geohash.encode(
+      post.lat,
+      post.lng,
+      GEOHASH_PRECISION
+    )
+    this.commentsRef = database
+    .ref(`regions-posts/${this.commentRegionId}/${post.id}/comments/`)
     this.commentsRef.on('child_added', function (data) {
       newCommentCallback(data.val())
     })

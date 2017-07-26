@@ -82,7 +82,7 @@ export default {
   methods: {
     getComments () {
       database
-      .getComments(this.post.id,
+      .getComments(this.post,
         (comment) => {
           this.comments.unshift(comment)
         })
@@ -99,7 +99,7 @@ export default {
       database.setUsername(this.newComment.username)
 
       database
-      .comment(this.post.id, this.newComment)
+      .comment(this.post, this.newComment)
       .then((value) => {
         this.newComment.text = ''
         this.commentButtonText = 'Send'
