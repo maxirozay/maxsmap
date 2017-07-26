@@ -4,12 +4,11 @@
     <div class="fab-position">
       <button @click="locate"
         class="button is-primary round fab">
-        <i class="material-icons">gps_fixed</i>
+        <i class="material-icons icon-centered">gps_fixed</i>
       </button>
-      <br><br>
       <button @click="togglePostEditor"
         class="button is-primary round fab">
-        <i class="material-icons">add</i>
+        <i class="material-icons icon-centered">add</i>
       </button>
     </div>
     <transition name="slide-up">
@@ -186,15 +185,23 @@ export default {
 
 .fab-position
   position: absolute
-  bottom: 16px
-  right: 16px
-  @media only screen and (min-width: $small)
-    bottom: 24px
-    right: 24px
+  bottom: 0
+  right: 0
 
 .fab
   height: 56px
   width: 56px
+  display: block
+  vertical-align: bottom
+  margin: 16px
+  @media only screen and (min-width: $small)
+    margin: 24px
+
+.icon-centered
+    display: inline-flex
+    align-items: center
+    justify-content: center
+    vertical-align: middle
 
 .post
   position: absolute
