@@ -1,5 +1,10 @@
 <template>
   <div class="card h-100 mw-sm scrollable">
+    <div v-show="imageUrl" class="card-image">
+      <figure class="image">
+        <img :src="imageUrl" alt="post image">
+      </figure>
+    </div>
     <div class="card-content">
       <div class="content">
         <p class="break-word">
@@ -58,6 +63,7 @@
 
 <script>
 import database from '../database'
+import storage from '../storage'
 
 export default {
   name: 'post',
@@ -69,10 +75,12 @@ export default {
       deleteButtonText: 'Delete',
       comments: [],
       usernameError: null,
-      textError: null
+      textError: null,
+      imageUrl: null
     }
   },
   mounted () {
+    this.loadImages()
     this.getComments()
     this.newComment.username = database.getUsername() ? database.getUsername() : ''
   },
@@ -127,6 +135,17 @@ export default {
       .catch((error) => {
         if (error) this.deleteButtonText = 'Retry'
       })
+    },
+    loadImages () {
+      if (this.post.imagesCount) {
+        storage.getUrl(`posts/${this.post.id}/0.jpg`)
+        .then((url) => {
+          this.imageUrl = url
+        })
+        .catch((error) => {
+          if (error) this.imageUrl = null
+        })
+      }
     }
   }
 }

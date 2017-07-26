@@ -23,7 +23,7 @@ export default {
         text: post.text,
         username: post.username
       }
-      if (post.imagesUrls.length > 0) newPost.imageCount = post.imagesUrls.length
+      if (post.imagesUrls.length > 0) newPost.imagesCount = post.imagesUrls.length
       newPostRef
       .set(newPost)
       .then((value) => {
