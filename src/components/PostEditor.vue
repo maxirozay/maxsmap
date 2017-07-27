@@ -59,6 +59,7 @@
 <script>
 import database from '../database'
 import storage from '../storage'
+import image from '../util/image'
 
 export default {
   name: 'post-editor',
@@ -106,17 +107,20 @@ export default {
       })
     },
     uploadImage (event) {
-      this.uploadImageLabelClass = 'is-fullwidth button is-loading'
-      storage.uploadImage(event.target.files[0], `posts/${this.post.id}/0.jpg`)
-      .then((url) => {
-        this.uploadImageLabelClass = 'is-fullwidth button'
-        this.post.imagesUrls = [ url ]
-        this.uploadImageError = null
-        this.imageToDelete = 1
-      })
-      .catch((error) => {
-        this.uploadImageLabelClass = 'is-fullwidth button'
-        if (error) this.uploadImageError = `Your image couldn't be uploaded.`
+      const self = this
+      image.resizeImage(event.target.files[0], 480, (blob) => {
+        self.uploadImageLabelClass = 'is-fullwidth button is-loading'
+        storage.uploadImage(blob, `posts/${self.post.id}/0.jpg`)
+        .then((url) => {
+          self.uploadImageLabelClass = 'is-fullwidth button'
+          self.post.imagesUrls = [ url ]
+          self.uploadImageError = null
+          self.imageToDelete = 1
+        })
+        .catch((error) => {
+          self.uploadImageLabelClass = 'is-fullwidth button'
+          if (error) self.uploadImageError = `Your image couldn't be uploaded.`
+        })
       })
     }
   }
