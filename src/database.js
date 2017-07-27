@@ -80,7 +80,7 @@ export default {
       return new Promise((resolve, reject) => { reject('no region') })
     }
     const newCommentRef = database
-    .ref(`regions-posts/${this.commentRegionId}/${post.id}/comments`).push()
+    .ref(`regions-comments/${this.commentRegionId}/${post.id}`).push()
     return new Promise((resolve, reject) => {
       newCommentRef
       .set({
@@ -92,7 +92,7 @@ export default {
         database
         .ref(`regions-posts/${this.commentRegionId}/${post.id}`)
         .transaction((post) => {
-          if (post.commentsCount === undefined) post.commentsCount = 0
+          if (post.commentsCount === undefined) post.commentsCount = 1
           else post.commentsCount++
           return post
         })
@@ -110,7 +110,7 @@ export default {
       GEOHASH_PRECISION
     )
     this.commentsRef = database
-    .ref(`regions-posts/${this.commentRegionId}/${post.id}/comments/`)
+    .ref(`regions-comments/${this.commentRegionId}/${post.id}`)
     this.commentsRef.on('child_added', function (data) {
       newCommentCallback(data.val())
     })
