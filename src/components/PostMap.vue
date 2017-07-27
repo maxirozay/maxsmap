@@ -66,7 +66,10 @@ export default {
       /* global google */
       /* eslint no-undef: "error" */
       this.map = new google.maps.Map(document.getElementById('map'), {
-        center: new google.maps.LatLng(database.getLocation().lat, database.getLocation().lng),
+        center: new google.maps.LatLng(
+          database.getLocation().lat,
+          database.getLocation().lng
+        ),
         zoom: database.getZoom(),
         minZoom: 3,
         zoomControl: true,
@@ -82,10 +85,10 @@ export default {
         rotateControl: true,
         fullscreenControl: false
       })
-      this.map.addListener('drag', function (e) {})
-      this.map.addListener('dragend', function (e) {})
+      this.map.addListener('drag', (e) => {})
+      this.map.addListener('dragend', (e) => {})
       const self = this
-      this.map.addListener('bounds_changed', function (e) {
+      this.map.addListener('bounds_changed', (e) => {
         database.setLocation({
           lat: self.map.getCenter().lat(),
           lng: self.map.getCenter().lng()
@@ -126,11 +129,12 @@ export default {
     },
     locate () {
       if (navigator.geolocation) {
-        const self = this
-        navigator.geolocation.getCurrentPosition(function (position) {
-          const pos = new google.maps.LatLng(position.coords.latitude,
-            position.coords.longitude)
-          self.map.setCenter(pos)
+        navigator.geolocation.getCurrentPosition((position) => {
+          const pos = new google.maps.LatLng(
+            position.coords.latitude,
+            position.coords.longitude
+          )
+          this.map.setCenter(pos)
         })
       }
     },
@@ -139,7 +143,6 @@ export default {
         marker.setMap(null)
       })
       this.postMarkers.clear()
-      const self = this
       database.removeRegionsListeners()
       let precision = 4
       if (this.map.zoom < 6) precision = 1
@@ -164,21 +167,21 @@ export default {
             map: this.map,
             icon: icon
           })
-          marker.addListener('click', function () {
-            if (self.showPost || self.showPostEditor) {
-              self.showPost = false
-              setTimeout(() => { self.showPost = true }, 300)
-            } else self.showPost = true
-            self.showPostEditor = false
-            self.post = post
-            self.post.id = key
+          marker.addListener('click', () => {
+            if (this.showPost || this.showPostEditor) {
+              this.showPost = false
+              setTimeout(() => { this.showPost = true }, 300)
+            } else this.showPost = true
+            this.showPostEditor = false
+            this.post = post
+            this.post.id = key
           })
-          self.postMarkers.set(key, marker)
+          this.postMarkers.set(key, marker)
         },
         (key) => {
-          if (self.postMarkers.has(key)) {
-            self.postMarkers.get(key).setMap(null)
-            self.postMarkers.delete(key)
+          if (this.postMarkers.has(key)) {
+            this.postMarkers.get(key).setMap(null)
+            this.postMarkers.delete(key)
           }
         })
     }

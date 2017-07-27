@@ -23,7 +23,9 @@ export default {
         text: post.text,
         username: post.username
       }
-      if (post.imagesUrls.length > 0) newPost.imagesCount = post.imagesUrls.length
+      if (post.imagesUrls.length > 0) {
+        newPost.imagesCount = post.imagesUrls.length
+      }
       newPostRef
       .set(newPost)
       .then((value) => {
@@ -37,18 +39,17 @@ export default {
   getPosts (regionId, newPostCallback, postRemovedCallback) {
     if (regionId.length < GEOHASH_PRECISION) {
       this.regionsRef = database.ref('regions-posts')
-      const self = this
-      this.regionsRef.on('child_added', function (data) {
+      this.regionsRef.on('child_added', (data) => {
         if (data.key.startsWith(regionId)) {
-          self.getPosts(data.key, newPostCallback, postRemovedCallback)
+          this.getPosts(data.key, newPostCallback, postRemovedCallback)
         }
       })
     } else {
       const regionRef = database.ref('regions-posts/' + regionId)
-      regionRef.on('child_added', function (data) {
+      regionRef.on('child_added', (data) => {
         newPostCallback(data.key, data.val())
       })
-      regionRef.on('child_removed', function (data) {
+      regionRef.on('child_removed', (data) => {
         postRemovedCallback(data.key)
       })
       this.regionRefs.push(regionRef)
@@ -111,7 +112,7 @@ export default {
     )
     this.commentsRef = database
     .ref(`regions-comments/${this.commentRegionId}/${post.id}`)
-    this.commentsRef.on('child_added', function (data) {
+    this.commentsRef.on('child_added', (data) => {
       newCommentCallback(data.val())
     })
   },
