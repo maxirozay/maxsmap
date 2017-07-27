@@ -95,8 +95,9 @@ export default {
       })
     },
     togglePostEditor () {
+      if (this.showPost) setTimeout(() => { this.showPostEditor = true }, 300)
+      else this.showPostEditor = true
       this.showPost = false
-      this.showPostEditor = true
       if (this.newPostMarker === null) {
         const icon = {
           url: newPostIcon,
@@ -113,8 +114,10 @@ export default {
           icon: icon
         })
         const self = this
-        this.newPostMarker.addListener('click', function () {
-          self.showPostEditor = true
+        this.newPostMarker.addListener('click', () => {
+          if (this.showPost) {
+            setTimeout(() => { this.showPostEditor = true }, 300)
+          } else this.showPostEditor = true
           self.showPost = false
         })
       } else {
@@ -162,10 +165,13 @@ export default {
             icon: icon
           })
           marker.addListener('click', function () {
+            if (self.showPost || self.showPostEditor) {
+              self.showPost = false
+              setTimeout(() => { self.showPost = true }, 300)
+            } else self.showPost = true
             self.showPostEditor = false
             self.post = post
             self.post.id = key
-            self.showPost = true
           })
           self.postMarkers.set(key, marker)
         },
