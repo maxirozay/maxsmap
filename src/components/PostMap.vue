@@ -2,27 +2,27 @@
   <section class="h-100">
     <div id="map" class="h-100"></div>
     <div class="fab-position">
-      <button @click="locate"
-        class="button is-primary round fab">
+      <button @click="locate" class="button is-primary round fab">
         <i class="material-icons icon-centered">gps_fixed</i>
       </button>
-      <button @click="togglePostEditor"
-        class="button is-primary round fab">
+      <button @click="togglePostEditor" class="button is-primary round fab">
         <i class="material-icons icon-centered">add</i>
       </button>
     </div>
     <transition name="slide-right">
-      <post-editor class="post"
-        v-if="showPostEditor"
-        @cancel="showPostEditor = false"
-        :marker="newPostMarker">
+      <post-editor
+      class="post"
+      v-if="showPostEditor"
+      @cancel="showPostEditor = false"
+      :marker="newPostMarker">
       </post-editor>
     </transition>
     <transition name="slide-right">
-      <post class="post"
-        v-if="showPost"
-        @close="showPost = false"
-        :post="post">
+      <post
+      class="post"
+      v-if="showPost"
+      @close="showPost = false"
+      :post="post">
       </post>
     </transition>
   </section>

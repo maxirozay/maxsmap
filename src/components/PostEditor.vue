@@ -1,39 +1,44 @@
 <template>
   <div class="card h-100 mw-sm scrollable">
     <div class="card-content">
-      <p class="title is-4">New Post</p>
+      <p class="title is-4">
+        New Post
+      </p>
       <div class="field">
-        <input class="input"
-          type="text"
-          maxlength="40"
-          v-model="post.username"
-          placeholder="Username">
-          <p class="help is-danger" v-show="usernameError">
-            {{ usernameError }}
-          </p>
+        <input
+        class="input"
+        type="text"
+        maxlength="40"
+        v-model="post.username"
+        placeholder="Username">
+        <p class="help is-danger" v-show="usernameError">
+          {{ usernameError }}
+        </p>
       </div>
       <div class="field">
-        <textarea class="textarea"
-          type="text"
-          rows= "10"
-          maxlength="400"
-          v-model="post.text"
-          placeholder="Write something that you want to share."></textarea>
+        <textarea
+        class="textarea"
+        type="text"
+        rows= "10"
+        maxlength="400"
+        v-model="post.text"
+        placeholder="Write something that you want to share."></textarea>
         <p class="help is-danger" v-show="textError">
           {{ textError }}
         </p>
       </div>
       <div class="field">
         <label :class="uploadImageLabelClass" for="uploadImage">
-          <i class="material-icons is-primary">image</i>Upload an image (optional)
+          <i class="material-icons is-primary">image</i>
+          Upload an image (optional)
         </label>
         <input
-          id="uploadImage"
-          type="file"
-          name="image"
-          @change="uploadImage"
-          accept="image/*"
-          class="absolute opacity-0"/>
+        id="uploadImage"
+        type="file"
+        name="image"
+        @change="uploadImage"
+        accept="image/*"
+        class="absolute opacity-0"/>
         <p class="help is-danger" v-show="uploadImageError">
           {{ uploadImageError }}ssssssssss
         </p>
@@ -41,12 +46,10 @@
       <img v-for="url in post.imagesUrls" :src="url"/>
     </div>
     <footer class="card-footer sticky-footer bg-white mw-sm">
-      <a class="card-footer-item"
-        @click="sendPost">
-        {{sendPostButtonText}}
+      <a class="card-footer-item" @click="sendPost">
+      {{sendPostButtonText}}
       </a>
-      <a class="card-footer-item"
-        @click="$emit('cancel')">
+      <a class="card-footer-item" @click="$emit('cancel')">
         Cancel
       </a>
     </footer>

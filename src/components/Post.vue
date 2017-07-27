@@ -8,36 +8,46 @@
     <div class="card-content">
       <div class="content">
         <p class="break-word">
-          <strong>{{ post.username }}</strong>
-          <small>{{ dateAgo(post.createdAt) }}</small>
+          <strong>
+            {{ post.username }}
+          </strong>
+          <small>
+            {{ dateAgo(post.createdAt) }}
+          </small>
           <br>
           {{ post.text }}
         </p>
         <div class="field">
-          <input class="input"
-            type="text"
-            maxlength="40"
-            v-model="newComment.username"
-            placeholder="Username">
-            <p class="help is-danger" v-show="usernameError">
-              {{ usernameError }}
-            </p>
+          <input
+          class="input"
+          type="text"
+          maxlength="40"
+          v-model="newComment.username"
+          placeholder="Username">
+          <p class="help is-danger" v-show="usernameError">
+            {{ usernameError }}
+          </p>
         </div>
         <div class="field">
-          <textarea class="textarea"
-            type="text"
-            rows= "3"
-            maxlength="200"
-            v-model="newComment.text"
-            placeholder="Your comment..."></textarea>
+          <textarea
+          class="textarea"
+          type="text"
+          rows= "3"
+          maxlength="200"
+          v-model="newComment.text"
+          placeholder="Your comment..."></textarea>
           <p class="help is-danger" v-show="textError">
             {{ textError }}
           </p>
         </div>
         <div v-for="comment in comments">
           <p class="break-word">
-            <strong>{{ comment.username }}</strong>
-            <small>{{ dateAgo(comment.createdAt) }}</small>
+            <strong>
+              {{ comment.username }}
+            </strong>
+            <small>
+              {{ dateAgo(comment.createdAt) }}
+            </small>
             <br>
             {{ comment.text }}
           </p>
@@ -45,16 +55,13 @@
       </div>
     </div>
     <footer class="card-footer sticky-footer bg-white mw-sm">
-      <a class="card-footer-item"
-        @click="sendComment">
+      <a class="card-footer-item" @click="sendComment">
         {{commentButtonText}}
       </a>
-      <a class="card-footer-item"
-        @click="$emit('close')">
+      <a class="card-footer-item" @click="$emit('close')">
         Close
       </a>
-      <a class="card-footer-item"
-        @click="deletePost">
+      <a class="card-footer-item" @click="deletePost">
         {{ deleteButtonText }}
       </a>
     </footer>
