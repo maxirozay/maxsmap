@@ -168,13 +168,13 @@ export default {
             icon: icon
           })
           marker.addListener('click', () => {
+            this.post = post
+            this.post.id = key
             if (this.showPost || this.showPostEditor) {
               this.showPost = false
               setTimeout(() => { this.showPost = true }, 300)
             } else this.showPost = true
             this.showPostEditor = false
-            this.post = post
-            this.post.id = key
           })
           this.postMarkers.set(key, marker)
         },

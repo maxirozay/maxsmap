@@ -1,8 +1,8 @@
 <template>
   <div class="card h-100 mw-sm scrollable">
-    <div v-show="imageUrl" class="card-image">
+    <div v-if="imageUrl" class="card-image">
       <figure class="image">
-        <img :src="imageUrl" alt="post image">
+        <img @load="imageLoaded" :class="imageClass" :src="imageUrl" alt="post image">
       </figure>
     </div>
     <div class="card-content">
@@ -83,7 +83,8 @@ export default {
       comments: [],
       usernameError: null,
       textError: null,
-      imageUrl: null
+      imageUrl: null,
+      imageClass: ''
     }
   },
   mounted () {
@@ -153,6 +154,12 @@ export default {
           if (error) this.imageUrl = null
         })
       }
+    },
+    imageLoaded () {
+      this.imageClass = 'grow-y-leave-to'
+      setTimeout(() => {
+        this.imageClass = 'grow-y-leave-active'
+      }, 100)
     }
   }
 }
