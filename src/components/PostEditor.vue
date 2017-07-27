@@ -76,7 +76,7 @@ export default {
   },
   mounted () {
     this.post.username = database.getUsername() ? database.getUsername() : ''
-    this.post.id = `${Date.now()}-${Math.round(this.marker.position.lat())}-${Math.round(this.marker.position.lng())}-${Math.round(Math.random() * 99)}`
+    this.post.id = `${Number.MAX_SAFE_INTEGER - Date.now()}-${Math.round(this.marker.position.lat())}-${Math.round(this.marker.position.lng())}-${Math.round(Math.random() * 99)}`
   },
   beforeDestroy () {
     for (let i = 0; i < this.imageToDelete; i++) {
