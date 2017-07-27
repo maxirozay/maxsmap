@@ -1,5 +1,5 @@
 <template>
-  <div class="card mw-sm">
+  <div class="card h-100 mw-sm scrollable">
     <div class="card-content">
       <p class="title is-4">New Post</p>
       <div class="field">
@@ -12,22 +12,35 @@
             {{ usernameError }}
           </p>
       </div>
-      <textarea class="textarea"
-        type="text"
-        rows= "10"
-        maxlength="400"
-        v-model="post.text"
-        placeholder="Write something that you want to share."></textarea>
+      <div class="field">
+        <textarea class="textarea"
+          type="text"
+          rows= "10"
+          maxlength="400"
+          v-model="post.text"
+          placeholder="Write something that you want to share."></textarea>
         <p class="help is-danger" v-show="textError">
           {{ textError }}
         </p>
-        <input type="file" name="image" @change="uploadImage" accept="image/*"/>
+      </div>
+      <div class="field">
+        <label :class="uploadImageLabelClass" for="uploadImage">
+          <i class="material-icons is-primary">image</i>Upload an image (optional)
+        </label>
+        <input
+          id="uploadImage"
+          type="file"
+          name="image"
+          @change="uploadImage"
+          accept="image/*"
+          class="absolute opacity-0"/>
         <p class="help is-danger" v-show="uploadImageError">
-          {{ uploadImageError }}
+          {{ uploadImageError }}ssssssssss
         </p>
-        <img v-for="url in post.imagesUrls" :src="url"/>
+      </div>
+      <img v-for="url in post.imagesUrls" :src="url"/>
     </div>
-    <footer class="card-footer">
+    <footer class="card-footer sticky-footer bg-white mw-sm">
       <a class="card-footer-item"
         @click="sendPost">
         {{sendPostButtonText}}
@@ -54,7 +67,8 @@ export default {
       usernameError: null,
       textError: null,
       uploadImageError: null,
-      imageToDelete: 0
+      imageToDelete: 0,
+      uploadImageLabelClass: 'is-fullwidth button'
     }
   },
   mounted () {
@@ -89,15 +103,16 @@ export default {
       })
     },
     uploadImage (event) {
-      storage.uploadImage(
-        event.target.files[0],
-        `posts/${this.post.id}/0.jpg`)
+      this.uploadImageLabelClass = 'is-fullwidth button is-loading'
+      storage.uploadImage(event.target.files[0], `posts/${this.post.id}/0.jpg`)
       .then((url) => {
+        this.uploadImageLabelClass = 'is-fullwidth button'
         this.post.imagesUrls = [ url ]
         this.uploadImageError = null
         this.imageToDelete = 1
       })
       .catch((error) => {
+        this.uploadImageLabelClass = 'is-fullwidth button'
         if (error) this.uploadImageError = `Your image couldn't be uploaded.`
       })
     }

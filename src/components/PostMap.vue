@@ -11,14 +11,14 @@
         <i class="material-icons icon-centered">add</i>
       </button>
     </div>
-    <transition name="slide-up">
+    <transition name="slide-right">
       <post-editor class="post"
         v-if="showPostEditor"
         @cancel="showPostEditor = false"
         :marker="newPostMarker">
       </post-editor>
     </transition>
-    <transition name="slide-up">
+    <transition name="slide-right">
       <post class="post"
         v-if="showPost"
         @close="showPost = false"
