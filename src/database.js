@@ -9,8 +9,8 @@ export default {
   regionRefs: [],
   createPost (post, position) {
     const regionId = geohash.encode(
-      position.lat(),
-      position.lng(),
+      position.lat,
+      position.lng,
       GEOHASH_PRECISION
     )
     const timestamp = Date.now()
@@ -18,8 +18,8 @@ export default {
     return new Promise((resolve, reject) => {
       let newPost = {
         createdAt: timestamp,
-        lat: position.lat(),
-        lng: position.lng(),
+        lat: position.lat,
+        lng: position.lng,
         text: post.text,
         username: post.username
       }

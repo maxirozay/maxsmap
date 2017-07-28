@@ -63,7 +63,7 @@
       <a class="card-footer-item" @click="sendComment">
         {{commentButtonText}}
       </a>
-      <a class="card-footer-item" @click="$emit('close')">
+      <a class="card-footer-item" @click="close">
         Close
       </a>
       <a class="card-footer-item" @click="deletePost">
@@ -147,7 +147,7 @@ export default {
       database
       .deletePost(this.post)
       .then((value) => {
-        this.$emit('close')
+        this.close()
       })
       .catch((error) => {
         if (error) this.deleteButtonText = 'Retry'
@@ -166,6 +166,11 @@ export default {
     },
     imageLoaded () {
       this.imageIsLoaded = true
+    },
+    close () {
+      /* global history */
+      /* eslint no-undef: "error" */
+      history.back()
     }
   }
 }

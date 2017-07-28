@@ -5,7 +5,7 @@
       <button @click="locate" class="button is-primary round fab">
         <i class="material-icons icon-centered">gps_fixed</i>
       </button>
-      <button @click="togglePostEditor" class="button is-primary round fab">
+      <button @click="createNewPostMarker" class="button is-primary round fab">
         <i class="material-icons icon-centered">add</i>
       </button>
     </div>
@@ -13,15 +13,13 @@
       <post-editor
       class="post"
       v-if="showPostEditor"
-      @cancel="showPostEditor = false"
-      :marker="newPostMarker">
+      :position="newPostPosition">
       </post-editor>
     </transition>
     <transition name="slide-right">
       <post
       class="post"
       v-if="showPost"
-      @close="showPost = false"
       :post="post">
       </post>
     </transition>
@@ -47,9 +45,19 @@ export default {
       showPostEditor: false,
       map: null,
       newPostMarker: null,
+      newPostPosition: null,
       postMarkers: new Map(),
       showPost: false,
       post: { id: '', title: '', details: '' }
+    }
+  },
+  created () {
+    this.checkState()
+    window.onpopstate = (event) => {
+      if (event.state === null) {
+        this.showPostEditor = false
+        this.showPost = false
+      }
     }
   },
   mounted () {
@@ -59,6 +67,22 @@ export default {
     database.removeRegionsListeners()
   },
   methods: {
+    checkState () {
+      /* global history */
+      /* eslint no-undef: "error" */
+      if (history.state) {
+        switch (history.state.type) {
+          case 'post':
+            this.post = history.state.post
+            this.showPost = true
+            break
+          case 'post-editor':
+            this.newPostPosition = history.state.position
+            this.showPostEditor = true
+            break
+        }
+      }
+    },
     initMap () {
       if (!window.mapIsLoaded) {
         return setTimeout(() => { this.initMap() }, 500)
@@ -96,11 +120,9 @@ export default {
         database.setZoom(self.map.getZoom())
         self.getPosts()
       })
+      if (this.newPostPosition) this.createNewPostMarker()
     },
-    togglePostEditor () {
-      if (this.showPost) setTimeout(() => { this.showPostEditor = true }, 300)
-      else this.showPostEditor = true
-      this.showPost = false
+    createNewPostMarker () {
       if (this.newPostMarker === null) {
         const icon = {
           url: newPostIcon,
@@ -109,22 +131,65 @@ export default {
           origin: new google.maps.Point(0, 0),
           anchor: new google.maps.Point(32, 32)
         }
+        let position
+        if (this.newPostPosition) {
+          position = new google.maps.LatLng(
+            this.newPostPosition.lat,
+            this.newPostPosition.lng
+          )
+        } else position = this.map.getCenter()
         this.newPostMarker = new google.maps.Marker({
-          position: this.map.getCenter(),
+          position: position,
           draggable: true,
           animation: google.maps.Animation.DROP,
           map: this.map,
           icon: icon
         })
-        const self = this
         this.newPostMarker.addListener('click', () => {
-          if (this.showPost) {
-            setTimeout(() => { this.showPostEditor = true }, 300)
-          } else this.showPostEditor = true
-          self.showPost = false
+          this.openPostEditor()
+        })
+        this.newPostMarker.addListener('drag', () => {
+          this.newPostPosition = {
+            lat: this.newPostMarker.position.lat(),
+            lng: this.newPostMarker.position.lng()
+          }
         })
       } else {
         this.newPostMarker.setPosition(this.map.getCenter())
+      }
+      this.newPostPosition = {
+        lat: this.newPostMarker.position.lat(),
+        lng: this.newPostMarker.position.lng()
+      }
+      this.openPostEditor()
+    },
+    openPostEditor () {
+      if (this.showPostEditor) return
+      if (this.showPost) {
+        this.showPost = false
+        history.replaceState({
+          type: 'post-editor',
+          position: this.newPostPosition
+        }, null, 'post-editor')
+        setTimeout(() => { this.showPostEditor = true }, 300)
+      } else {
+        history.pushState({
+          type: 'post-editor',
+          position: this.newPostPosition
+        }, null, 'post-editor')
+        this.showPostEditor = true
+      }
+    },
+    openPost (post) {
+      this.post = post
+      if (this.showPost || this.showPostEditor) {
+        this.showPost = false
+        this.showPostEditor = false
+        history.replaceState({ type: 'post', post: this.post }, null, 'post')
+        setTimeout(() => { this.showPost = true }, 300)
+      } else {
+        this.showPost = true
+        history.pushState({ type: 'post', post: this.post }, null, 'post')
       }
     },
     locate () {
@@ -167,15 +232,8 @@ export default {
             map: this.map,
             icon: icon
           })
-          marker.addListener('click', () => {
-            this.post = post
-            this.post.id = key
-            if (this.showPost || this.showPostEditor) {
-              this.showPost = false
-              setTimeout(() => { this.showPost = true }, 300)
-            } else this.showPost = true
-            this.showPostEditor = false
-          })
+          post.id = key
+          marker.addListener('click', () => { this.openPost(post) })
           this.postMarkers.set(key, marker)
         },
         (key) => {

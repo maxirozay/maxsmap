@@ -54,7 +54,7 @@
       <a class="card-footer-item" @click="sendPost">
       {{sendPostButtonText}}
       </a>
-      <a class="card-footer-item" @click="$emit('cancel')">
+      <a class="card-footer-item" @click="close">
         Cancel
       </a>
     </footer>
@@ -68,7 +68,7 @@ import image from '../util/image'
 
 export default {
   name: 'post-editor',
-  props: ['marker'],
+  props: ['position'],
   data () {
     return {
       post: { id: null, username: '', text: '', imagesUrls: [] },
@@ -82,7 +82,7 @@ export default {
   },
   mounted () {
     this.post.username = database.getUsername() ? database.getUsername() : ''
-    this.post.id = `${Number.MAX_SAFE_INTEGER - Date.now()}-${Math.round(this.marker.position.lat())}-${Math.round(this.marker.position.lng())}-${Math.round(Math.random() * 99)}`
+    this.post.id = `${Number.MAX_SAFE_INTEGER - Date.now()}-${Math.round(this.position.lat)}-${Math.round(this.position.lng)}-${Math.round(Math.random() * 99)}`
   },
   beforeDestroy () {
     for (let i = 0; i < this.imageToDelete; i++) {
@@ -102,10 +102,10 @@ export default {
       database.setUsername(this.post.username)
 
       database
-      .createPost(this.post, this.marker.position)
+      .createPost(this.post, this.position)
       .then((value) => {
         this.imageToDelete = 0
-        this.$emit('cancel')
+        this.close()
       })
       .catch((error) => {
         if (error) this.sendPostButtonText = 'Retry'
@@ -126,6 +126,11 @@ export default {
           if (error) this.uploadImageError = `Your image couldn't be uploaded.`
         })
       })
+    },
+    close () {
+      /* global history */
+      /* eslint no-undef: "error" */
+      history.back()
     }
   }
 }
