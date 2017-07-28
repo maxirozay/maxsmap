@@ -1,5 +1,5 @@
 <template>
-  <div class="card h-100 mw-sm scrollable">
+  <div class="card h-100 mw-sm scrollable pb-2">
     <div v-if="imageUrl" class="card-image">
       <figure class="image">
         <img @load="imageLoaded" :class="imageClass" :src="imageUrl" alt="post image">

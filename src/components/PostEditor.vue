@@ -1,5 +1,5 @@
 <template>
-  <div class="card h-100 mw-sm scrollable">
+  <div class="card h-100 mw-sm scrollable pb-2">
     <div class="card-content">
       <p class="title is-4">
         New Post
