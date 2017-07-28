@@ -46,8 +46,9 @@
       <img v-for="url in post.imagesUrls" :src="url"/>
       <p class="help">
         By uploading or posting content on this service you agree to make your
-        content public and give the rights to use it by anybody. Any of your
-        content can be deleted at any time, for any reason, by anybody.
+        content public and give the rights to use it to anybody. Any of your
+        content can be deleted, seen, used at any time, for any reason, by anybody.
+        You may also not be able to delete your content.
       </p>
     </div>
     <footer class="card-footer sticky-footer bg-white mw-sm">
