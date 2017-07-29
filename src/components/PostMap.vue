@@ -111,14 +111,13 @@ export default {
       })
       this.map.addListener('drag', (e) => {})
       this.map.addListener('dragend', (e) => {})
-      const self = this
       this.map.addListener('bounds_changed', (e) => {
         database.setLocation({
-          lat: self.map.getCenter().lat(),
-          lng: self.map.getCenter().lng()
+          lat: this.map.getCenter().lat(),
+          lng: this.map.getCenter().lng()
         })
-        database.setZoom(self.map.getZoom())
-        self.getPosts()
+        database.setZoom(this.map.getZoom())
+        this.getPosts()
       })
       if (this.newPostPosition) this.createNewPostMarker()
     },
