@@ -224,7 +224,7 @@ export default {
             size: new google.maps.Size(96, 96),
             scaledSize: new google.maps.Size(32, 32),
             origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(0, 16)
+            anchor: new google.maps.Point(16, 16)
           }
           const latlng = new google.maps.LatLng(post.lat, post.lng)
           const marker = new google.maps.Marker({
