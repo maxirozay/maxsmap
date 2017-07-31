@@ -11,7 +11,7 @@
           </small>
           <br>
           {{ post.text }}
-          <figure v-if="imageUrl" class="image">
+          <figure v-show="imageUrl" class="image">
             <img :src="imageUrl" alt="post image">
           </figure>
         </p>
@@ -74,9 +74,9 @@ import date from '../util/date'
 
 export default {
   name: 'post',
-  props: ['post'],
   data () {
     return {
+      post: { username: '', text: '' },
       newComment: { username: '', text: '' },
       commentButtonText: 'Send',
       deleteButtonText: 'Delete',
@@ -87,14 +87,21 @@ export default {
     }
   },
   created () {
-    this.loadImages()
-    this.getComments()
     this.newComment.username = database.getUsername() ? database.getUsername() : ''
   },
   beforeDestroy () {
     database.removeCommentsListener()
   },
   methods: {
+    init (post) {
+      this.post = post
+      database.removeCommentsListener()
+      this.comments = []
+      this.imageUrl = null
+      this.newComment.text = ''
+      this.loadImages()
+      this.getComments()
+    },
     getComments () {
       database
       .getComments(this.post,

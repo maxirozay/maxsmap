@@ -27,9 +27,9 @@
     </transition>
     <transition name="slide-right">
       <post
+      ref="post"
       class="post"
-      v-if="showPost"
-      :post="post">
+      v-show="showPost">
       </post>
     </transition>
     <div
@@ -199,15 +199,14 @@ export default {
       }
     },
     openPost () {
-      if (this.showPost || this.showPostEditor) {
-        this.showPost = false
-        this.showPostEditor = false
+      if (history.state) {
         history.replaceState({ type: 'post', post: this.post }, null, 'post')
-        setTimeout(() => { this.showPost = true }, 300)
       } else {
-        this.showPost = true
         history.pushState({ type: 'post', post: this.post }, null, 'post')
       }
+      this.showPostEditor = false
+      this.showPost = true
+      this.$refs.post.init(this.post)
     },
     locate () {
       if (navigator.geolocation) {
@@ -252,8 +251,10 @@ export default {
           post.id = key
           marker.addListener('click', () => {
             this.post = post
-            if (window.innerWidth < 960) this.showPostPreview = true
-            else this.openPost()
+            if (window.innerWidth < 960) {
+              this.showPostPreview = true
+              this.showPost = false
+            } else this.openPost()
           })
           this.postMarkers.set(key, marker)
         },
