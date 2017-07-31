@@ -204,9 +204,16 @@ export default {
       } else {
         history.pushState({ type: 'post', post: this.post }, null, 'post')
       }
+      if (this.showPostEditor) {
+        setTimeout(() => {
+          this.showPost = true
+          this.$refs.post.init(this.post)
+        }, 300)
+      } else {
+        this.showPost = true
+        this.$refs.post.init(this.post)
+      }
       this.showPostEditor = false
-      this.showPost = true
-      this.$refs.post.init(this.post)
     },
     locate () {
       if (navigator.geolocation) {
