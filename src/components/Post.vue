@@ -1,5 +1,5 @@
 <template>
-  <div class="card h-100 mw-sm scrollable pb-2">
+  <div class="card h-100 w-max-sm scrollable pb-2">
     <div class="card-content">
       <div class="content">
         <p class="break-word">
@@ -53,7 +53,7 @@
         </div>
       </div>
     </div>
-    <footer class="card-footer sticky-footer bg-white mw-sm">
+    <footer class="card-footer sticky-footer bg-white w-max-sm">
       <a class="card-footer-item" @click="sendComment">
         {{commentButtonText}}
       </a>

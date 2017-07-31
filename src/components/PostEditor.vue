@@ -1,5 +1,5 @@
 <template>
-  <div class="card h-100 mw-sm scrollable pb-2">
+  <div class="card h-100 w-max-sm scrollable pb-2">
     <div class="card-content">
       <p class="title is-4">
         New Post
@@ -51,7 +51,7 @@
         You may also not be able to delete your content.
       </p>
     </div>
-    <footer class="card-footer sticky-footer bg-white mw-sm">
+    <footer class="card-footer sticky-footer bg-white w-max-sm">
       <a class="card-footer-item" @click="sendPost">
       {{sendPostButtonText}}
       </a>
