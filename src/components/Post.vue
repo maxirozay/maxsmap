@@ -60,10 +60,38 @@
       <a class="card-footer-item" @click="close">
         Close
       </a>
-      <a class="card-footer-item" @click="deletePost">
-        {{ deleteButtonText }}
+      <a class="card-footer-item" @click="showDeleteUi = true">
+        Delete
       </a>
     </footer>
+    <div v-if="showDeleteUi" class="modal is-active">
+      <div class="modal-background" @click="closeDeleteUI"></div>
+      <button class="modal-close is-large" @click="closeDeleteUI"></button>
+      <div class="modal-content">
+        <div class="card">
+          <div class="card-content">
+            <div class="content">
+              <div class="field">
+                <input
+                class="input"
+                type="password"
+                maxlength="40"
+                v-model="password"
+                placeholder="Enter your password">
+                <p class="help is-danger" v-show="wrongPassword">
+                  Your passwords doesn't match, try something else.
+                </p>
+              </div>
+            </div>
+          </div>
+          <footer class="card-footer">
+            <a class="card-footer-item is-danger" @click="deletePost">
+              {{ deleteButtonText }}
+            </a>
+          </footer>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -83,7 +111,10 @@ export default {
       comments: [],
       usernameError: null,
       textError: null,
-      imageUrl: null
+      imageUrl: null,
+      showDeleteUi: false,
+      password: '',
+      wrongPassword: false
     }
   },
   created () {
@@ -135,13 +166,29 @@ export default {
     },
     deletePost () {
       database
-      .deletePost(this.post)
+      .deletePost(this.post, this.password)
       .then((value) => {
+        this.closeDeleteUI()
         this.close()
       })
       .catch((error) => {
-        if (error) this.deleteButtonText = 'Retry'
+        if (
+          error === 'wrong password' ||
+          error.message === `ccm: tag doesn't match`
+        ) {
+          this.deleteButtonText = 'Delete'
+          this.wrongPassword = true
+        } else {
+          this.wrongPassword = false
+          this.deleteButtonText = 'Retry'
+        }
       })
+    },
+    closeDeleteUI () {
+      this.password = ''
+      this.wrongPassword = false
+      this.deleteButtonText = 'Delete'
+      this.showDeleteUi = false
     },
     loadImages () {
       if (this.post.imagesCount) {

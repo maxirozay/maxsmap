@@ -40,10 +40,32 @@
         accept="image/*"
         class="absolute opacity-0"/>
         <p class="help is-danger" v-show="uploadImageError">
-          {{ uploadImageError }}ssssssssss
+          {{ uploadImageError }}
         </p>
       </div>
       <img v-for="url in post.imagesUrls" :src="url"/>
+      <div class="field">
+        <label class="label">
+          Enter a password that will allow you to delete your post.
+        </label>
+        <input
+        class="input"
+        type="password"
+        maxlength="40"
+        v-model="post.password"
+        placeholder="Password">
+      </div>
+      <div class="field">
+        <input
+        class="input"
+        type="password"
+        maxlength="40"
+        v-model="passwordCheck"
+        placeholder="Password verification">
+        <p class="help is-danger" v-show="!passwordVerified">
+          Your passwords doesn't match.
+        </p>
+      </div>
       <p class="help">
         By uploading or posting content on this service you agree to make your
         content public and give the rights to use it to anybody. Any of your
@@ -72,7 +94,8 @@ export default {
   props: ['position'],
   data () {
     return {
-      post: { id: null, username: '', text: '', imagesUrls: [] },
+      post: { id: null, username: '', text: '', imagesUrls: [], password: '' },
+      passwordCheck: '',
       sendPostButtonText: 'Post',
       usernameError: null,
       textError: null,
@@ -100,6 +123,7 @@ export default {
         this.textError = 'Please write at least 20 characters.'
         return
       } else this.textError = ''
+      if (!this.passwordVerified) return
       database.setUsername(this.post.username)
 
       database
@@ -132,6 +156,11 @@ export default {
       /* global history */
       /* eslint no-undef: "error" */
       history.back()
+    }
+  },
+  computed: {
+    passwordVerified () {
+      return this.post.password === this.passwordCheck
     }
   }
 }

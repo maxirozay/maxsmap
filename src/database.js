@@ -1,5 +1,6 @@
 import { database } from './main'
 import geohash from './util/geohash'
+import sjcl from '../node_modules/sjcl/sjcl'
 
 const GEOHASH_PRECISION = 4
 
@@ -25,6 +26,9 @@ export default {
       }
       if (post.imagesUrls.length > 0) {
         newPost.imagesCount = post.imagesUrls.length
+      }
+      if (post.password.length > 0) {
+        newPost.password = sjcl.encrypt(post.password, post.password)
       }
       newPostRef
       .set(newPost)
@@ -62,18 +66,26 @@ export default {
     })
     this.regionRefs = []
   },
-  deletePost (post) {
-    const regionId = geohash.encode(post.lat, post.lng, GEOHASH_PRECISION)
+  deletePost (post, password) {
     return new Promise((resolve, reject) => {
-      database
-      .ref(`regions-posts/${regionId}/${post.id}`)
-      .remove()
-      .then((value) => {
-        resolve(value)
-      })
-      .catch((error) => {
-        reject(error)
-      })
+      if (
+        !(password || post.password) ||
+        (password && post.password &&
+        sjcl.decrypt(password, post.password) === password)
+      ) {
+        const regionId = geohash.encode(post.lat, post.lng, GEOHASH_PRECISION)
+        database
+        .ref(`regions-posts/${regionId}/${post.id}`)
+        .remove()
+        .then((value) => {
+          resolve(value)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+      } else {
+        reject('wrong password')
+      }
     })
   },
   comment (post, comment) {
