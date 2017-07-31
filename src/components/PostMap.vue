@@ -23,6 +23,11 @@
       :post="post">
       </post>
     </transition>
+    <div
+    v-if="!map"
+    class="h-100 w-100 center bg-white">
+      <loading class="center"></loading>
+    </div>
   </section>
 </template>
 
@@ -33,12 +38,14 @@ import database from '../database'
 import geohash from '../util/geohash'
 import postIcon from '../assets/post-icon.png'
 import newPostIcon from '../assets/new-post-icon.png'
+import Loading from './Loading'
 
 export default {
   name: 'post-map',
   components: {
     PostEditor,
-    Post
+    Post,
+    Loading
   },
   data () {
     return {
