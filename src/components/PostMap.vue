@@ -71,7 +71,6 @@ export default {
     }
   },
   created () {
-    this.checkState()
     window.onpopstate = (event) => {
       if (event.state === null) {
         this.showPostEditor = false
@@ -80,6 +79,7 @@ export default {
     }
   },
   mounted () {
+    this.checkState()
     this.initMap()
   },
   beforeDestroy () {
@@ -93,7 +93,7 @@ export default {
         switch (history.state.type) {
           case 'post':
             this.post = history.state.post
-            this.showPost = true
+            this.openPost()
             break
           case 'post-editor':
             this.newPostPosition = history.state.position
