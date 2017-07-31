@@ -9,6 +9,15 @@
         <i class="material-icons icon-centered">add</i>
       </button>
     </div>
+    <transition name="slide-up">
+      <post-preview
+      class="sticky-footer"
+      v-show="showPostPreview"
+      @openPost="showPostPreview = false; openPost()"
+      @close="showPostPreview = false"
+      :post="post">
+      </post-preview>
+    </transition>
     <transition name="slide-right">
       <post-editor
       class="post"
@@ -34,6 +43,7 @@
 <script>
 import PostEditor from './PostEditor'
 import Post from './Post'
+import PostPreview from './PostPreview'
 import database from '../database'
 import geohash from '../util/geohash'
 import postIcon from '../assets/post-icon.png'
@@ -45,6 +55,7 @@ export default {
   components: {
     PostEditor,
     Post,
+    PostPreview,
     Loading
   },
   data () {
@@ -55,6 +66,7 @@ export default {
       newPostPosition: null,
       postMarkers: new Map(),
       showPost: false,
+      showPostPreview: false,
       post: { id: '', title: '', details: '' }
     }
   },
@@ -186,8 +198,7 @@ export default {
         this.showPostEditor = true
       }
     },
-    openPost (post) {
-      this.post = post
+    openPost () {
       if (this.showPost || this.showPostEditor) {
         this.showPost = false
         this.showPostEditor = false
@@ -239,7 +250,11 @@ export default {
             icon: icon
           })
           post.id = key
-          marker.addListener('click', () => { this.openPost(post) })
+          marker.addListener('click', () => {
+            this.post = post
+            if (window.innerWidth < 960) this.showPostPreview = true
+            else this.openPost()
+          })
           this.postMarkers.set(key, marker)
         },
         (key) => {
