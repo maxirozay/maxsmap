@@ -1,10 +1,5 @@
 <template>
   <div class="card h-100 mw-sm scrollable pb-2">
-    <div v-if="imageUrl" class="card-image">
-      <figure class="image">
-        <img @load="imageLoaded" :src="imageUrl" alt="post image">
-      </figure>
-    </div>
     <div class="card-content">
       <div class="content">
         <p class="break-word">
@@ -16,7 +11,11 @@
           </small>
           <br>
           {{ post.text }}
+          <figure v-if="imageUrl" class="image">
+            <img :src="imageUrl" alt="post image">
+          </figure>
         </p>
+        <label class="label">Comment</label>
         <div class="field">
           <input
           class="input"
@@ -54,11 +53,6 @@
         </div>
       </div>
     </div>
-    <div
-    v-if="post.imagesCount && !imageIsLoaded"
-    class="h-100 w-100 center bg-white">
-      <loading class="center"></loading>
-    </div>
     <footer class="card-footer sticky-footer bg-white mw-sm">
       <a class="card-footer-item" @click="sendComment">
         {{commentButtonText}}
@@ -76,14 +70,10 @@
 <script>
 import database from '../database'
 import storage from '../storage'
-import Loading from './Loading'
 
 export default {
   name: 'post',
   props: ['post'],
-  components: {
-    Loading
-  },
   data () {
     return {
       newComment: { username: '', text: '' },
@@ -92,8 +82,7 @@ export default {
       comments: [],
       usernameError: null,
       textError: null,
-      imageUrl: null,
-      imageIsLoaded: false
+      imageUrl: null
     }
   },
   created () {
@@ -163,9 +152,6 @@ export default {
           if (error) this.imageUrl = null
         })
       }
-    },
-    imageLoaded () {
-      this.imageIsLoaded = true
     },
     close () {
       /* global history */
