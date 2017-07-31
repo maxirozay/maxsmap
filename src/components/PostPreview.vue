@@ -29,7 +29,7 @@
 import date from '../util/date'
 
 export default {
-  name: 'post',
+  name: 'post-preview',
   props: ['post'],
   methods: {
     dateAgo (timestamp) {
