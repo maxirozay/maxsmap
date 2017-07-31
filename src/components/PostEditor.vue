@@ -1,9 +1,17 @@
 <template>
   <div class="card h-100 w-max-sm scrollable pb-2">
     <div class="card-content">
-      <p class="title is-4">
-        New Post
-      </p>
+      <div class="title is-4">
+        <p>
+          New Post
+        </p>
+        <p class="help">
+          By uploading or posting content on this service you agree to make your
+          content public and give the rights to use it to anybody. Any of your
+          content can be deleted, seen, used at any time, for any reason, by anybody.
+          You may also not be able to delete your content.
+        </p>
+      </div>
       <div class="field">
         <input
         class="input"
@@ -66,12 +74,6 @@
           Your passwords doesn't match.
         </p>
       </div>
-      <p class="help">
-        By uploading or posting content on this service you agree to make your
-        content public and give the rights to use it to anybody. Any of your
-        content can be deleted, seen, used at any time, for any reason, by anybody.
-        You may also not be able to delete your content.
-      </p>
     </div>
     <footer class="card-footer sticky-footer bg-white w-max-sm">
       <a class="card-footer-item" @click="sendPost">
