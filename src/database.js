@@ -2,7 +2,7 @@ import { database } from './main'
 import geohash from './util/geohash'
 import sjcl from '../node_modules/sjcl/sjcl'
 
-const GEOHASH_PRECISION = 4
+const GEOHASH_PRECISION = 5
 
 export default {
   currentPost: null,
@@ -10,11 +10,12 @@ export default {
   regionsRef: null,
   regionRefs: [],
   createPost (post, position) {
-    const regionId = geohash.encode(
+    let regionId = geohash.encode(
       position.lat,
       position.lng,
       GEOHASH_PRECISION
     )
+    regionId = regionId.split('').join('/')
     const timestamp = Date.now()
     const newPostRef = database.ref(`regions-posts/${regionId}/${post.id}`)
     return new Promise((resolve, reject) => {
@@ -46,12 +47,10 @@ export default {
     })
   },
   getPosts (regionId, newPostCallback, postRemovedCallback) {
-    if (regionId.length < GEOHASH_PRECISION) {
-      this.regionsRef = database.ref('regions-posts')
+    if (regionId.length < GEOHASH_PRECISION * 2 - 1) {
+      this.regionsRef = database.ref('regions-posts/' + regionId)
       this.regionsRef.on('child_added', (data) => {
-        if (data.key.startsWith(regionId)) {
-          this.getPosts(data.key, newPostCallback, postRemovedCallback)
-        }
+        this.getPosts(`${regionId}/${data.key}`, newPostCallback, postRemovedCallback)
       })
     } else {
       const regionRef = database.ref('regions-posts/' + regionId)

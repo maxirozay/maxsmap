@@ -233,14 +233,16 @@ export default {
       })
       this.postMarkers.clear()
       database.removeRegionsListeners()
-      let precision = 4
+      let precision = 5
       if (this.map.zoom < 6) precision = 1
-      else if (this.map.zoom < 9) precision = 2
-      else if (this.map.zoom < 12) precision = 3
-      const regionId = geohash.encode(
+      else if (this.map.zoom < 12) precision = 2
+      else if (this.map.zoom < 14) precision = 3
+      else if (this.map.zoom < 16) precision = 4
+      let regionId = geohash.encode(
         this.map.getCenter().lat(),
         this.map.getCenter().lng(),
         precision)
+      regionId = regionId.split('').join('/')
       database.getPosts(regionId,
         (key, post) => {
           const icon = {
