@@ -12,7 +12,7 @@
     <transition name="slide-up">
       <post-preview
       class="sticky-footer"
-      v-show="showPostPreview"
+      v-if="showPostPreview"
       @openPost="showPostPreview = false; openPost()"
       @close="showPostPreview = false"
       :post="post">
@@ -93,6 +93,7 @@ export default {
         switch (history.state.type) {
           case 'post':
             this.post = history.state.post
+            database.currentPost = this.post
             this.openPost()
             break
           case 'post-editor':
@@ -258,6 +259,7 @@ export default {
           post.id = key
           marker.addListener('click', () => {
             this.post = post
+            database.currentPost = this.post
             if (window.innerWidth < 960) {
               this.showPostPreview = true
               this.showPost = false

@@ -10,7 +10,12 @@
             {{ dateAgo(post.createdAt) }}
           </small>
           <br>
-          {{ post.text }}
+          <span v-if="!post.isPrivate || post.isVerified">
+            {{ post.text }}
+          </span>
+          <span v-else>
+            This post is private
+          </span>
         </p>
       </div>
     </div>

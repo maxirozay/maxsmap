@@ -5,6 +5,7 @@ import sjcl from '../node_modules/sjcl/sjcl'
 const GEOHASH_PRECISION = 4
 
 export default {
+  currentPost: null,
   commentRef: null,
   regionsRef: null,
   regionRefs: [],
@@ -29,6 +30,10 @@ export default {
       }
       if (post.password.length > 0) {
         newPost.password = sjcl.encrypt(post.password, post.password)
+      }
+      if (post.isPrivate) {
+        newPost.text = sjcl.encrypt(post.password, post.text)
+        newPost.isPrivate = true
       }
       newPostRef
       .set(newPost)
@@ -59,6 +64,24 @@ export default {
       this.regionRefs.push(regionRef)
     }
   },
+  verifyPassword (encryptedPassword, password) {
+    try {
+      if (
+        !(password || encryptedPassword) ||
+        password && encryptedPassword &&
+        sjcl.decrypt(password, encryptedPassword) === password
+      ) return true
+      return false
+    } catch (e) {
+      return false
+    }
+  },
+  decryptPost () {
+    this.currentPost.text = sjcl.decrypt(
+      this.currentPost.password,
+      this.currentPost.text
+    )
+  },
   removeRegionsListeners () {
     if (this.regionsRef) this.regionsRef.off()
     this.regionRefs.map((ref) => {
@@ -66,44 +89,47 @@ export default {
     })
     this.regionRefs = []
   },
-  deletePost (post, password) {
+  deletePost (post) {
     return new Promise((resolve, reject) => {
-      if (
-        !(password || post.password) ||
-        (password && post.password &&
-        sjcl.decrypt(password, post.password) === password)
-      ) {
-        const regionId = geohash.encode(post.lat, post.lng, GEOHASH_PRECISION)
-        database
-        .ref(`regions-posts/${regionId}/${post.id}`)
-        .remove()
-        .then((value) => {
-          resolve(value)
-        })
-        .catch((error) => {
-          reject(error)
-        })
-      } else {
-        reject('wrong password')
-      }
+      const regionId = geohash.encode(post.lat, post.lng, GEOHASH_PRECISION)
+      database
+      .ref(`regions-posts/${regionId}/${post.id}`)
+      .remove()
+      .then((value) => {
+        resolve(value)
+      })
+      .catch((error) => {
+        reject(error)
+      })
     })
   },
-  comment (post, comment) {
+  comment (comment) {
     if (!this.commentRegionId) {
       return new Promise((resolve, reject) => { reject('no region') })
     }
+    const newComment = {
+      createdAt: Date.now(),
+      username: comment.username,
+      text: comment.text
+    }
+    if (this.currentPost.isPrivate) {
+      newComment.username = sjcl.encrypt(
+        this.currentPost.password,
+        comment.username
+      )
+      newComment.text = sjcl.encrypt(
+        this.currentPost.password,
+        comment.text
+      )
+    }
     const newCommentRef = database
-    .ref(`regions-comments/${this.commentRegionId}/${post.id}`).push()
+    .ref(`regions-comments/${this.commentRegionId}/${this.currentPost.id}`).push()
     return new Promise((resolve, reject) => {
       newCommentRef
-      .set({
-        createdAt: Date.now(),
-        username: comment.username,
-        text: comment.text
-      })
+      .set(newComment)
       .then((value) => {
         database
-        .ref(`regions-posts/${this.commentRegionId}/${post.id}`)
+        .ref(`regions-posts/${this.commentRegionId}/${this.currentPost.id}`)
         .transaction((post) => {
           if (post.commentsCount === undefined) post.commentsCount = 1
           else post.commentsCount++
@@ -125,7 +151,18 @@ export default {
     this.commentsRef = database
     .ref(`regions-comments/${this.commentRegionId}/${post.id}`)
     this.commentsRef.on('child_added', (data) => {
-      newCommentCallback(data.val())
+      let comment = data.val()
+      if (this.currentPost.isPrivate) {
+        comment.username = sjcl.decrypt(
+          this.currentPost.password,
+          comment.username
+        )
+        comment.text = sjcl.decrypt(
+          this.currentPost.password,
+          comment.text
+        )
+      }
+      newCommentCallback(comment)
     })
   },
   removeCommentsListener () {

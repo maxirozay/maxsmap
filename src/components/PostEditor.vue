@@ -62,6 +62,9 @@
         maxlength="40"
         v-model="post.password"
         placeholder="Password">
+        <p class="help is-danger" v-show="!post.password && post.isPrivate">
+          Please enter a password to make your post private.
+        </p>
       </div>
       <div class="field">
         <input
@@ -74,6 +77,15 @@
           Your passwords doesn't match.
         </p>
       </div>
+      <label class="checkbox">
+        <input type="checkbox" v-model="post.isPrivate">
+        Private post
+      </label>
+      <p class="help">
+        Your post will be encrypted with your passwords and only people with
+        your password can see this post. Your username will not be encrypted
+        to help people to find your post easily.
+      </p>
     </div>
     <footer class="card-footer sticky-footer bg-white w-max-sm">
       <a class="card-footer-item" @click="sendPost">
@@ -96,7 +108,14 @@ export default {
   props: ['position'],
   data () {
     return {
-      post: { id: null, username: '', text: '', imagesUrls: [], password: '' },
+      post: {
+        id: null,
+        username: '',
+        text: '',
+        imagesUrls: [],
+        password: '',
+        isPrivate: false
+      },
       passwordCheck: '',
       sendPostButtonText: 'Post',
       usernameError: null,
@@ -125,7 +144,12 @@ export default {
         this.textError = 'Please write at least 20 characters.'
         return
       } else this.textError = ''
-      if (!this.passwordVerified) return
+      if (
+        !this.passwordVerified ||
+        (!this.post.password && this.post.isPrivate)
+      ) {
+        return
+      }
       database.setUsername(this.post.username)
 
       database

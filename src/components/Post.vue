@@ -10,34 +10,38 @@
             {{ dateAgo(post.createdAt) }}
           </small>
           <br>
-          {{ post.text }}
+          <span v-if="!post.isPrivate || post.isVerified">
+            {{ post.text }}
+          </span>
           <figure v-show="imageUrl" class="image">
             <img :src="imageUrl" alt="post image">
           </figure>
         </p>
-        <label class="label">Comment</label>
-        <div class="field">
-          <input
-          class="input"
-          type="text"
-          maxlength="40"
-          v-model="newComment.username"
-          placeholder="Username">
-          <p class="help is-danger" v-show="usernameError">
-            {{ usernameError }}
-          </p>
-        </div>
-        <div class="field">
-          <textarea
-          class="textarea"
-          type="text"
-          rows= "3"
-          maxlength="200"
-          v-model="newComment.text"
-          placeholder="Your comment..."></textarea>
-          <p class="help is-danger" v-show="textError">
-            {{ textError }}
-          </p>
+        <div v-if="!post.isPrivate || post.isVerified">
+          <label class="label">Comment</label>
+          <div class="field">
+            <input
+            class="input"
+            type="text"
+            maxlength="40"
+            v-model="newComment.username"
+            placeholder="Username">
+            <p class="help is-danger" v-show="usernameError">
+              {{ usernameError }}
+            </p>
+          </div>
+          <div class="field">
+            <textarea
+            class="textarea"
+            type="text"
+            rows= "3"
+            maxlength="200"
+            v-model="newComment.text"
+            placeholder="Your comment..."></textarea>
+            <p class="help is-danger" v-show="textError">
+              {{ textError }}
+            </p>
+          </div>
         </div>
         <div v-for="comment in comments">
           <p class="break-word">
@@ -60,38 +64,18 @@
       <a class="card-footer-item" @click="close">
         Close
       </a>
-      <a class="card-footer-item" @click="showDeleteUi = true">
+      <a class="card-footer-item" @click="deletePost">
         Delete
       </a>
     </footer>
-    <div v-if="showDeleteUi" class="modal is-active">
-      <div class="modal-background" @click="closeDeleteUI"></div>
-      <button class="modal-close is-large" @click="closeDeleteUI"></button>
-      <div class="modal-content">
-        <div class="card">
-          <div class="card-content">
-            <div class="content">
-              <div class="field">
-                <input
-                class="input"
-                type="password"
-                maxlength="40"
-                v-model="password"
-                placeholder="Enter your password">
-                <p class="help is-danger" v-show="wrongPassword">
-                  Your passwords doesn't match, try something else.
-                </p>
-              </div>
-            </div>
-          </div>
-          <footer class="card-footer">
-            <a class="card-footer-item is-danger" @click="deletePost">
-              {{ deleteButtonText }}
-            </a>
-          </footer>
-        </div>
-      </div>
-    </div>
+    <password-validator
+    v-if="showPasswordValidator"
+    class="sticky-footer w-max-sm"
+    :encryptedPassword="this.post.password"
+    @close="closePasswordValidator"
+    @verified="passwordVerified">
+      <p>{{ passwordValidatorLabel }}</p>
+    </password-validator>
   </div>
 </template>
 
@@ -99,9 +83,11 @@
 import database from '../database'
 import storage from '../storage'
 import date from '../util/date'
+import passwordValidator from './passwordValidator'
 
 export default {
   name: 'post',
+  components: { passwordValidator },
   data () {
     return {
       post: { username: '', text: '' },
@@ -112,9 +98,8 @@ export default {
       usernameError: null,
       textError: null,
       imageUrl: null,
-      showDeleteUi: false,
-      password: '',
-      wrongPassword: false
+      showPasswordValidator: false,
+      passwordValidatorLabel: ''
     }
   },
   created () {
@@ -123,6 +108,8 @@ export default {
   beforeDestroy () {
     database.removeCommentsListener()
   },
+  computed: {
+  },
   methods: {
     init (post) {
       this.post = post
@@ -130,8 +117,16 @@ export default {
       this.comments = []
       this.imageUrl = null
       this.newComment.text = ''
-      this.loadImages()
-      this.getComments()
+      if (this.post.isPrivate && !database.currentPost.isVerified) {
+        this.encryptedPassword = this.post.password
+        this.passwordValidatorLabel = 'This post is private, enter the password to see the content. '
+        this.showPasswordValidator = true
+      } else {
+        this.encryptedPassword = this.post.password
+        this.showPasswordValidator = false
+        this.loadImages()
+        this.getComments()
+      }
     },
     getComments () {
       database
@@ -152,7 +147,7 @@ export default {
       database.setUsername(this.newComment.username)
 
       database
-      .comment(this.post, this.newComment)
+      .comment(this.newComment)
       .then((value) => {
         this.newComment.text = ''
         this.commentButtonText = 'Send'
@@ -165,30 +160,19 @@ export default {
       return date.dateAgo(timestamp)
     },
     deletePost () {
+      if (!this.post.isVerified) {
+        this.passwordValidatorLabel = 'Verify the password to be able to delete this post.'
+        this.showPasswordValidator = true
+        return
+      }
       database
-      .deletePost(this.post, this.password)
+      .deletePost(this.post)
       .then((value) => {
-        this.closeDeleteUI()
         this.close()
       })
       .catch((error) => {
-        if (
-          error === 'wrong password' ||
-          error.message === `ccm: tag doesn't match`
-        ) {
-          this.deleteButtonText = 'Delete'
-          this.wrongPassword = true
-        } else {
-          this.wrongPassword = false
-          this.deleteButtonText = 'Retry'
-        }
+        if (error) this.deleteButtonText = 'Retry'
       })
-    },
-    closeDeleteUI () {
-      this.password = ''
-      this.wrongPassword = false
-      this.deleteButtonText = 'Delete'
-      this.showDeleteUi = false
     },
     loadImages () {
       if (this.post.imagesCount) {
@@ -199,6 +183,20 @@ export default {
         .catch((error) => {
           if (error) this.imageUrl = null
         })
+      }
+    },
+    closePasswordValidator () {
+      if (this.post.isPrivate) this.close()
+      else this.showPasswordValidator = false
+    },
+    passwordVerified (password) {
+      this.showPasswordValidator = false
+      if (this.post.isPrivate) {
+        database.currentPost.password = password
+        database.currentPost.isVerified = true
+        database.decryptPost()
+        this.loadImages()
+        this.getComments()
       }
     },
     close () {
