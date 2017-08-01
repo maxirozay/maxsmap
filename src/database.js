@@ -28,12 +28,12 @@ export default {
       if (post.imagesUrls.length > 0) {
         newPost.imagesCount = post.imagesUrls.length
       }
-      if (post.password.length > 0) {
-        newPost.password = sjcl.encrypt(post.password, post.password)
+      if (post.adminKey.length > 0) {
+        newPost.adminKey = sjcl.encrypt(post.adminKey, post.adminKey)
       }
-      if (post.isPrivate) {
-        newPost.text = sjcl.encrypt(post.password, post.text)
-        newPost.isPrivate = true
+      if (post.cypherKey.length > 0) {
+        newPost.cypherKey = sjcl.encrypt(post.cypherKey, post.cypherKey)
+        newPost.text = sjcl.encrypt(post.cypherKey, post.text)
       }
       newPostRef
       .set(newPost)
@@ -66,11 +66,8 @@ export default {
   },
   verifyPassword (encryptedPassword, password) {
     try {
-      if (
-        !(password || encryptedPassword) ||
-        password && encryptedPassword &&
-        sjcl.decrypt(password, encryptedPassword) === password
-      ) return true
+      if (!(password || encryptedPassword)) return true
+      if (sjcl.decrypt(password, encryptedPassword) === password) return true
       return false
     } catch (e) {
       return false
@@ -78,7 +75,7 @@ export default {
   },
   decryptPost () {
     this.currentPost.text = sjcl.decrypt(
-      this.currentPost.password,
+      this.currentPost.cypherKey,
       this.currentPost.text
     )
   },
@@ -114,11 +111,11 @@ export default {
     }
     if (this.currentPost.isPrivate) {
       newComment.username = sjcl.encrypt(
-        this.currentPost.password,
+        this.currentPost.cypherKey,
         comment.username
       )
       newComment.text = sjcl.encrypt(
-        this.currentPost.password,
+        this.currentPost.cypherKey,
         comment.text
       )
     }
@@ -154,11 +151,11 @@ export default {
       let comment = data.val()
       if (this.currentPost.isPrivate) {
         comment.username = sjcl.decrypt(
-          this.currentPost.password,
+          this.currentPost.cypherKey,
           comment.username
         )
         comment.text = sjcl.decrypt(
-          this.currentPost.password,
+          this.currentPost.cypherKey,
           comment.text
         )
       }

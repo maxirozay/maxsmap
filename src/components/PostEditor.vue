@@ -60,20 +60,17 @@
         class="input"
         type="password"
         maxlength="40"
-        v-model="post.password"
+        v-model="post.adminKey"
         placeholder="Password">
-        <p class="help is-danger" v-show="!post.password && post.isPrivate">
-          Please enter a password to make your post private.
-        </p>
       </div>
       <div class="field">
         <input
         class="input"
         type="password"
         maxlength="40"
-        v-model="passwordCheck"
+        v-model="adminKeyCheck"
         placeholder="Password verification">
-        <p class="help is-danger" v-show="!passwordVerified">
+        <p class="help is-danger" v-show="!adminKeyVerified">
           Your passwords doesn't match.
         </p>
       </div>
@@ -81,6 +78,33 @@
         <input type="checkbox" v-model="post.isPrivate">
         Private post
       </label>
+      <div v-if="post.isPrivate">
+        <div class="field">
+          <label class="label">
+            Enter a password that will allow users to see and comment your post.
+          </label>
+          <input
+          class="input"
+          type="password"
+          maxlength="40"
+          v-model="post.cypherKey"
+          placeholder="Password">
+          <p class="help is-danger" v-show="!post.cypherKey">
+            Please enter a password to make your post private.
+          </p>
+        </div>
+        <div class="field">
+          <input
+          class="input"
+          type="password"
+          maxlength="40"
+          v-model="cypherKeyCheck"
+          placeholder="Password verification">
+          <p class="help is-danger" v-show="!cypherKeyVerified">
+            Your passwords doesn't match.
+          </p>
+        </div>
+      </div>
       <p class="help">
         Your post will be encrypted with your passwords and only people with
         your password can see this post. Your username will not be encrypted
@@ -113,10 +137,12 @@ export default {
         username: '',
         text: '',
         imagesUrls: [],
-        password: '',
+        adminKey: '',
+        cypherKey: '',
         isPrivate: false
       },
-      passwordCheck: '',
+      adminKeyCheck: '',
+      cypherKeyCheck: '',
       sendPostButtonText: 'Post',
       usernameError: null,
       textError: null,
@@ -144,12 +170,10 @@ export default {
         this.textError = 'Please write at least 20 characters.'
         return
       } else this.textError = ''
-      if (
-        !this.passwordVerified ||
-        (!this.post.password && this.post.isPrivate)
-      ) {
-        return
-      }
+      if (!this.adminKeyVerified ||
+        !this.cypherKeyVerified ||
+        (this.post.isPrivate && !this.post.cypherKey)
+      ) return
       database.setUsername(this.post.username)
 
       database
@@ -185,8 +209,11 @@ export default {
     }
   },
   computed: {
-    passwordVerified () {
-      return this.post.password === this.passwordCheck
+    adminKeyVerified () {
+      return this.post.adminKey === this.adminKeyCheck
+    },
+    cypherKeyVerified () {
+      return this.post.cypherKey === this.cypherKeyCheck
     }
   }
 }

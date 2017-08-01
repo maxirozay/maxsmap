@@ -10,14 +10,14 @@
             {{ dateAgo(post.createdAt) }}
           </small>
           <br>
-          <span v-if="!post.isPrivate || post.isVerified">
+          <span v-if="!post.cypherKey || post.isVerified">
             {{ post.text }}
           </span>
           <figure v-show="imageUrl" class="image">
             <img :src="imageUrl" alt="post image">
           </figure>
         </p>
-        <div v-if="!post.isPrivate || post.isVerified">
+        <div v-if="!post.cypherKey || post.isVerified">
           <label class="label">Comment</label>
           <div class="field">
             <input
@@ -71,7 +71,7 @@
     <password-validator
     v-if="showPasswordValidator"
     class="sticky-footer w-max-sm"
-    :encryptedPassword="this.post.password"
+    :encryptedPassword="encryptedPassword"
     @close="closePasswordValidator"
     @verified="passwordVerified">
       <p>{{ passwordValidatorLabel }}</p>
@@ -99,7 +99,8 @@ export default {
       textError: null,
       imageUrl: null,
       showPasswordValidator: false,
-      passwordValidatorLabel: ''
+      passwordValidatorLabel: '',
+      encryptedPassword: null
     }
   },
   created () {
@@ -117,12 +118,11 @@ export default {
       this.comments = []
       this.imageUrl = null
       this.newComment.text = ''
-      if (this.post.isPrivate && !database.currentPost.isVerified) {
-        this.encryptedPassword = this.post.password
+      if (this.post.cypherKey && !database.currentPost.isVerified) {
+        this.encryptedPassword = this.post.cypherKey
         this.passwordValidatorLabel = 'This post is private, enter the password to see the content. '
         this.showPasswordValidator = true
       } else {
-        this.encryptedPassword = this.post.password
         this.showPasswordValidator = false
         this.loadImages()
         this.getComments()
@@ -160,7 +160,8 @@ export default {
       return date.dateAgo(timestamp)
     },
     deletePost () {
-      if (!this.post.isVerified) {
+      if (!this.post.isAdmin) {
+        this.encryptedPassword = database.currentPost.adminKey
         this.passwordValidatorLabel = 'Verify the password to be able to delete this post.'
         this.showPasswordValidator = true
         return
@@ -186,18 +187,18 @@ export default {
       }
     },
     closePasswordValidator () {
-      if (this.post.isPrivate) this.close()
+      if (this.post.cypherKey) this.close()
       else this.showPasswordValidator = false
     },
     passwordVerified (password) {
       this.showPasswordValidator = false
-      if (this.post.isPrivate) {
-        database.currentPost.password = password
+      if (this.post.cypherKey && !this.post.isVerified) {
+        database.currentPost.cypherKey = password
         database.currentPost.isVerified = true
         database.decryptPost()
         this.loadImages()
         this.getComments()
-      }
+      } else this.post.isAdmin = true
     },
     close () {
       /* global history */
