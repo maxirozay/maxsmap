@@ -8,13 +8,16 @@ export default {
   commentRef: null,
   regionsRef: null,
   regionRefs: [],
-  createPost (post, position) {
+  getRegionId (position, precision) {
     let regionId = geohash.encode(
       position.lat,
       position.lng,
-      GEOHASH_PRECISION
+      precision
     )
-    regionId = regionId.split('').join('/')
+    return regionId.split('').join('/')
+  },
+  createPost (post, position) {
+    const regionId = this.getRegionId(position, GEOHASH_PRECISION)
     const timestamp = Date.now()
     const newPostRef = database.ref(`regions-posts/${regionId}/${post.id}`)
     return new Promise((resolve, reject) => {
@@ -83,7 +86,10 @@ export default {
   },
   deletePost (post) {
     return new Promise((resolve, reject) => {
-      const regionId = geohash.encode(post.lat, post.lng, GEOHASH_PRECISION)
+      const regionId = this.getRegionId(
+        {lat: post.lat, lng: post.lng},
+        GEOHASH_PRECISION
+      )
       database
       .ref(`regions-posts/${regionId}/${post.id}`)
       .remove()

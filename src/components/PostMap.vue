@@ -45,7 +45,6 @@ import PostEditor from './PostEditor'
 import Post from './Post'
 import PostPreview from './PostPreview'
 import database from '../database'
-import geohash from '../util/geohash'
 import postIcon from '../assets/post-icon.png'
 import newPostIcon from '../assets/new-post-icon.png'
 import Loading from './Loading'
@@ -238,11 +237,10 @@ export default {
       else if (this.map.zoom < 12) precision = 2
       else if (this.map.zoom < 14) precision = 3
       else if (this.map.zoom < 16) precision = 4
-      let regionId = geohash.encode(
-        this.map.getCenter().lat(),
-        this.map.getCenter().lng(),
-        precision)
-      regionId = regionId.split('').join('/')
+      const regionId = database.getRegionId(
+        {lat: this.map.getCenter().lat(), lng: this.map.getCenter().lng()},
+        precision
+      )
       database.getPosts(regionId,
         (key, post) => {
           const icon = {
