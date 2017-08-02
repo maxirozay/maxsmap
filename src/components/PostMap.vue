@@ -224,50 +224,81 @@ export default {
       }
     },
     getPosts () {
+      const regionId = this.findRegions()
       database.removeRegionsListeners()
-      let precision = 5
-      if (this.map.zoom < 6) precision = 1
-      else if (this.map.zoom < 12) precision = 2
-      else if (this.map.zoom < 14) precision = 3
-      else if (this.map.zoom < 16) precision = 4
-      const regionId = database.getRegionId(
-        {lat: this.map.getCenter().lat(), lng: this.map.getCenter().lng()},
-        precision
-      )
       this.postMarkers.forEach((marker, key, map) => {
         marker.setMap(null)
       })
       this.postMarkers.clear()
-      database.getPosts(regionId,
-        (key, post) => {
-          const icon = {
-            url: postIcon,
-            scaledSize: new google.maps.Size(32, 32),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(16, 16)
-          }
-          const latlng = new google.maps.LatLng(post.lat, post.lng)
-          const marker = new google.maps.Marker({
-            position: latlng,
-            map: this.map,
-            icon: icon
+      regionId.forEach((region) => {
+        database.getPosts(region,
+          (key, post) => {
+            const icon = {
+              url: postIcon,
+              scaledSize: new google.maps.Size(32, 32),
+              origin: new google.maps.Point(0, 0),
+              anchor: new google.maps.Point(16, 16)
+            }
+            const latlng = new google.maps.LatLng(post.lat, post.lng)
+            const marker = new google.maps.Marker({
+              position: latlng,
+              map: this.map,
+              icon: icon
+            })
+            post.id = key
+            marker.addListener('click', () => {
+              this.post = post
+              if (window.innerWidth < 960) {
+                this.showPostPreview = true
+                this.showPost = false
+              } else this.openPost()
+            })
+            this.postMarkers.set(key, marker)
+          },
+          (key) => {
+            if (this.postMarkers.has(key)) {
+              this.postMarkers.get(key).setMap(null)
+              this.postMarkers.delete(key)
+            }
           })
-          post.id = key
-          marker.addListener('click', () => {
-            this.post = post
-            if (window.innerWidth < 960) {
-              this.showPostPreview = true
-              this.showPost = false
-            } else this.openPost()
-          })
-          this.postMarkers.set(key, marker)
-        },
-        (key) => {
-          if (this.postMarkers.has(key)) {
-            this.postMarkers.get(key).setMap(null)
-            this.postMarkers.delete(key)
-          }
-        })
+      })
+    },
+    findRegions () {
+      let precision = 5
+      if (this.map.zoom < 7) precision = 1
+      else if (this.map.zoom < 9) precision = 2
+      else if (this.map.zoom < 12) precision = 3
+      else if (this.map.zoom < 14) precision = 4
+      let corners = []
+      corners.push({
+        lat: (this.map.getBounds().getNorthEast().lat() +
+        this.map.getCenter().lat()) / 2,
+        lng: (this.map.getBounds().getSouthWest().lng() +
+        this.map.getCenter().lng()) / 2
+      })
+      corners.push({
+        lat: (this.map.getBounds().getNorthEast().lat() +
+        this.map.getCenter().lat()) / 2,
+        lng: (this.map.getBounds().getNorthEast().lng() +
+        this.map.getCenter().lng()) / 2
+      })
+      corners.push({
+        lat: (this.map.getBounds().getSouthWest().lat() +
+        this.map.getCenter().lat()) / 2,
+        lng: (this.map.getBounds().getSouthWest().lng() +
+        this.map.getCenter().lng()) / 2
+      })
+      corners.push({
+        lat: (this.map.getBounds().getSouthWest().lat() +
+        this.map.getCenter().lat()) / 2,
+        lng: (this.map.getBounds().getNorthEast().lng() +
+        this.map.getCenter().lng()) / 2
+      })
+      let regionId = new Set()
+      corners.map((corner) => {
+        regionId.add(database.getRegionId(corner, precision))
+      })
+      return regionId
     }
   }
 }
