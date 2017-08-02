@@ -99,6 +99,9 @@ export default {
       .catch((error) => {
         reject(error)
       })
+      database
+      .ref(`regions-comments/${regionId.replace(/\//g, '')}/${post.id}`)
+      .remove()
     })
   },
   comment (post, comment) {
