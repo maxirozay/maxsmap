@@ -5,7 +5,6 @@ import sjcl from '../node_modules/sjcl/sjcl'
 const GEOHASH_PRECISION = 5
 
 export default {
-  currentPost: null,
   commentRef: null,
   regionsRef: null,
   regionRefs: [],
@@ -72,11 +71,8 @@ export default {
       return false
     }
   },
-  decryptPost () {
-    this.currentPost.text = sjcl.decrypt(
-      this.currentPost.cypherKey,
-      this.currentPost.text
-    )
+  decrypt (password, data) {
+    return sjcl.decrypt(password, data)
   },
   removeRegionsListeners () {
     if (this.regionsRef) this.regionsRef.off()
@@ -99,7 +95,7 @@ export default {
       })
     })
   },
-  comment (comment) {
+  comment (post, comment) {
     if (!this.commentRegionId) {
       return new Promise((resolve, reject) => { reject('no region') })
     }
@@ -108,24 +104,24 @@ export default {
       username: comment.username,
       text: comment.text
     }
-    if (this.currentPost.isPrivate) {
+    if (post.isPrivate) {
       newComment.username = sjcl.encrypt(
-        this.currentPost.cypherKey,
+        post.cypherKey,
         comment.username
       )
       newComment.text = sjcl.encrypt(
-        this.currentPost.cypherKey,
+        post.cypherKey,
         comment.text
       )
     }
     const newCommentRef = database
-    .ref(`regions-comments/${this.commentRegionId}/${this.currentPost.id}`).push()
+    .ref(`regions-comments/${this.commentRegionId}/${post.id}`).push()
     return new Promise((resolve, reject) => {
       newCommentRef
       .set(newComment)
       .then((value) => {
         database
-        .ref(`regions-posts/${this.commentRegionId}/${this.currentPost.id}`)
+        .ref(`regions-posts/${this.commentRegionId}/${post.id}`)
         .transaction((post) => {
           if (post.commentsCount === undefined) post.commentsCount = 1
           else post.commentsCount++
@@ -148,13 +144,13 @@ export default {
     .ref(`regions-comments/${this.commentRegionId}/${post.id}`)
     this.commentsRef.on('child_added', (data) => {
       let comment = data.val()
-      if (this.currentPost.isPrivate) {
+      if (post.isPrivate) {
         comment.username = sjcl.decrypt(
-          this.currentPost.cypherKey,
+          post.cypherKey,
           comment.username
         )
         comment.text = sjcl.decrypt(
-          this.currentPost.cypherKey,
+          post.cypherKey,
           comment.text
         )
       }

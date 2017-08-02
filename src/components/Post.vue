@@ -118,7 +118,7 @@ export default {
       this.comments = []
       this.imageUrl = null
       this.newComment.text = ''
-      if (this.post.cypherKey && !database.currentPost.isVerified) {
+      if (this.post.cypherKey && !this.post.isVerified) {
         this.encryptedPassword = this.post.cypherKey
         this.passwordValidatorLabel = 'This post is private, enter the password to see the content. '
         this.showPasswordValidator = true
@@ -147,7 +147,7 @@ export default {
       database.setUsername(this.newComment.username)
 
       database
-      .comment(this.newComment)
+      .comment(this.post, this.newComment)
       .then((value) => {
         this.newComment.text = ''
         this.commentButtonText = 'Send'
@@ -161,7 +161,7 @@ export default {
     },
     deletePost () {
       if (!this.post.isAdmin) {
-        this.encryptedPassword = database.currentPost.adminKey
+        this.encryptedPassword = this.post.adminKey
         this.passwordValidatorLabel = 'Verify the password to be able to delete this post.'
         this.showPasswordValidator = true
         return
@@ -193,9 +193,12 @@ export default {
     passwordVerified (password) {
       this.showPasswordValidator = false
       if (this.post.cypherKey && !this.post.isVerified) {
-        database.currentPost.cypherKey = password
-        database.currentPost.isVerified = true
-        database.decryptPost()
+        this.post.cypherKey = password
+        this.post.isVerified = true
+        this.post.text = database.decrypt(
+          this.post.cypherKey,
+          this.post.text
+        )
         this.loadImages()
         this.getComments()
       } else this.post.isAdmin = true

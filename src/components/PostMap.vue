@@ -13,7 +13,7 @@
       <post-preview
       class="sticky-footer"
       v-if="showPostPreview"
-      @openPost="showPostPreview = false; openPost()"
+      @openPost="openPost()"
       @close="showPostPreview = false"
       :post="post">
       </post-preview>
@@ -93,7 +93,6 @@ export default {
         switch (history.state.type) {
           case 'post':
             this.post = history.state.post
-            database.currentPost = this.post
             this.openPost()
             break
           case 'post-editor':
@@ -214,6 +213,7 @@ export default {
         this.showPost = true
         this.$refs.post.init(this.post)
       }
+      this.showPostPreview = false
       this.showPostEditor = false
     },
     locate () {
@@ -261,7 +261,6 @@ export default {
           post.id = key
           marker.addListener('click', () => {
             this.post = post
-            database.currentPost = this.post
             if (window.innerWidth < 960) {
               this.showPostPreview = true
               this.showPost = false
