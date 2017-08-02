@@ -17,7 +17,7 @@
             <img :src="imageUrl" alt="post image">
           </figure>
         </p>
-        <div v-if="!post.cypherKey || post.isVerified">
+        <div v-if="!post.cypherKey || post.isVerified" class="pb-1">
           <label class="label inherit">Comment</label>
           <div class="field">
             <input
