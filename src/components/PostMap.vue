@@ -234,6 +234,10 @@ export default {
         {lat: this.map.getCenter().lat(), lng: this.map.getCenter().lng()},
         precision
       )
+      this.postMarkers.forEach((marker, key, map) => {
+        marker.setMap(null)
+      })
+      this.postMarkers.clear()
       database.getPosts(regionId,
         (key, post) => {
           const icon = {
@@ -264,10 +268,6 @@ export default {
             this.postMarkers.delete(key)
           }
         })
-      this.postMarkers.forEach((marker, key, map) => {
-        marker.setMap(null)
-      })
-      this.postMarkers.clear()
     }
   }
 }
