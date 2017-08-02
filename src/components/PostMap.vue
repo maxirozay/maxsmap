@@ -127,9 +127,7 @@ export default {
         rotateControl: true,
         fullscreenControl: false
       })
-      this.map.addListener('drag', (e) => {})
-      this.map.addListener('dragend', (e) => {})
-      this.map.addListener('bounds_changed', (e) => {
+      this.map.addListener('idle', (e) => {
         database.setLocation({
           lat: this.map.getCenter().lat(),
           lng: this.map.getCenter().lng()
