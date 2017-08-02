@@ -1,9 +1,9 @@
 <template>
-  <div class="card h-100 w-max-sm scrollable pb-2">
+  <div :class="style">
     <div class="card-content">
       <div class="content">
         <p class="break-word">
-          <strong>
+          <strong class="inherit">
             {{ post.username }}
           </strong>
           <small>
@@ -18,7 +18,7 @@
           </figure>
         </p>
         <div v-if="!post.cypherKey || post.isVerified">
-          <label class="label">Comment</label>
+          <label class="label inherit">Comment</label>
           <div class="field">
             <input
             class="input"
@@ -45,7 +45,7 @@
         </div>
         <div v-for="comment in comments">
           <p class="break-word">
-            <strong>
+            <strong class="inherit">
               {{ comment.username }}
             </strong>
             <small>
@@ -57,7 +57,7 @@
         </div>
       </div>
     </div>
-    <footer class="card-footer sticky-footer bg-white w-max-sm">
+    <footer class="card-footer sticky-footer w-max-sm inherit">
       <a class="card-footer-item" @click="sendComment">
         {{commentButtonText}}
       </a>
@@ -90,6 +90,7 @@ export default {
   components: { passwordValidator },
   data () {
     return {
+      style: 'card h-100 w-max-sm scrollable pb-2 light',
       post: { username: '', text: '' },
       newComment: { username: '', text: '' },
       commentButtonText: 'Send',
@@ -118,6 +119,9 @@ export default {
       this.comments = []
       this.imageUrl = null
       this.newComment.text = ''
+      if (this.post.cypherKey) {
+        this.style = 'card h-100 w-max-sm scrollable pb-2 dark'
+      } else this.style = 'card h-100 w-max-sm scrollable pb-2 light'
       if (this.post.cypherKey && !this.post.isVerified) {
         this.encryptedPassword = this.post.cypherKey
         this.passwordValidatorLabel = 'This post is private, enter the password to see the content. '

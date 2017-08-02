@@ -19,7 +19,7 @@
         </p>
       </div>
     </div>
-    <footer class="card-footer sticky-footer bg-white">
+    <footer class="card-footer sticky-footer light">
       <a class="card-footer-item" @click="$emit('openPost')">
         Open
       </a>

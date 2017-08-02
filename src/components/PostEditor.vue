@@ -111,7 +111,7 @@
         to help people to find your post easily.
       </p>
     </div>
-    <footer class="card-footer sticky-footer bg-white w-max-sm">
+    <footer class="card-footer sticky-footer w-max-sm light">
       <a class="card-footer-item" @click="sendPost">
       {{sendPostButtonText}}
       </a>
