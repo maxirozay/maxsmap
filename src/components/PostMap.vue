@@ -141,7 +141,6 @@ export default {
       if (this.newPostMarker === null) {
         const icon = {
           url: newPostIcon,
-          size: new google.maps.Size(128, 64),
           scaledSize: new google.maps.Size(64, 32),
           origin: new google.maps.Point(0, 0),
           anchor: new google.maps.Point(32, 32)
@@ -239,7 +238,6 @@ export default {
         (key, post) => {
           const icon = {
             url: postIcon,
-            size: new google.maps.Size(96, 96),
             scaledSize: new google.maps.Size(32, 32),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(16, 16)
