@@ -227,10 +227,6 @@ export default {
       }
     },
     getPosts () {
-      this.postMarkers.forEach((marker, key, map) => {
-        marker.setMap(null)
-      })
-      this.postMarkers.clear()
       database.removeRegionsListeners()
       let precision = 5
       if (this.map.zoom < 6) precision = 1
@@ -272,6 +268,11 @@ export default {
             this.postMarkers.delete(key)
           }
         })
+      this.postMarkers.forEach((marker, key, map) => {
+        marker.setMap(null)
+      })
+      this.postMarkers.clear()
+      setTimeout(database.removeRegionsListeners(), 60000)
     }
   }
 }

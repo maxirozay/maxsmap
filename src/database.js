@@ -5,8 +5,7 @@ import sjcl from '../node_modules/sjcl/sjcl'
 const GEOHASH_PRECISION = 5
 
 export default {
-  commentRef: null,
-  regionsRef: null,
+  regionsRefs: [],
   regionRefs: [],
   getRegionId (position, precision) {
     let regionId = geohash.encode(
@@ -19,7 +18,7 @@ export default {
   createPost (post, position) {
     const regionId = this.getRegionId(position, GEOHASH_PRECISION)
     const timestamp = Date.now()
-    const newPostRef = database.ref(`regions-posts/${regionId}/${post.id}`)
+    const newPostRef = database.ref(`regions/${regionId}/posts/${post.id}`)
     return new Promise((resolve, reject) => {
       let newPost = {
         createdAt: timestamp,
@@ -50,12 +49,13 @@ export default {
   },
   getPosts (regionId, newPostCallback, postRemovedCallback) {
     if (regionId.length < GEOHASH_PRECISION * 2 - 1) {
-      this.regionsRef = database.ref('regions-posts/' + regionId)
-      this.regionsRef.on('child_added', (data) => {
+      const regionsRef = database.ref('regions/' + regionId)
+      regionsRef.on('child_added', (data) => {
         this.getPosts(`${regionId}/${data.key}`, newPostCallback, postRemovedCallback)
       })
+      this.regionsRefs.push(regionsRef)
     } else {
-      const regionRef = database.ref('regions-posts/' + regionId)
+      const regionRef = database.ref(`regions/${regionId}/posts`)
       regionRef.on('child_added', (data) => {
         newPostCallback(data.key, data.val())
       })
@@ -78,7 +78,10 @@ export default {
     return sjcl.decrypt(password, data)
   },
   removeRegionsListeners () {
-    if (this.regionsRef) this.regionsRef.off()
+    this.regionsRefs.map((ref) => {
+      ref.off()
+    })
+    this.regionsRefs = []
     this.regionRefs.map((ref) => {
       ref.off()
     })
@@ -91,7 +94,7 @@ export default {
         GEOHASH_PRECISION
       )
       database
-      .ref(`regions-posts/${regionId}/${post.id}`)
+      .ref(`regions/${regionId}/posts/${post.id}`)
       .remove()
       .then((value) => {
         resolve(value)
@@ -100,7 +103,7 @@ export default {
         reject(error)
       })
       database
-      .ref(`regions-comments/${regionId.replace(/\//g, '')}/${post.id}`)
+      .ref(`regions/${regionId}/comments/${post.id}`)
       .remove()
     })
   },
@@ -124,13 +127,13 @@ export default {
       )
     }
     const newCommentRef = database
-    .ref(`regions-comments/${this.commentRegionId}/${post.id}`).push()
+    .ref(`regions/${this.commentRegionId}/comments/${post.id}`).push()
     return new Promise((resolve, reject) => {
       newCommentRef
       .set(newComment)
       .then((value) => {
         database
-        .ref(`regions-posts/${this.commentRegionId}/${post.id}`)
+        .ref(`regions/${this.commentRegionId}/posts/${post.id}`)
         .transaction((post) => {
           if (post.commentsCount === undefined) post.commentsCount = 1
           else post.commentsCount++
@@ -144,13 +147,12 @@ export default {
     })
   },
   getComments (post, newCommentCallback) {
-    this.commentRegionId = geohash.encode(
-      post.lat,
-      post.lng,
+    this.commentRegionId = this.getRegionId(
+      {lat: post.lat, lng: post.lng},
       GEOHASH_PRECISION
     )
     this.commentsRef = database
-    .ref(`regions-comments/${this.commentRegionId}/${post.id}`)
+    .ref(`regions/${this.commentRegionId}/comments/${post.id}`)
     this.commentsRef.on('child_added', (data) => {
       let comment = data.val()
       if (post.isPrivate) {
