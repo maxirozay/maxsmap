@@ -270,7 +270,6 @@ export default {
         marker.setMap(null)
       })
       this.postMarkers.clear()
-      setTimeout(database.removeRegionsListeners(), 60000)
     }
   }
 }
