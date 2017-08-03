@@ -180,6 +180,7 @@ export default {
       .createPost(this.post, this.position)
       .then((value) => {
         this.imageToDelete = 0
+        this.$emit('created', value)
         this.close()
       })
       .catch((error) => {

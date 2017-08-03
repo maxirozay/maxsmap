@@ -40,7 +40,8 @@ export default {
       newPostRef
       .set(newPost)
       .then((value) => {
-        resolve(value)
+        newPost.id = post.id
+        resolve(newPost)
       })
       .catch((error) => {
         reject(error)

@@ -22,7 +22,8 @@
       <post-editor
       class="post"
       v-if="showPostEditor"
-      :position="newPostPosition">
+      :position="newPostPosition"
+      @created="addMarker">
       </post-editor>
     </transition>
     <transition name="slide-right">
@@ -290,26 +291,28 @@ export default {
       if (post.commentsCount) {
         size += Math.floor(Math.log10(post.commentsCount)) * 8
       }
-      const icon = {
-        url: postIcon,
-        scaledSize: new google.maps.Size(size, size),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(size / 2, size / 2)
+      if (!this.postMarkers.has(post.id)) {
+        const icon = {
+          url: postIcon,
+          scaledSize: new google.maps.Size(size, size),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(size / 2, size / 2)
+        }
+        const latlng = new google.maps.LatLng(post.lat, post.lng)
+        const marker = new google.maps.Marker({
+          position: latlng,
+          map: this.map,
+          icon: icon
+        })
+        marker.addListener('click', () => {
+          this.post = post
+          if (window.innerWidth < 960) {
+            this.showPostPreview = true
+            this.showPost = false
+          } else this.openPost()
+        })
+        this.postMarkers.set(post.id, marker)
       }
-      const latlng = new google.maps.LatLng(post.lat, post.lng)
-      const marker = new google.maps.Marker({
-        position: latlng,
-        map: this.map,
-        icon: icon
-      })
-      marker.addListener('click', () => {
-        this.post = post
-        if (window.innerWidth < 960) {
-          this.showPostPreview = true
-          this.showPost = false
-        } else this.openPost()
-      })
-      this.postMarkers.set(post.id, marker)
     },
     removeMarker (key) {
       if (this.postMarkers.has(key)) {
