@@ -162,7 +162,8 @@ export default {
         this.newPostMarker.addListener('click', () => {
           this.openPostEditor()
         })
-        this.newPostMarker.addListener('drag', () => {
+        this.newPostMarker.addListener('dragend', () => {
+          console.log(9)
           this.newPostPosition = {
             lat: this.newPostMarker.position.lat(),
             lng: this.newPostMarker.position.lng()
