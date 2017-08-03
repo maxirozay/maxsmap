@@ -163,7 +163,6 @@ export default {
           this.openPostEditor()
         })
         this.newPostMarker.addListener('dragend', () => {
-          console.log(9)
           this.newPostPosition = {
             lat: this.newPostMarker.position.lat(),
             lng: this.newPostMarker.position.lng()
@@ -234,11 +233,15 @@ export default {
       regionId.forEach((region) => {
         database.getPosts(region,
           (key, post) => {
+            let size = 32
+            if (post.commentsCount) {
+              size += Math.floor(Math.log10(post.commentsCount)) * 8
+            }
             const icon = {
               url: postIcon,
-              scaledSize: new google.maps.Size(32, 32),
+              scaledSize: new google.maps.Size(size, size),
               origin: new google.maps.Point(0, 0),
-              anchor: new google.maps.Point(16, 16)
+              anchor: new google.maps.Point(size / 2, size / 2)
             }
             const latlng = new google.maps.LatLng(post.lat, post.lng)
             const marker = new google.maps.Marker({
