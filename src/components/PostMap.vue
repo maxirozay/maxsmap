@@ -175,7 +175,7 @@ export default {
         lat: this.newPostMarker.position.lat(),
         lng: this.newPostMarker.position.lng()
       }
-      this.openPostEditor()
+      if (window.innerWidth > 960) this.openPostEditor()
     },
     openPostEditor () {
       if (this.showPostEditor) return
