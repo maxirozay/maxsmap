@@ -68,14 +68,16 @@
         Delete
       </a>
     </footer>
-    <password-validator
-    v-if="showPasswordValidator"
-    class="sticky-footer w-max-sm"
-    :encryptedPassword="encryptedPassword"
-    @close="closePasswordValidator"
-    @verified="passwordVerified">
-      <p>{{ passwordValidatorLabel }}</p>
-    </password-validator>
+    <transition name="slide-up">
+      <password-validator
+      v-if="showPasswordValidator"
+      class="sticky-footer w-max-sm"
+      :encryptedPassword="encryptedPassword"
+      @close="closePasswordValidator"
+      @verified="passwordVerified">
+        <p>{{ passwordValidatorLabel }}</p>
+      </password-validator>
+    </transition>
   </div>
 </template>
 
