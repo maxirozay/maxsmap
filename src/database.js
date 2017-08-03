@@ -2,7 +2,7 @@ import { database } from './main'
 import geohash from './util/geohash'
 import sjcl from '../node_modules/sjcl/sjcl'
 
-const GEOHASH_PRECISION = 5
+const GEOHASH_PRECISION = 6
 
 export default {
   regionsRefs: [],
@@ -47,15 +47,29 @@ export default {
       })
     })
   },
-  getPosts (regionId, newPostCallback, postRemovedCallback) {
+  getPosts (
+    regionId,
+    regionDivider,
+    postsLimit,
+    newPostCallback,
+    postRemovedCallback
+  ) {
     if (regionId.length < GEOHASH_PRECISION * 2 - 1) {
       const regionsRef = database.ref('regions/' + regionId)
+      .limitToLast(regionDivider)
       regionsRef.on('child_added', (data) => {
-        this.getPosts(`${regionId}/${data.key}`, newPostCallback, postRemovedCallback)
+        this.getPosts(
+          `${regionId}/${data.key}`,
+          Math.ceil(regionDivider / 2),
+          postsLimit,
+          newPostCallback,
+          postRemovedCallback
+        )
       })
       this.regionsRefs.push(regionsRef)
     } else {
       const regionRef = database.ref(`regions/${regionId}/posts`)
+      .limitToLast(postsLimit)
       regionRef.on('child_added', (data) => {
         newPostCallback(data.key, data.val())
       })
@@ -153,6 +167,7 @@ export default {
     )
     this.commentsRef = database
     .ref(`regions/${this.commentRegionId}/comments/${post.id}`)
+    .limitToLast(50)
     this.commentsRef.on('child_added', (data) => {
       let comment = data.val()
       if (post.isPrivate) {

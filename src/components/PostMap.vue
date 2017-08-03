@@ -225,13 +225,19 @@ export default {
     },
     getPosts () {
       const regionId = this.findRegions()
+      let postsLimit = 40
+      if (this.map.zoom < 13) postsLimit = 1
+      else if (this.map.zoom < 15) postsLimit = 4
       database.removeRegionsListeners()
       this.postMarkers.forEach((marker, key, map) => {
         marker.setMap(null)
       })
       this.postMarkers.clear()
       regionId.forEach((region) => {
-        database.getPosts(region,
+        database.getPosts(
+          region,
+          8,
+          postsLimit,
           (key, post) => {
             let size = 32
             if (post.commentsCount) {
@@ -268,11 +274,12 @@ export default {
       })
     },
     findRegions () {
-      let precision = 5
-      if (this.map.zoom < 7) precision = 1
-      else if (this.map.zoom < 9) precision = 2
-      else if (this.map.zoom < 12) precision = 3
-      else if (this.map.zoom < 14) precision = 4
+      let precision = 1
+      if (this.map.zoom > 16) precision = 6
+      else if (this.map.zoom > 14) precision = 5
+      else if (this.map.zoom > 11) precision = 4
+      else if (this.map.zoom > 9) precision = 3
+      else if (this.map.zoom > 7) precision = 2
       let corners = []
       corners.push({
         lat: (this.map.getBounds().getNorthEast().lat() +
