@@ -154,11 +154,11 @@ export default {
 
       database
       .comment(this.post, this.newComment)
-      .then((value) => {
+      .then(value => {
         this.newComment.text = ''
         this.commentButtonText = 'Send'
       })
-      .catch((error) => {
+      .catch(error => {
         if (error) this.commentButtonText = 'Retry'
       })
     },
@@ -174,20 +174,20 @@ export default {
       }
       database
       .deletePost(this.post)
-      .then((value) => {
+      .then(value => {
         this.close()
       })
-      .catch((error) => {
+      .catch(error => {
         if (error) this.deleteButtonText = 'Retry'
       })
     },
     loadImages () {
       if (this.post.imagesCount) {
         storage.getUrl(`posts/${this.post.id}/0.jpg`)
-        .then((url) => {
+        .then(url => {
           this.imageUrl = url
         })
-        .catch((error) => {
+        .catch(error => {
           if (error) this.imageUrl = null
         })
       }

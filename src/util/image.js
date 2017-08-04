@@ -10,7 +10,7 @@ export default {
       canvas.width = width
       canvas.height = width / img.width * img.height
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-      canvas.toBlob((blob) => {
+      canvas.toBlob(blob => {
         callback(blob)
       }, 'image/jpeg', 0.7)
     }

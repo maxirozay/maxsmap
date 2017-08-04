@@ -39,11 +39,11 @@ export default {
       }
       newPostRef
       .set(newPost)
-      .then((value) => {
+      .then(value => {
         newPost.id = post.id
         resolve(newPost)
       })
-      .catch((error) => {
+      .catch(error => {
         reject(error)
       })
     })
@@ -93,11 +93,11 @@ export default {
     return sjcl.decrypt(password, data)
   },
   removeRegionsListeners () {
-    this.regionsRefs.map((ref) => {
+    this.regionsRefs.map(ref => {
       ref.off()
     })
     this.regionsRefs = []
-    this.regionRefs.map((ref) => {
+    this.regionRefs.map(ref => {
       ref.off()
     })
     this.regionRefs = []
@@ -111,10 +111,10 @@ export default {
       database
       .ref(`regions/${regionId}/posts/${post.id}`)
       .remove()
-      .then((value) => {
+      .then(value => {
         resolve(value)
       })
-      .catch((error) => {
+      .catch(error => {
         reject(error)
       })
       database
@@ -146,7 +146,7 @@ export default {
     return new Promise((resolve, reject) => {
       newCommentRef
       .set(newComment)
-      .then((value) => {
+      .then(value => {
         database
         .ref(`regions/${this.commentRegionId}/posts/${post.id}`)
         .transaction((post) => {
@@ -156,7 +156,7 @@ export default {
         })
         resolve(value)
       })
-      .catch((error) => {
+      .catch(error => {
         reject(error)
       })
     })

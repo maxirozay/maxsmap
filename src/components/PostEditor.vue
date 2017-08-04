@@ -178,12 +178,12 @@ export default {
 
       database
       .createPost(this.post, this.position)
-      .then((value) => {
+      .then(value => {
         this.imageToDelete = 0
         this.$emit('created', value)
         this.close()
       })
-      .catch((error) => {
+      .catch(error => {
         if (error) this.sendPostButtonText = 'Retry'
       })
     },
@@ -191,13 +191,13 @@ export default {
       image.resizeImage(event.target.files[0], 480, (blob) => {
         this.uploadImageLabelClass = 'is-fullwidth button is-loading'
         storage.uploadImage(blob, `posts/${this.post.id}/0.jpg`)
-        .then((url) => {
+        .then(url => {
           this.uploadImageLabelClass = 'is-fullwidth button'
           this.post.imagesUrls = [ url ]
           this.uploadImageError = null
           this.imageToDelete = 1
         })
-        .catch((error) => {
+        .catch(error => {
           this.uploadImageLabelClass = 'is-fullwidth button'
           if (error) this.uploadImageError = `Your image couldn't be uploaded.`
         })

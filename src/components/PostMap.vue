@@ -215,7 +215,7 @@ export default {
     },
     locate () {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
+        navigator.geolocation.getCurrentPosition(position => {
           const pos = new google.maps.LatLng(
             position.coords.latitude,
             position.coords.longitude
@@ -230,11 +230,11 @@ export default {
       if (this.map.zoom < 13) postsLimit = 1
       else if (this.map.zoom < 15) postsLimit = 4
       database.removeRegionsListeners()
-      this.postMarkers.map((marker) => {
+      this.postMarkers.map(marker => {
         marker.setMap(null)
       })
       this.postMarkers = []
-      regionId.map((region) => {
+      regionId.map(region => {
         database.getPosts(
           region,
           8,
@@ -281,7 +281,7 @@ export default {
         this.map.getCenter().lng()) / 2
       })
       let regionId = []
-      corners.map((corner) => {
+      corners.map(corner => {
         const region = database.getRegionId(corner, precision)
         if (regionId.indexOf(region) === -1) regionId.push(region)
       })
