@@ -35,7 +35,7 @@
     </transition>
     <div
     v-if="!map"
-    class="h-100 w-100 center bg-white">
+    class="h-100 w-100 center light">
       <loading class="center"></loading>
     </div>
   </section>
