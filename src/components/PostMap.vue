@@ -64,7 +64,7 @@ export default {
       map: null,
       newPostMarker: null,
       newPostPosition: null,
-      postMarkers: new Map(),
+      postMarkers: [],
       showPost: false,
       showPostPreview: false,
       post: { id: '', title: '', details: '' }
@@ -230,11 +230,11 @@ export default {
       if (this.map.zoom < 13) postsLimit = 1
       else if (this.map.zoom < 15) postsLimit = 4
       database.removeRegionsListeners()
-      this.postMarkers.forEach((marker, key, map) => {
+      this.postMarkers.map((marker) => {
         marker.setMap(null)
       })
-      this.postMarkers.clear()
-      regionId.forEach((region) => {
+      this.postMarkers = []
+      regionId.map((region) => {
         database.getPosts(
           region,
           8,
@@ -280,9 +280,10 @@ export default {
         lng: (this.map.getBounds().getNorthEast().lng() +
         this.map.getCenter().lng()) / 2
       })
-      let regionId = new Set()
+      let regionId = []
       corners.map((corner) => {
-        regionId.add(database.getRegionId(corner, precision))
+        const region = database.getRegionId(corner, precision)
+        if (regionId.indexOf(region) === -1) regionId.push(region)
       })
       return regionId
     },
@@ -291,7 +292,12 @@ export default {
       if (post.commentsCount) {
         size += Math.floor(Math.log10(post.commentsCount)) * 8
       }
-      if (!this.postMarkers.has(post.id)) {
+      if (
+        this.postMarkers.filter(marker => {
+          return marker.id === post.id
+        })
+        .length === 0
+      ) {
         const icon = {
           url: postIcon,
           scaledSize: new google.maps.Size(size, size),
@@ -311,14 +317,17 @@ export default {
             this.showPost = false
           } else this.openPost()
         })
-        this.postMarkers.set(post.id, marker)
+        marker.id = post.id
+        this.postMarkers.push(marker)
       }
     },
     removeMarker (key) {
-      if (this.postMarkers.has(key)) {
-        this.postMarkers.get(key).setMap(null)
-        this.postMarkers.delete(key)
-      }
+      this.postMarkers = this.postMarkers.filter(marker => {
+        if (marker.id === key) {
+          marker.setMap(null)
+          return false
+        } else return true
+      })
     }
   }
 }
