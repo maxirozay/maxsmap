@@ -20,11 +20,17 @@
       </div>
     </div>
     <footer class="card-footer sticky-footer light">
+      <a v-if="hasNext" class="card-footer-item" @click="$emit('previous')">
+        <i class="material-icons icon-centered">arrow_left</i>
+      </a>
       <a class="card-footer-item" @click="$emit('openPost')">
         Open
       </a>
       <a class="card-footer-item" @click="$emit('close')">
         Close
+      </a>
+      <a v-if="hasNext" class="card-footer-item" @click="$emit('next')">
+        <i class="material-icons icon-centered">arrow_right</i>
       </a>
     </footer>
   </div>
@@ -35,7 +41,7 @@ import date from '../util/date'
 
 export default {
   name: 'post-preview',
-  props: ['post'],
+  props: ['post', 'hasNext'],
   methods: {
     dateAgo (timestamp) {
       return date.dateAgo(timestamp)

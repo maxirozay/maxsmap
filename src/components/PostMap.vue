@@ -15,7 +15,10 @@
       v-if="showPostPreview"
       @openPost="openPost()"
       @close="showPostPreview = false"
-      :post="post">
+      :post="post"
+      :hasNext="postMarkers.length > 1"
+      @previous="displayPost(--currentPostPosition)"
+      @next="displayPost(++currentPostPosition)">
       </post-preview>
     </transition>
     <transition name="slide-right">
@@ -30,7 +33,10 @@
       <post
       ref="post"
       class="post"
-      v-show="showPost">
+      v-show="showPost"
+      :hasNext="postMarkers.length > 1"
+      @previous="displayPost(--currentPostPosition)"
+      @next="displayPost(++currentPostPosition)">
       </post>
     </transition>
     <div
@@ -65,6 +71,7 @@ export default {
       newPostMarker: null,
       newPostPosition: null,
       postMarkers: [],
+      currentPostPosition: 0,
       showPost: false,
       showPostPreview: false,
       post: { id: '', title: '', details: '' }
@@ -294,7 +301,7 @@ export default {
       }
       if (
         this.postMarkers.filter(marker => {
-          return marker.id === post.id
+          return marker.post.id === post.id
         })
         .length === 0
       ) {
@@ -310,24 +317,33 @@ export default {
           map: this.map,
           icon: icon
         })
+        const markerPosition = this.postMarkers.length
         marker.addListener('click', () => {
+          this.currentPostPosition = markerPosition
           this.post = post
           if (window.innerWidth < 960) {
             this.showPostPreview = true
             this.showPost = false
           } else this.openPost()
         })
-        marker.id = post.id
+        marker.post = post
         this.postMarkers.push(marker)
       }
     },
     removeMarker (key) {
       this.postMarkers = this.postMarkers.filter(marker => {
-        if (marker.id === key) {
+        if (marker.post.id === key) {
           marker.setMap(null)
           return false
         } else return true
       })
+    },
+    displayPost (i) {
+      if (i < 0) i = this.postMarkers.length - 1
+      else if (i >= this.postMarkers.length) i = 0
+      this.currentPostPosition = i
+      this.post = this.postMarkers[i].post
+      if (this.showPost) this.$refs.post.init(this.post)
     }
   }
 }

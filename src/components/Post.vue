@@ -58,7 +58,10 @@
       </div>
     </div>
     <footer class="card-footer sticky-footer w-max-sm inherit">
-      <a class="card-footer-item" @click="sendComment">
+      <a v-if="hasNext" class="card-footer-item" @click="$emit('previous')">
+        <i class="material-icons icon-centered">arrow_left</i>
+      </a>
+      <a class="card-footer-item" @click="deletePost">
         {{commentButtonText}}
       </a>
       <a class="card-footer-item" @click="close">
@@ -66,6 +69,9 @@
       </a>
       <a class="card-footer-item" @click="deletePost">
         Delete
+      </a>
+      <a v-if="hasNext" class="card-footer-item" @click="$emit('next')">
+        <i class="material-icons icon-centered">arrow_right</i>
       </a>
     </footer>
     <transition name="slide-up">
@@ -90,6 +96,9 @@ import passwordValidator from './passwordValidator'
 export default {
   name: 'post',
   components: { passwordValidator },
+  props: [
+    'hasNext'
+  ],
   data () {
     return {
       style: 'card h-100 w-max-sm scrollable pb-2 light',
