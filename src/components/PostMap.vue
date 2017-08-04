@@ -39,11 +39,6 @@
       @next="displayPost(++currentPostPosition)">
       </post>
     </transition>
-    <div
-    v-if="!map"
-    class="h-100 w-100 center light">
-      <loading class="center"></loading>
-    </div>
   </section>
 </template>
 
@@ -54,15 +49,13 @@ import PostPreview from './PostPreview'
 import database from '../database'
 import postIcon from '../assets/post-icon.png'
 import newPostIcon from '../assets/new-post-icon.png'
-import Loading from './Loading'
 
 export default {
   name: 'post-map',
   components: {
     PostEditor,
     Post,
-    PostPreview,
-    Loading
+    PostPreview
   },
   data () {
     return {
