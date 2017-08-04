@@ -13,7 +13,7 @@
       <post-preview
       class="sticky-footer"
       v-if="showPostPreview"
-      @openPost="openPost()"
+      @openPost="openPost"
       @close="showPostPreview = false"
       :post="post"
       :hasNext="postMarkers.length > 1"
