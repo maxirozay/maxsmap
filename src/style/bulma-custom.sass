@@ -4,3 +4,11 @@ $primary: #ff7141
 $primary-invert: $black
 $link-hover: $primary
 $border: transparent
+
+@import ../../node_modules/bulma/bulma
+@import ./variables
+
+.card-content
+  padding: 1rem
+  @media screen and (min-width: $small)
+    padding: 1.5rem
