@@ -67,7 +67,7 @@
     </div>
     <footer :class="footerBgStyle">
       <a v-if="hasNext" class="card-footer-item" @click="$emit('previous')">
-        <i class="material-icons">chevron_left</i>
+        <i class="material-icons">arrow_back</i>
       </a>
       <a v-if="!isDeleting" class="card-footer-item" @click="deletePost">
         <i class="material-icons">delete</i>
@@ -81,7 +81,7 @@
         Close
       </a>
       <a v-if="hasNext" class="card-footer-item" @click="$emit('next')">
-        <i class="material-icons icon-centered">chevron_right</i>
+        <i class="material-icons icon-centered">arrow_forward</i>
       </a>
     </footer>
     <transition name="slide-up">
