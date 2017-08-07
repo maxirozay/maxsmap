@@ -20,18 +20,18 @@
       </div>
     </div>
     <footer class="card-footer sticky-footer inherit fade-top-light">
-      <a v-if="hasNext" class="card-footer-item" @click="$emit('previous')">
+      <a v-if="hasNext" class="card-footer-item" @click="previous">
         <i class="material-icons">arrow_back</i>
       </a>
-      <a class="card-footer-item" @click="$emit('openPost')">
+      <a class="card-footer-item" @click="open">
         <i class="material-icons">launch</i>
         Open
       </a>
-      <a class="card-footer-item" @click="$emit('close')">
+      <a class="card-footer-item" @click="close">
         <i class="material-icons">close</i>
         Close
       </a>
-      <a v-if="hasNext" class="card-footer-item" @click="$emit('next')">
+      <a v-if="hasNext" class="card-footer-item" @click="next">
         <i class="material-icons">arrow_forward</i>
       </a>
     </footer>
@@ -39,6 +39,8 @@
 </template>
 
 <script>
+/* global ga */
+/* eslint no-undef: "error" */
 import date from '../util/date'
 
 export default {
@@ -47,6 +49,22 @@ export default {
   methods: {
     dateAgo (timestamp) {
       return date.dateAgo(timestamp)
+    },
+    close () {
+      ga('send', 'event', 'post preview', 'close post')
+      this.$emit('close')
+    },
+    open () {
+      ga('send', 'event', 'post preview', 'open post')
+      this.$emit('openPost')
+    },
+    previous () {
+      ga('send', 'event', 'post preview', 'previous post')
+      this.$emit('previous')
+    },
+    next () {
+      ga('send', 'event', 'post preview', 'next post')
+      this.$emit('next')
     }
   }
 }

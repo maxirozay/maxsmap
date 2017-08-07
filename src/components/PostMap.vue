@@ -106,7 +106,7 @@ export default {
       if (!window.mapIsLoaded) {
         return setTimeout(() => { this.initMap() }, 500)
       }
-      /* global google */
+      /* global google, ga */
       /* eslint no-undef: "error" */
       this.map = new google.maps.Map(document.getElementById('map'), {
         center: new google.maps.LatLng(
@@ -139,6 +139,7 @@ export default {
       if (this.newPostPosition) this.createNewPostMarker()
     },
     createNewPostMarker () {
+      ga('send', 'event', 'map', 'create new post')
       if (this.newPostMarker === null) {
         const icon = {
           url: newPostIcon,
@@ -161,9 +162,11 @@ export default {
           icon: icon
         })
         this.newPostMarker.addListener('click', () => {
+          ga('send', 'event', 'map', 'open new post')
           this.openPostEditor()
         })
         this.newPostMarker.addListener('dragend', () => {
+          ga('send', 'event', 'map', 'move new post')
           this.newPostPosition = {
             lat: this.newPostMarker.position.lat(),
             lng: this.newPostMarker.position.lng()
@@ -214,6 +217,7 @@ export default {
       this.showPostEditor = false
     },
     locate () {
+      ga('send', 'event', 'map', 'locate')
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
           const pos = new google.maps.LatLng(
@@ -312,6 +316,7 @@ export default {
         })
         const markerPosition = this.postMarkers.length
         marker.addListener('click', () => {
+          ga('send', 'event', 'map', 'open post')
           this.currentPostPosition = markerPosition
           this.post = post
           if (window.innerWidth < 960) {

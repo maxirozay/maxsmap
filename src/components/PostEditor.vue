@@ -131,6 +131,8 @@
 </template>
 
 <script>
+/* global ga */
+/* eslint no-undef: "error" */
 import database from '../database'
 import storage from '../storage'
 import image from '../util/image'
@@ -171,6 +173,7 @@ export default {
   },
   methods: {
     sendPost () {
+      ga('send', 'event', 'new post', 'publish post')
       if (this.post.username.length < 3) {
         this.usernameError = 'Please write at least 3 characters.'
         return
@@ -198,6 +201,7 @@ export default {
       })
     },
     uploadImage (event) {
+      ga('send', 'event', 'new post', 'upload image')
       image.resizeImage(event.target.files[0], 480, (blob) => {
         this.imageUploading = true
         storage.uploadImage(blob, `posts/${this.post.id}/0.jpg`)
@@ -214,6 +218,7 @@ export default {
       })
     },
     close () {
+      ga('send', 'event', 'new post', 'close new post')
       /* global history */
       /* eslint no-undef: "error" */
       history.back()

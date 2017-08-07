@@ -20,7 +20,7 @@
         <password-validator
         v-if="post.cypherKey && !post.isVerified"
         :encryptedPassword="post.cypherKey"
-        @close="closePasswordValidator"
+        @close="close"
         @verified="passwordVerified">
           <p>{{ passwordValidatorLabel }}</p>
         </password-validator>
@@ -98,6 +98,8 @@
 </template>
 
 <script>
+/* global ga */
+/* eslint no-undef: "error" */
 import database from '../database'
 import storage from '../storage'
 import date from '../util/date'
@@ -132,10 +134,9 @@ export default {
   beforeDestroy () {
     database.removeCommentsListener()
   },
-  computed: {
-  },
   methods: {
     init (post) {
+      ga('send', 'event', 'post', 'open post', post.id)
       this.post = post
       database.removeCommentsListener()
       this.comments = []
@@ -163,6 +164,7 @@ export default {
         })
     },
     sendComment () {
+      ga('send', 'event', 'post', 'comment post', this.post.id)
       if (this.newComment.username.length < 3) {
         this.usernameError = 'Please write at least 3 characters.'
         return
@@ -188,10 +190,12 @@ export default {
     },
     deletePost () {
       if (!this.post.isAdmin) {
+        ga('send', 'event', 'post', 'try to delete post', this.post.id)
         this.passwordValidatorLabel = 'Verify the password to be able to delete this post.'
         this.showPasswordValidator = true
         return
       }
+      ga('send', 'event', 'post', 'delete post', this.post.id)
       this.isDeleting = true
       database
       .deletePost(this.post)
@@ -216,12 +220,13 @@ export default {
       }
     },
     closePasswordValidator () {
-      if (this.post.cypherKey) this.close()
-      else this.showPasswordValidator = false
+      ga('send', 'event', 'post', 'close admin verification', this.post.id)
+      this.showPasswordValidator = false
     },
     passwordVerified (password) {
       this.showPasswordValidator = false
       if (this.post.cypherKey && !this.post.isVerified) {
+        ga('send', 'event', 'post', 'post verified', this.post.id)
         this.post.cypherKey = password
         this.post.isVerified = true
         this.post.text = database.decrypt(
@@ -230,12 +235,24 @@ export default {
         )
         this.loadImages()
         this.getComments()
-      } else this.post.isAdmin = true
+      } else {
+        ga('send', 'event', 'post', 'admin verified', this.post.id)
+        this.post.isAdmin = true
+      }
     },
     close () {
+      ga('send', 'event', 'post', 'close post', this.post.id)
       /* global history */
       /* eslint no-undef: "error" */
       history.back()
+    },
+    previous () {
+      ga('send', 'event', 'post', 'previous post', this.post.id)
+      this.$emit('previous')
+    },
+    next () {
+      ga('send', 'event', 'post', 'next post', this.post.id)
+      this.$emit('next')
     }
   }
 }
