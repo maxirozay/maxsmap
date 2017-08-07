@@ -112,7 +112,7 @@ export default {
   data () {
     return {
       style: 'card h-100 w-max-sm scrollable pb-2 light',
-      footerBgStyle: 'card-footer sticky-footer w-max-sm inherit shadow-light',
+      footerBgStyle: 'card-footer sticky-footer w-max-sm inherit fade-top-light',
       post: { username: '', text: '' },
       newComment: { username: '', text: '' },
       commentButtonText: 'Send',
@@ -143,10 +143,10 @@ export default {
       this.newComment.text = ''
       if (this.post.cypherKey) {
         this.style = 'card h-100 w-max-sm scrollable pb-2 dark'
-        this.footerBgStyle = 'card-footer sticky-footer w-max-sm inherit shadow-dark'
+        this.footerBgStyle = 'card-footer sticky-footer w-max-sm inherit fade-top-dark'
       } else {
         this.style = 'card h-100 w-max-sm scrollable pb-2 light'
-        this.footerBgStyle = 'card-footer sticky-footer w-max-sm inherit shadow-light'
+        this.footerBgStyle = 'card-footer sticky-footer w-max-sm inherit fade-top-light'
       }
       if (this.post.cypherKey && !this.post.isVerified) {
         this.passwordValidatorLabel = 'This post is private, enter the password to see the content. '

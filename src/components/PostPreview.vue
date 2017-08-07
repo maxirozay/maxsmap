@@ -19,7 +19,7 @@
         </p>
       </div>
     </div>
-    <footer class="card-footer sticky-footer inherit shadow-light">
+    <footer class="card-footer sticky-footer inherit fade-top-light">
       <a v-if="hasNext" class="card-footer-item" @click="$emit('previous')">
         <i class="material-icons">arrow_back</i>
       </a>

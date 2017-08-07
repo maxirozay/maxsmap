@@ -114,7 +114,7 @@
         to help people to find your post easily.
       </p>
     </div>
-    <footer class="card-footer sticky-footer w-max-sm inherit shadow-light">
+    <footer class="card-footer sticky-footer w-max-sm inherit fade-top-light">
       <a v-if="!isSending" class="card-footer-item" @click="sendPost">
         <i class="material-icons">publish</i>
          {{sendPostButtonText}}
