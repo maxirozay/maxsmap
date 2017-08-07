@@ -21,7 +21,7 @@
     </div>
     <footer class="card-footer sticky-footer inherit shadow-light">
       <a v-if="hasNext" class="card-footer-item" @click="$emit('previous')">
-        <i class="material-icons icon-centered">arrow_back</i>
+        <i class="material-icons">arrow_back</i>
       </a>
       <a class="card-footer-item" @click="$emit('openPost')">
         <i class="material-icons">launch</i>
@@ -32,7 +32,7 @@
         Close
       </a>
       <a v-if="hasNext" class="card-footer-item" @click="$emit('next')">
-        <i class="material-icons icon-centered">arrow_forward</i>
+        <i class="material-icons">arrow_forward</i>
       </a>
     </footer>
   </div>

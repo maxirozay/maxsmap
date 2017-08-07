@@ -37,7 +37,7 @@
       </div>
       <div class="field">
         <label class="is-fullwidth button is-primary is-outlined" for="uploadImage">
-          <i class="material-icons is-primary">image</i>
+          <i class="material-icons">image</i>
           Upload an image (optional)
           <i  v-if="imageUploading" class="loading"></i>
         </label>

@@ -81,7 +81,7 @@
         Close
       </a>
       <a v-if="hasNext" class="card-footer-item" @click="$emit('next')">
-        <i class="material-icons icon-centered">arrow_forward</i>
+        <i class="material-icons">arrow_forward</i>
       </a>
     </footer>
     <transition name="slide-up">

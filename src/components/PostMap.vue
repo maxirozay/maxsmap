@@ -3,10 +3,10 @@
     <div id="map" class="h-100"></div>
     <div class="fab-position">
       <button @click="locate" class="button is-primary round fab">
-        <i class="material-icons icon-centered">gps_fixed</i>
+        <i class="material-icons">gps_fixed</i>
       </button>
       <button @click="createNewPostMarker" class="button is-primary round fab">
-        <i class="material-icons icon-centered">add</i>
+        <i class="material-icons">add</i>
       </button>
     </div>
     <transition name="slide-up">
@@ -358,12 +358,6 @@ export default {
   margin: 16px
   @media only screen and (min-width: $small)
     margin: 24px
-
-.icon-centered
-    display: inline-flex
-    align-items: center
-    justify-content: center
-    vertical-align: middle
 
 .post
   position: absolute
