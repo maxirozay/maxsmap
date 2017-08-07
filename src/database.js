@@ -57,7 +57,7 @@ export default {
   ) {
     if (regionId.length < GEOHASH_PRECISION * 2 - 1) {
       const regionsRef = database.ref('regions/' + regionId)
-      .limitToLast(regionDivider)
+      .limitToFirst(regionDivider)
       regionsRef.on('child_added', (data) => {
         this.getPosts(
           `${regionId}/${data.key}`,
@@ -70,7 +70,7 @@ export default {
       this.regionsRefs.push(regionsRef)
     } else {
       const regionRef = database.ref(`regions/${regionId}/posts`)
-      .limitToLast(postsLimit)
+      .limitToFirst(postsLimit)
       regionRef.on('child_added', (data) => {
         newPostCallback(data.key, data.val())
       })
