@@ -1,30 +1,32 @@
 <template>
-  <div class="card">
-    <div class="card-content">
-      <div class="content">
-        <div class="field">
-          <label class="label">
-            <slot></slot>
-          </label>
-          <input
-          class="input"
-          type="password"
-          v-model="password"
-          placeholder="Password">
-          <p class="help is-danger" v-show="wrongPassword">
-            Your passwords doesn't match, try something else.
-          </p>
-        </div>
-      </div>
+  <div>
+    <div class="field">
+      <label class="label inherit">
+        <slot></slot>
+      </label>
+      <input
+      class="input"
+      type="password"
+      v-model="password"
+      placeholder="Password">
+      <p class="help is-danger" v-show="wrongPassword">
+        Your passwords doesn't match, try something else.
+      </p>
     </div>
-    <footer class="card-footer">
-      <a class="card-footer-item" @click="verify">
-        {{ buttonText }}
-      </a>
-      <a class="card-footer-item" @click="$emit('close')">
-        Close
-      </a>
-    </footer>
+    <div class="field is-grouped is-pulled-right">
+      <p class="control">
+        <a class="button is-primary is-outlined" @click="$emit('close')">
+          <i class="material-icons">close</i>
+          Close
+        </a>
+      </p>
+      <p class="control">
+        <a class="button is-primary is-outlined" @click="verify">
+          <i class="material-icons">lock_open</i>
+          {{ buttonText }}
+        </a>
+      </p>
+    </div>
   </div>
 </template>
 

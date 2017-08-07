@@ -36,9 +36,10 @@
         </p>
       </div>
       <div class="field">
-        <label :class="uploadImageLabelClass" for="uploadImage">
+        <label class="is-fullwidth button is-primary is-outlined" for="uploadImage">
           <i class="material-icons is-primary">image</i>
           Upload an image (optional)
+          <i  v-if="imageUploading" class="loading"></i>
         </label>
         <input
         id="uploadImage"
@@ -74,8 +75,10 @@
           Your passwords doesn't match.
         </p>
       </div>
-      <label class="checkbox">
-        <input type="checkbox" v-model="post.isPrivate">
+      <label class="is-fullwidth button is-primary is-outlined">
+        <input type="checkbox" v-model="post.isPrivate" class="opacity-0">
+        <i v-if="post.isPrivate" class="material-icons">lock_outline</i>
+        <i v-else class="material-icons">lock_open</i>
         Private post
       </label>
       <div v-if="post.isPrivate">
@@ -111,12 +114,17 @@
         to help people to find your post easily.
       </p>
     </div>
-    <footer class="card-footer sticky-footer w-max-sm light">
-      <a class="card-footer-item" @click="sendPost">
-      {{sendPostButtonText}}
+    <footer class="card-footer sticky-footer w-max-sm inherit shadow-light">
+      <a v-if="!isSending" class="card-footer-item" @click="sendPost">
+        <i class="material-icons">publish</i>
+         {{sendPostButtonText}}
+      </a>
+      <a v-else class="card-footer-item">
+        <i class="loading"></i>
       </a>
       <a class="card-footer-item" @click="close">
-        Cancel
+        <i class="material-icons">close</i>
+        Close
       </a>
     </footer>
   </div>
@@ -144,11 +152,12 @@ export default {
       adminKeyCheck: '',
       cypherKeyCheck: '',
       sendPostButtonText: 'Post',
+      isSending: false,
       usernameError: null,
       textError: null,
       uploadImageError: null,
       imageToDelete: 0,
-      uploadImageLabelClass: 'is-fullwidth button'
+      imageUploading: false
     }
   },
   mounted () {
@@ -175,7 +184,7 @@ export default {
         (this.post.isPrivate && !this.post.cypherKey)
       ) return
       database.setUsername(this.post.username)
-
+      this.isSending = true
       database
       .createPost(this.post, this.position)
       .then(value => {
@@ -184,21 +193,22 @@ export default {
         this.close()
       })
       .catch(error => {
+        this.isSending = false
         if (error) this.sendPostButtonText = 'Retry'
       })
     },
     uploadImage (event) {
       image.resizeImage(event.target.files[0], 480, (blob) => {
-        this.uploadImageLabelClass = 'is-fullwidth button is-loading'
+        this.imageUploading = true
         storage.uploadImage(blob, `posts/${this.post.id}/0.jpg`)
         .then(url => {
-          this.uploadImageLabelClass = 'is-fullwidth button'
+          this.imageUploading = false
           this.post.imagesUrls = [ url ]
           this.uploadImageError = null
           this.imageToDelete = 1
         })
         .catch(error => {
-          this.uploadImageLabelClass = 'is-fullwidth button'
+          this.imageUploading = false
           if (error) this.uploadImageError = `Your image couldn't be uploaded.`
         })
       })

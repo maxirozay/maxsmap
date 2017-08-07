@@ -17,6 +17,13 @@
             <img :src="imageUrl" alt="post image">
           </figure>
         </p>
+        <password-validator
+        v-if="post.cypherKey && !post.isVerified"
+        :encryptedPassword="post.cypherKey"
+        @close="closePasswordValidator"
+        @verified="passwordVerified">
+          <p>{{ passwordValidatorLabel }}</p>
+        </password-validator>
         <div v-if="!post.cypherKey || post.isVerified" class="pb-1">
           <label class="label inherit">Comment</label>
           <div class="field">
@@ -37,7 +44,8 @@
             rows= "3"
             maxlength="200"
             v-model="newComment.text"
-            placeholder="Your comment..."></textarea>
+            placeholder="Your comment..."
+            @keyup.enter="sendComment"></textarea>
             <p class="help is-danger" v-show="textError">
               {{ textError }}
             </p>
@@ -57,28 +65,30 @@
         </div>
       </div>
     </div>
-    <footer class="card-footer sticky-footer w-max-sm inherit">
+    <footer :class="footerBgStyle">
       <a v-if="hasNext" class="card-footer-item" @click="$emit('previous')">
-        <i class="material-icons icon-centered">arrow_left</i>
+        <i class="material-icons">chevron_left</i>
       </a>
-      <a class="card-footer-item" @click="deletePost">
-        {{commentButtonText}}
-      </a>
-      <a class="card-footer-item" @click="close">
-        Close
-      </a>
-      <a class="card-footer-item" @click="deletePost">
+      <a v-if="!isDeleting" class="card-footer-item" @click="deletePost">
+        <i class="material-icons">delete</i>
         Delete
       </a>
+      <a v-else class="card-footer-item">
+        <i class="loading"></i>
+      </a>
+      <a class="card-footer-item" @click="close">
+        <i class="material-icons">close</i>
+        Close
+      </a>
       <a v-if="hasNext" class="card-footer-item" @click="$emit('next')">
-        <i class="material-icons icon-centered">arrow_right</i>
+        <i class="material-icons icon-centered">chevron_right</i>
       </a>
     </footer>
     <transition name="slide-up">
       <password-validator
       v-if="showPasswordValidator"
-      class="sticky-footer w-max-sm"
-      :encryptedPassword="encryptedPassword"
+      class="sticky-footer w-max-sm card card-content"
+      :encryptedPassword="post.adminKey"
       @close="closePasswordValidator"
       @verified="passwordVerified">
         <p>{{ passwordValidatorLabel }}</p>
@@ -102,6 +112,7 @@ export default {
   data () {
     return {
       style: 'card h-100 w-max-sm scrollable pb-2 light',
+      footerBgStyle: 'card-footer sticky-footer w-max-sm inherit shadow-light',
       post: { username: '', text: '' },
       newComment: { username: '', text: '' },
       commentButtonText: 'Send',
@@ -112,7 +123,7 @@ export default {
       imageUrl: null,
       showPasswordValidator: false,
       passwordValidatorLabel: '',
-      encryptedPassword: null
+      isDeleting: false
     }
   },
   created () {
@@ -132,13 +143,14 @@ export default {
       this.newComment.text = ''
       if (this.post.cypherKey) {
         this.style = 'card h-100 w-max-sm scrollable pb-2 dark'
-      } else this.style = 'card h-100 w-max-sm scrollable pb-2 light'
-      if (this.post.cypherKey && !this.post.isVerified) {
-        this.encryptedPassword = this.post.cypherKey
-        this.passwordValidatorLabel = 'This post is private, enter the password to see the content. '
-        this.showPasswordValidator = true
+        this.footerBgStyle = 'card-footer sticky-footer w-max-sm inherit shadow-dark'
       } else {
-        this.showPasswordValidator = false
+        this.style = 'card h-100 w-max-sm scrollable pb-2 light'
+        this.footerBgStyle = 'card-footer sticky-footer w-max-sm inherit shadow-light'
+      }
+      if (this.post.cypherKey && !this.post.isVerified) {
+        this.passwordValidatorLabel = 'This post is private, enter the password to see the content. '
+      } else {
         this.loadImages()
         this.getComments()
       }
@@ -176,17 +188,19 @@ export default {
     },
     deletePost () {
       if (!this.post.isAdmin) {
-        this.encryptedPassword = this.post.adminKey
         this.passwordValidatorLabel = 'Verify the password to be able to delete this post.'
         this.showPasswordValidator = true
         return
       }
+      this.isDeleting = true
       database
       .deletePost(this.post)
       .then(value => {
+        this.isDeleting = false
         this.close()
       })
       .catch(error => {
+        this.isDeleting = false
         if (error) this.deleteButtonText = 'Retry'
       })
     },
