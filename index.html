@@ -42,14 +42,14 @@
     <noscript>
       This is your fallback content in case JavaScript fails to load.
     </noscript>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhV0SbEq0mxTxLR6ydAiw2jfjWPqQzPH0&callback=initMap&sensor=true"
-    async defer></script>
     <script>
     /* eslint no-unused-vars: 0 */
     function initMap () {
       window.mapIsLoaded = true
     }
     </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhV0SbEq0mxTxLR6ydAiw2jfjWPqQzPH0&callback=initMap&sensor=true"
+    async defer></script>
     <div id="app"></div>
     <!-- Todo: only include in production -->
     <!-- <%= htmlWebpackPlugin.options.serviceWorkerLoader %> -->
