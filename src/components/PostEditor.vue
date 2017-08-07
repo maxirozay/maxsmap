@@ -131,7 +131,7 @@
 </template>
 
 <script>
-/* global ga */
+/* global ga, history */
 /* eslint no-undef: "error" */
 import database from '../database'
 import storage from '../storage'
@@ -219,8 +219,6 @@ export default {
     },
     close () {
       ga('send', 'event', 'new post', 'close new post')
-      /* global history */
-      /* eslint no-undef: "error" */
       history.back()
     }
   },

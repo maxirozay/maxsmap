@@ -43,6 +43,8 @@
 </template>
 
 <script>
+/* global google, ga, history */
+/* eslint no-undef: "error" */
 import PostEditor from './PostEditor'
 import Post from './Post'
 import PostPreview from './PostPreview'
@@ -87,8 +89,6 @@ export default {
   },
   methods: {
     checkState () {
-      /* global history */
-      /* eslint no-undef: "error" */
       if (history.state) {
         switch (history.state.type) {
           case 'post':
@@ -106,8 +106,6 @@ export default {
       if (!window.mapIsLoaded) {
         return setTimeout(() => { this.initMap() }, 500)
       }
-      /* global google, ga */
-      /* eslint no-undef: "error" */
       this.map = new google.maps.Map(document.getElementById('map'), {
         center: new google.maps.LatLng(
           database.getLocation().lat,
