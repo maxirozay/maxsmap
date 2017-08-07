@@ -128,7 +128,7 @@ export default {
         rotateControl: true,
         fullscreenControl: false
       })
-      this.map.addListener('idle', (e) => {
+      this.map.addListener('idle', e => {
         database.setLocation({
           lat: this.map.getCenter().lat(),
           lng: this.map.getCenter().lng()
