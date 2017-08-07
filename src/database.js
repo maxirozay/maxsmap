@@ -131,7 +131,7 @@ export default {
       username: comment.username,
       text: comment.text
     }
-    if (post.isPrivate) {
+    if (post.cypherKey) {
       newComment.username = sjcl.encrypt(
         post.cypherKey,
         comment.username
@@ -171,7 +171,7 @@ export default {
     .limitToLast(50)
     this.commentsRef.on('child_added', (data) => {
       let comment = data.val()
-      if (post.isPrivate) {
+      if (post.cypherKey) {
         comment.username = sjcl.decrypt(
           post.cypherKey,
           comment.username
