@@ -65,24 +65,26 @@
         </div>
       </div>
     </div>
-    <footer :class="footerBgStyle">
-      <a v-if="hasNext" class="card-footer-item" @click="$emit('previous')">
-        <i class="material-icons">arrow_back</i>
-      </a>
-      <a v-if="!isDeleting" class="card-footer-item" @click="deletePost">
-        <i class="material-icons">delete</i>
-        Delete
-      </a>
-      <a v-else class="card-footer-item">
-        <i class="loading"></i>
-      </a>
-      <a class="card-footer-item" @click="close">
-        <i class="material-icons">close</i>
-        Close
-      </a>
-      <a v-if="hasNext" class="card-footer-item" @click="$emit('next')">
-        <i class="material-icons">arrow_forward</i>
-      </a>
+    <footer :class="footerStyle">
+      <div :class="footerBgStyle">
+        <a v-if="hasNext" class="card-footer-item" @click="$emit('previous')">
+          <i class="material-icons">arrow_back</i>
+        </a>
+        <a v-if="!isDeleting" class="card-footer-item" @click="deletePost">
+          <i class="material-icons">delete</i>
+          Delete
+        </a>
+        <a v-else class="card-footer-item">
+          <i class="loading"></i>
+        </a>
+        <a class="card-footer-item" @click="close">
+          <i class="material-icons">close</i>
+          Close
+        </a>
+        <a v-if="hasNext" class="card-footer-item" @click="$emit('next')">
+          <i class="material-icons">arrow_forward</i>
+        </a>
+      </div>
     </footer>
     <transition name="slide-up">
       <password-validator
@@ -113,8 +115,9 @@ export default {
   ],
   data () {
     return {
-      style: 'card h-100 w-max-sm scrollable pb-2 light',
-      footerBgStyle: 'card-footer sticky-footer w-max-sm inherit fade-top-light',
+      style: 'card h-100 w-max-sm scrollable pb-footer light',
+      footerStyle: 'sticky-footer w-max-sm fade-top-light',
+      footerBgStyle: 'card-footer light',
       post: { username: '', text: '' },
       newComment: { username: '', text: '' },
       commentButtonText: 'Send',
@@ -143,11 +146,13 @@ export default {
       this.imageUrl = null
       this.newComment.text = ''
       if (this.post.cypherKey) {
-        this.style = 'card h-100 w-max-sm scrollable pb-2 dark'
-        this.footerBgStyle = 'card-footer sticky-footer w-max-sm inherit fade-top-dark'
+        this.style = 'card h-100 w-max-sm scrollable pb-footer dark'
+        this.footerStyle = 'sticky-footer w-max-sm fade-top-dark'
+        this.footerBgStyle = 'card-footer dark'
       } else {
-        this.style = 'card h-100 w-max-sm scrollable pb-2 light'
-        this.footerBgStyle = 'card-footer sticky-footer w-max-sm inherit fade-top-light'
+        this.style = 'card h-100 w-max-sm scrollable pb-footer light'
+        this.footerStyle = 'sticky-footer w-max-sm fade-top-light'
+        this.footerBgStyle = 'card-footer light'
       }
       if (this.post.cypherKey && !this.post.isVerified) {
         this.passwordValidatorLabel = 'This post is private, enter the password to see the content. '

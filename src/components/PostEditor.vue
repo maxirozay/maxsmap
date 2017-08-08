@@ -1,5 +1,5 @@
 <template>
-  <div class="card h-100 w-max-sm scrollable pb-2">
+  <div class="card h-100 w-max-sm scrollable pb-footer">
     <div class="card-content">
       <div class="title is-4">
         <p>
@@ -114,18 +114,20 @@
         to help people to find your post easily.
       </p>
     </div>
-    <footer class="card-footer sticky-footer w-max-sm inherit fade-top-light">
-      <a v-if="!isSending" class="card-footer-item" @click="sendPost">
-        <i class="material-icons">publish</i>
-         {{sendPostButtonText}}
-      </a>
-      <a v-else class="card-footer-item">
-        <i class="loading"></i>
-      </a>
-      <a class="card-footer-item" @click="close">
-        <i class="material-icons">close</i>
-        Close
-      </a>
+    <footer class="sticky-footer w-max-sm fade-top-light">
+      <div class="card-footer light">
+        <a v-if="!isSending" class="card-footer-item" @click="sendPost">
+          <i class="material-icons">publish</i>
+           {{sendPostButtonText}}
+        </a>
+        <a v-else class="card-footer-item">
+          <i class="loading"></i>
+        </a>
+        <a class="card-footer-item" @click="close">
+          <i class="material-icons">close</i>
+          Close
+        </a>
+      </div>
     </footer>
   </div>
 </template>

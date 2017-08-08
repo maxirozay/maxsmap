@@ -19,21 +19,23 @@
         </p>
       </div>
     </div>
-    <footer class="card-footer sticky-footer inherit fade-top-light">
-      <a v-if="hasNext" class="card-footer-item" @click="previous">
-        <i class="material-icons">arrow_back</i>
-      </a>
-      <a class="card-footer-item" @click="open">
-        <i class="material-icons">launch</i>
-        Open
-      </a>
-      <a class="card-footer-item" @click="close">
-        <i class="material-icons">close</i>
-        Close
-      </a>
-      <a v-if="hasNext" class="card-footer-item" @click="next">
-        <i class="material-icons">arrow_forward</i>
-      </a>
+    <footer class="sticky-footer">
+      <div class="card-footer light">
+        <a v-if="hasNext" class="card-footer-item" @click="previous">
+          <i class="material-icons">arrow_back</i>
+        </a>
+        <a class="card-footer-item" @click="open">
+          <i class="material-icons">launch</i>
+          Open
+        </a>
+        <a class="card-footer-item" @click="close">
+          <i class="material-icons">close</i>
+          Close
+        </a>
+        <a v-if="hasNext" class="card-footer-item" @click="next">
+          <i class="material-icons">arrow_forward</i>
+        </a>
+      </div>
     </footer>
   </div>
 </template>
