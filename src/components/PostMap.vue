@@ -1,14 +1,41 @@
 <template>
   <section class="h-100">
     <div id="map" class="h-100"></div>
-    <div class="fab-position">
-      <button @click="locate" class="button is-primary round fab">
-        <i class="material-icons">gps_fixed</i>
-      </button>
-      <button @click="createNewPostMarker" class="button is-primary round fab">
-        <i class="material-icons">add</i>
-      </button>
+    <div class="sticky-footer content has-text-centered">
+      <a @click="locate" class="text-shadow">
+        <i class="material-icons is-size-2">my_location</i>
+      </a>
+      <a @click="showOrder = !showOrder" class="text-shadow p-2">
+        <i v-if="postsOrder === 0" class="material-icons is-size-2 text-shadow">
+          access_time
+        </i>
+        <i v-else class="material-icons is-size-2">chat_bubble_outline</i>
+      </a>
+      <a @click="createNewPostMarker" class="text-shadow">
+        <i class="material-icons is-size-2">add_circle_outline</i>
+      </a>
     </div>
+    <transition name="slide-up">
+      <div v-show="showOrder" class="sticky-footer mb-footer has-text-centered">
+        <a @click="changeOrder(0)" class="shadow button is-primary">
+          <span class="icon">
+            <i class="material-icons">access_time</i>
+          </span>
+          <span>
+            Order by date
+          </span>
+        </a>
+        <br><br>
+        <a @click="changeOrder(1)" class="shadow button is-primary">
+          <span class="icon">
+            <i class="material-icons">chat_bubble_outline</i>
+          </span>
+          <span>
+            Order by comments
+          </span>
+        </a>
+      </div>
+    </transition>
     <transition name="slide-up">
       <post-preview
       class="sticky-footer"
@@ -69,7 +96,9 @@ export default {
       currentPostPosition: 0,
       showPost: false,
       showPostPreview: false,
-      post: { id: '', title: '', details: '' }
+      post: { id: '', title: '', details: '' },
+      postsOrder: 0,
+      showOrder: false
     }
   },
   created () {
@@ -79,6 +108,7 @@ export default {
         this.showPost = false
       }
     }
+    this.postsOrder = database.getPostsOrder()
   },
   mounted () {
     this.checkState()
@@ -340,32 +370,29 @@ export default {
       this.currentPostPosition = i
       this.post = this.postMarkers[i].post
       if (this.showPost) this.$refs.post.init(this.post)
+    },
+    changeOrder (order) {
+      ga('send', 'event', 'map', 'changeOrder', order.toString())
+      this.showOrder = false
+      this.postsOrder = order
+      database.setPostsOrder(order)
+      this.getPosts()
     }
   }
 }
 </script>
 
 <style lang="sass">
-@import ../style/variables
-
-.fab-position
-  position: absolute
-  bottom: 0
-  right: 0
-
-.fab
-  height: 56px
-  width: 56px
-  display: block
-  vertical-align: bottom
-  margin: 16px
-  @media only screen and (min-width: $small)
-    margin: 24px
-
 .post
   position: absolute
   bottom: 0
   left: 0
   right: 0
   margin-right: auto
+
+.text-shadow
+  text-shadow: -1px -1px black
+
+.shadow
+  box-shadow: -1px -1px black
 </style>

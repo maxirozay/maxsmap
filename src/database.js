@@ -69,8 +69,15 @@ export default {
       })
       this.regionsRefs.push(regionsRef)
     } else {
-      const regionRef = database.ref(`regions/${regionId}/posts`)
-      .limitToLast(postsLimit)
+      let regionRef
+      if (this.getPostsOrder() === 0) {
+        regionRef = database.ref(`regions/${regionId}/posts`)
+        .limitToLast(postsLimit)
+      } else {
+        regionRef = database.ref(`regions/${regionId}/posts`)
+        .orderByChild('commentsCount')
+        .limitToLast(postsLimit)
+      }
       regionRef.on('child_added', (data) => {
         newPostCallback(data.key, data.val())
       })
@@ -210,5 +217,13 @@ export default {
     if (localStorage.getItem('zoom')) {
       return parseInt(localStorage.getItem('zoom'))
     } else return 13
+  },
+  setPostsOrder (order) {
+    localStorage.setItem('postsOrder', order)
+  },
+  getPostsOrder () {
+    if (localStorage.getItem('postsOrder')) {
+      return parseInt(localStorage.getItem('postsOrder'))
+    } else return 0
   }
 }
