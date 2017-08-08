@@ -70,7 +70,7 @@ export default {
       this.regionsRefs.push(regionsRef)
     } else {
       const regionRef = database.ref(`regions/${regionId}/posts`)
-      .limitToFirst(postsLimit)
+      .limitToLast(postsLimit)
       regionRef.on('child_added', (data) => {
         newPostCallback(data.key, data.val())
       })

@@ -166,7 +166,10 @@ export default {
   },
   mounted () {
     this.post.username = database.getUsername() ? database.getUsername() : ''
-    this.post.id = `${Number.MAX_SAFE_INTEGER - Date.now()}-${Math.round(this.position.lat)}-${Math.round(this.position.lng)}-${Math.round(Math.random() * 99)}`
+    this.post.id = Date.now().toString(32) +
+        Math.round(this.position.lat).toString(32) +
+        Math.round(this.position.lng).toString(32) +
+        Math.round(Math.random() * 1023).toString(32)
   },
   beforeDestroy () {
     for (let i = 0; i < this.imageToDelete; i++) {
