@@ -278,6 +278,7 @@ export default {
             position.coords.longitude
           )
           this.map.setCenter(pos)
+          this.map.setZoom(12)
         })
       }
     },
