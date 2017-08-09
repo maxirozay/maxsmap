@@ -3,16 +3,16 @@
     <div id="map" class="h-100"></div>
     <div class="absolute-footer w-100 content has-text-centered">
       <div :class="mapSize">
-        <a @click="locate" class="text-shadow">
+        <a @click="locate" class="text-shadow" title="Locate Me">
           <i class="material-icons is-size-2">my_location</i>
         </a>
-        <a @click="showOrder = !showOrder" class="text-shadow p-2">
+        <a @click="showOrder = !showOrder" class="text-shadow p-2" title="Post Order">
           <i v-if="postsOrder === 0" class="material-icons is-size-2 text-shadow">
             access_time
           </i>
           <i v-else class="material-icons is-size-2">chat_bubble_outline</i>
         </a>
-        <a @click="createNewPostMarker" class="text-shadow">
+        <a @click="createNewPostMarker" class="text-shadow" title="Create Post">
           <i class="material-icons is-size-2">add_circle_outline</i>
         </a>
       </div>
