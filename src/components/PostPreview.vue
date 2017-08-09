@@ -1,5 +1,5 @@
 <template>
-  <div class="card h-33 w-100 scrollable pb-2">
+  <div class="card h-33v w-100 scrollable pb-footer">
     <div class="card-content">
       <div class="content">
         <p class="break-word">
@@ -19,7 +19,7 @@
         </p>
       </div>
     </div>
-    <footer class="sticky-footer">
+    <footer class="sticky-footer w-100 fade-top-light">
       <div class="card-footer light">
         <a v-if="hasNext" class="card-footer-item" @click="previous">
           <i class="material-icons">arrow_back</i>

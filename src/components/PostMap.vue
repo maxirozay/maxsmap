@@ -1,54 +1,58 @@
 <template>
-  <section class="h-100">
+  <section :class="mapSize + ' h-100'">
     <div id="map" class="h-100"></div>
-    <div class="sticky-footer content has-text-centered">
-      <a @click="locate" class="text-shadow">
-        <i class="material-icons is-size-2">my_location</i>
-      </a>
-      <a @click="showOrder = !showOrder" class="text-shadow p-2">
-        <i v-if="postsOrder === 0" class="material-icons is-size-2 text-shadow">
-          access_time
-        </i>
-        <i v-else class="material-icons is-size-2">chat_bubble_outline</i>
-      </a>
-      <a @click="createNewPostMarker" class="text-shadow">
-        <i class="material-icons is-size-2">add_circle_outline</i>
-      </a>
+    <div class="absolute-footer w-100 content has-text-centered">
+      <div :class="mapSize">
+        <a @click="locate" class="text-shadow">
+          <i class="material-icons is-size-2">my_location</i>
+        </a>
+        <a @click="showOrder = !showOrder" class="text-shadow p-2">
+          <i v-if="postsOrder === 0" class="material-icons is-size-2 text-shadow">
+            access_time
+          </i>
+          <i v-else class="material-icons is-size-2">chat_bubble_outline</i>
+        </a>
+        <a @click="createNewPostMarker" class="text-shadow">
+          <i class="material-icons is-size-2">add_circle_outline</i>
+        </a>
+      </div>
     </div>
-    <transition name="slide-up">
-      <div v-show="showOrder" class="sticky-footer mb-footer has-text-centered">
-        <a @click="changeOrder(0)" class="shadow button is-primary">
-          <span class="icon">
-            <i class="material-icons">access_time</i>
-          </span>
-          <span>
-            Order by date
-          </span>
-        </a>
-        <br><br>
-        <a @click="changeOrder(1)" class="shadow button is-primary">
-          <span class="icon">
-            <i class="material-icons">chat_bubble_outline</i>
-          </span>
-          <span>
-            Order by comments
-          </span>
-        </a>
+    <transition name="slide-up-margin">
+      <div v-show="showOrder" class="absolute-footer w-100 mb-footer has-text-centered">
+        <div :class="mapSize">
+          <a @click="changeOrder(0)" class="shadow button is-primary">
+            <span class="icon">
+              <i class="material-icons">access_time</i>
+            </span>
+            <span>
+              Order by date
+            </span>
+          </a>
+          <br><br>
+          <a @click="changeOrder(1)" class="shadow button is-primary">
+            <span class="icon">
+              <i class="material-icons">chat_bubble_outline</i>
+            </span>
+            <span>
+              Order by comments
+            </span>
+          </a>
+        </div>
       </div>
     </transition>
     <transition name="slide-up">
       <post-preview
-      class="sticky-footer"
+      class="absolute-footer"
       v-if="showPostPreview"
       @openPost="openPost"
-      @close="showPostPreview = false"
+      @close="showPostPreview = false; resizeMapNormal()"
       :post="post"
       :hasNext="postMarkers.length > 1"
       @previous="displayPost(--currentPostPosition)"
       @next="displayPost(++currentPostPosition)">
       </post-preview>
     </transition>
-    <transition name="slide-right">
+    <transition name="slide-left">
       <post-editor
       class="post"
       v-if="showPostEditor"
@@ -56,7 +60,7 @@
       @created="addMarker">
       </post-editor>
     </transition>
-    <transition name="slide-right">
+    <transition name="slide-left">
       <post
       ref="post"
       class="post"
@@ -96,9 +100,11 @@ export default {
       currentPostPosition: 0,
       showPost: false,
       showPostPreview: false,
+      willShowPostPreview: false,
       post: { id: '', title: '', details: '' },
       postsOrder: 0,
-      showOrder: false
+      showOrder: false,
+      mapSize: ''
     }
   },
   created () {
@@ -106,6 +112,10 @@ export default {
       if (event.state === null) {
         this.showPostEditor = false
         this.showPost = false
+        this.resizeMapNormal()
+        this.showPostPreview = this.willShowPostPreview
+        this.willShowPostPreview = false
+        if (this.showPostPreview) this.resizeMapWithPreview()
       }
     }
     this.postsOrder = database.getPostsOrder()
@@ -211,38 +221,53 @@ export default {
     },
     openPostEditor () {
       if (this.showPostEditor) return
+      if (this.showPostPreview) {
+        this.showPostPreview = false
+        this.willShowPostPreview = true
+      }
       if (this.showPost) {
         this.showPost = false
+        this.resizeMapNormal()
         history.replaceState({
           type: 'post-editor',
           position: this.newPostPosition
         }, null, 'post-editor')
-        setTimeout(() => { this.showPostEditor = true }, 300)
+        setTimeout(() => {
+          this.showPostEditor = true
+          this.resizeMapWithPost()
+        }, 300)
       } else {
         history.pushState({
           type: 'post-editor',
           position: this.newPostPosition
         }, null, 'post-editor')
         this.showPostEditor = true
+        this.resizeMapWithPost()
       }
     },
     openPost () {
+      if (this.showPostPreview) {
+        this.showPostPreview = false
+        this.willShowPostPreview = true
+      }
       if (history.state) {
         history.replaceState({ type: 'post', post: this.post }, null, 'post')
       } else {
         history.pushState({ type: 'post', post: this.post }, null, 'post')
       }
       if (this.showPostEditor) {
+        this.showPostEditor = false
+        this.resizeMapNormal()
         setTimeout(() => {
           this.showPost = true
+          this.resizeMapWithPost()
           this.$refs.post.init(this.post)
         }, 300)
       } else {
         this.showPost = true
+        this.resizeMapWithPost()
         this.$refs.post.init(this.post)
       }
-      this.showPostPreview = false
-      this.showPostEditor = false
     },
     locate () {
       ga('send', 'event', 'map', 'locate')
@@ -350,6 +375,7 @@ export default {
           if (window.innerWidth < 960) {
             this.showPostPreview = true
             this.showPost = false
+            this.resizeMapWithPreview()
           } else this.openPost()
         })
         marker.post = post
@@ -377,22 +403,41 @@ export default {
       this.postsOrder = order
       database.setPostsOrder(order)
       this.getPosts()
+    },
+    resizeMapNormal () {
+      this.mapSize = 'map-transition map'
+    },
+    resizeMapWithPost () {
+      if (window.innerWidth > 780) this.mapSize = 'map-transition map-post'
+    },
+    resizeMapWithPreview () {
+      this.mapSize = 'map-transition map-preview'
     }
   }
 }
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 .post
   position: absolute
   bottom: 0
-  left: 0
   right: 0
-  margin-right: auto
 
 .text-shadow
   text-shadow: -1px -1px black
 
 .shadow
   box-shadow: -1px -1px black
+
+.map-transition
+  transition: margin-right .3s ease, padding-bottom .3s ease
+
+.map
+  margin: 0px
+
+.map-post
+  margin-right: 480px
+
+.map-preview
+  padding-bottom: 33vh
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="card h-100 w-max-sm scrollable pb-footer">
+  <div class="card h-100 w-sm scrollable pb-footer">
     <div class="card-content">
       <div class="title is-4">
         <p>
@@ -114,7 +114,7 @@
         to help people to find your post easily.
       </p>
     </div>
-    <footer class="sticky-footer w-max-sm fade-top-light">
+    <footer class="sticky-footer w-sm fade-top-light">
       <div class="card-footer light">
         <a v-if="!isSending" class="card-footer-item" @click="sendPost">
           <i class="material-icons">publish</i>

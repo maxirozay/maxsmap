@@ -115,8 +115,8 @@ export default {
   ],
   data () {
     return {
-      style: 'card h-100 w-max-sm scrollable pb-footer light',
-      footerStyle: 'sticky-footer w-max-sm fade-top-light',
+      style: 'card h-100 w-sm scrollable pb-footer light',
+      footerStyle: 'sticky-footer w-sm fade-top-light',
       footerBgStyle: 'card-footer light',
       post: { username: '', text: '' },
       newComment: { username: '', text: '' },
@@ -146,12 +146,12 @@ export default {
       this.imageUrl = null
       this.newComment.text = ''
       if (this.post.cypherKey) {
-        this.style = 'card h-100 w-max-sm scrollable pb-footer dark'
-        this.footerStyle = 'sticky-footer w-max-sm fade-top-dark'
+        this.style = 'card h-100 w-sm scrollable pb-footer dark'
+        this.footerStyle = 'sticky-footer w-sm fade-top-dark'
         this.footerBgStyle = 'card-footer dark'
       } else {
-        this.style = 'card h-100 w-max-sm scrollable pb-footer light'
-        this.footerStyle = 'sticky-footer w-max-sm fade-top-light'
+        this.style = 'card h-100 w-sm scrollable pb-footer light'
+        this.footerStyle = 'sticky-footer w-sm fade-top-light'
         this.footerBgStyle = 'card-footer light'
       }
       if (this.post.cypherKey && !this.post.isVerified) {
