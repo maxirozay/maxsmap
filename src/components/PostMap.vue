@@ -436,6 +436,7 @@ export default {
     },
     resizeMapWithPost () {
       if (window.innerWidth > 780) this.mapSize = 'map-transition map-post'
+      else this.resizeMapNormal()
     },
     resizeMapWithPreview () {
       this.mapSize = 'map-transition map-preview'
@@ -460,10 +461,12 @@ export default {
   transition: margin-right .3s ease, padding-bottom .3s ease
 
 .map
-  margin: 0px
+  margin-right: 0
+  padding-bottom: 0
 
 .map-post
   margin-right: 480px
+  padding-bottom: 0
 
 .map-preview
   padding-bottom: 33vh
