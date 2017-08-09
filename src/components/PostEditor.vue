@@ -6,10 +6,8 @@
           New Post
         </p>
         <p class="help">
-          By uploading or posting content on this service you agree to make your
-          content public and give the rights to use it to anybody. Any of your
-          content can be deleted, seen, used at any time, for any reason, by anybody.
-          You may also not be able to delete your content.
+          Try to drag the "NEW" icon to change the post location.
+          Read the conditions at the bottom and accept them by posting your content.
         </p>
       </div>
       <div class="field">
@@ -107,11 +105,21 @@
             Your passwords doesn't match.
           </p>
         </div>
+        <p class="help is-danger">
+          IF YOU FORGET YOUR PASSWORD
+          THERE IS NO WAY TO RECOVER IT.
+        </p>
+        <p class="help">
+          Your post will be encrypted with your passwords and only people with
+          your password can see this post. Your username will not be encrypted
+          to help people to find your post easily.
+        </p>
       </div>
       <p class="help">
-        Your post will be encrypted with your passwords and only people with
-        your password can see this post. Your username will not be encrypted
-        to help people to find your post easily.
+        By uploading or posting content on this service you agree to make your
+        content public and give the rights to use it to anybody. Any of your
+        content can be deleted, seen, used at any time, for any reason, by anybody.
+        You may also not be able to delete your content.
       </p>
     </div>
     <footer class="sticky-footer w-sm fade-top-light">
