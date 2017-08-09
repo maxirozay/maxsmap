@@ -41,6 +41,21 @@
       </div>
     </transition>
     <transition name="slide-up">
+      <div v-if="showNotification" class="w-100 absolute-footer">
+        <div class="shadow w-sm m-auto notification is-primary">
+          Your location is not found. Make sure the "location" permission
+          and your device's location are enable.
+          <p class="help">
+            Click on the icon
+            (<i class="material-icons">info_outline</i>
+            or <i class="material-icons">lock</i>)
+            on the left of the website's address in your browser to find your
+            permission settings.
+          </p>
+        </div>
+      </div>
+    </transition>
+    <transition name="slide-up">
       <post-preview
       class="absolute-footer"
       v-if="showPostPreview"
@@ -104,7 +119,8 @@ export default {
       post: { id: '', title: '', details: '' },
       postsOrder: 0,
       showOrder: false,
-      mapSize: ''
+      mapSize: '',
+      showNotification: false
     }
   },
   created () {
@@ -272,14 +288,22 @@ export default {
     locate () {
       ga('send', 'event', 'map', 'locate')
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-          const pos = new google.maps.LatLng(
-            position.coords.latitude,
-            position.coords.longitude
-          )
-          this.map.setCenter(pos)
-          this.map.setZoom(12)
-        })
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            const pos = new google.maps.LatLng(
+              position.coords.latitude,
+              position.coords.longitude
+            )
+            this.map.setCenter(pos)
+            this.map.setZoom(12)
+          },
+          error => {
+            if (error) {
+              this.showNotification = true
+              setTimeout(() => { this.showNotification = false }, 6000)
+            }
+          }
+        )
       }
     },
     getPosts () {
@@ -430,7 +454,7 @@ export default {
   text-shadow: -1px -1px black
 
 .shadow
-  box-shadow: -1px -1px black
+  box-shadow: -1px -1px 1px black
 
 .map-transition
   transition: margin-right .3s ease, padding-bottom .3s ease
