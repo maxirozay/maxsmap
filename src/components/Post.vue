@@ -89,7 +89,7 @@
     <transition name="slide-up">
       <password-validator
       v-if="showPasswordValidator"
-      class="sticky-footer w-max-sm card card-content"
+      class="sticky-footer w-sm card card-content"
       :encryptedPassword="post.adminKey"
       @close="closePasswordValidator"
       @verified="passwordVerified">
