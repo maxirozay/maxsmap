@@ -408,6 +408,12 @@ export default {
       }
     },
     removeMarker (key) {
+      if (this.post.id === key) {
+        if (this.postMarkers.length === 1) {
+          this.showPostPreview = false
+          this.willShowPostPreview = false
+        } else this.displayPost(--this.currentPostPosition)
+      }
       this.postMarkers = this.postMarkers.filter(marker => {
         if (marker.post.id === key) {
           marker.setMap(null)
