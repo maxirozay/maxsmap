@@ -400,9 +400,11 @@ export default {
     changeOrder (order) {
       ga('send', 'event', 'map', 'changeOrder', order.toString())
       this.showOrder = false
-      this.postsOrder = order
-      database.setPostsOrder(order)
-      this.getPosts()
+      if (this.postsOrder !== order) {
+        this.postsOrder = order
+        database.setPostsOrder(order)
+        this.getPosts()
+      }
     },
     resizeMapNormal () {
       this.mapSize = 'map-transition map'
