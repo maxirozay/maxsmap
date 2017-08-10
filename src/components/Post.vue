@@ -82,7 +82,7 @@
     </div>
     <footer :class="footerStyle">
       <div :class="footerBgStyle">
-        <a v-if="hasNext" class="card-footer-item" @click="$emit('previous')">
+        <a class="card-footer-item" @click="$emit('previous')">
           <i class="material-icons">arrow_back</i>
         </a>
         <a
@@ -100,7 +100,7 @@
           <i class="material-icons">close</i>
           Close
         </a>
-        <a v-if="hasNext" class="card-footer-item" @click="$emit('next')">
+        <a class="card-footer-item" @click="$emit('next')">
           <i class="material-icons">arrow_forward</i>
         </a>
       </div>
@@ -129,9 +129,6 @@ import passwordValidator from './passwordValidator'
 export default {
   name: 'post',
   components: { passwordValidator },
-  props: [
-    'hasNext'
-  ],
   data () {
     return {
       style: 'card h-100 w-sm scrollable pb-footer light',

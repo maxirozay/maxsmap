@@ -66,7 +66,6 @@
       @openPost="openPost"
       @close="showPostPreview = false; resizeMapNormal()"
       :post="post"
-      :hasNext="postMarkers.length > 1"
       @previous="displayPost(--currentPostPosition)"
       @next="displayPost(++currentPostPosition)">
       </post-preview>
@@ -84,7 +83,6 @@
       ref="post"
       class="post"
       v-show="showPost"
-      :hasNext="postMarkers.length > 1"
       @previous="displayPost(--currentPostPosition)"
       @next="displayPost(++currentPostPosition)">
       </post>
