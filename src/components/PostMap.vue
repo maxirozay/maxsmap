@@ -17,6 +17,10 @@
         </a>
       </div>
     </div>
+    <a @click="showHelp = true" class="help text-shadow" title="Locate Me">
+      <i class="material-icons is-size-2">help_outline</i>
+    </a>
+    <help v-if="showHelp" @close="showHelp = false"></help>
     <transition name="slide-up-margin">
       <div v-show="showOrder" class="absolute-footer w-100 mb-footer has-text-centered">
         <div :class="mapSize">
@@ -94,6 +98,7 @@
 import PostEditor from './PostEditor'
 import Post from './Post'
 import PostPreview from './PostPreview'
+import Help from './Help'
 import database from '../database'
 import postIcon from '../assets/post-icon.png'
 import newPostIcon from '../assets/new-post-icon.png'
@@ -103,7 +108,8 @@ export default {
   components: {
     PostEditor,
     Post,
-    PostPreview
+    PostPreview,
+    Help
   },
   data () {
     return {
@@ -120,7 +126,8 @@ export default {
       postsOrder: 0,
       showOrder: false,
       mapSize: '',
-      showNotification: false
+      showNotification: false,
+      showHelp: false
     }
   },
   created () {
@@ -171,13 +178,13 @@ export default {
         minZoom: 4,
         zoomControl: true,
         zoomControlOptions: {
-          position: google.maps.ControlPosition.RIGHT_TOP
+          position: google.maps.ControlPosition.LEFT_TOP
         },
         mapTypeControl: true,
         scaleControl: true,
         streetViewControl: true,
         streetViewControlOptions: {
-          position: google.maps.ControlPosition.RIGHT_TOP
+          position: google.maps.ControlPosition.LEFT_TOP
         },
         rotateControl: true,
         fullscreenControl: false
@@ -476,4 +483,9 @@ export default {
 
 .map-preview
   padding-bottom: 33vh
+
+.help
+  position: absolute
+  top: 0.5rem
+  right: 0.5rem
 </style>
