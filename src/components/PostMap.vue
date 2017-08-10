@@ -173,7 +173,7 @@ export default {
           database.getLocation().lng
         ),
         zoom: database.getZoom(),
-        minZoom: 4,
+        minZoom: 5,
         zoomControl: true,
         zoomControlOptions: {
           position: google.maps.ControlPosition.LEFT_TOP
