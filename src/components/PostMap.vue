@@ -480,7 +480,7 @@ export default {
   padding-bottom: 0
 
 .map-preview
-  padding-bottom: 33vh
+  padding-bottom: 50vh
 
 .help
   position: absolute

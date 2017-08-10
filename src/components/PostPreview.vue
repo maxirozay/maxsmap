@@ -1,5 +1,5 @@
 <template>
-  <div class="card h-33v w-100 scrollable pb-footer">
+  <div class="card h-50v w-100 scrollable pb-footer">
     <div class="card-content">
       <p class="is-size-5">
         Preview
@@ -17,8 +17,11 @@
             {{ post.text }}
           </span>
           <span v-else>
-            This post is private
+            <i class="material-icons">lock_outline</i>
           </span>
+          <figure v-show="getImageUrl" class="image">
+            <img :src="getImageUrl" alt="post image">
+          </figure>
         </p>
       </div>
     </div>
@@ -47,10 +50,16 @@
 /* global ga */
 /* eslint no-undef: "error" */
 import date from '../util/date'
+import storage from '../storage'
 
 export default {
   name: 'post-preview',
-  props: 'post',
+  props: ['post'],
+  data () {
+    return {
+      imageUrl: null
+    }
+  },
   methods: {
     dateAgo (timestamp) {
       return date.dateAgo(timestamp)
@@ -70,6 +79,14 @@ export default {
     next () {
       ga('send', 'event', 'post preview', 'next post')
       this.$emit('next')
+    }
+  },
+  computed: {
+    getImageUrl () {
+      if (this.post.imagesCount) {
+        return storage.getUrl(this.post.id)
+      }
+      return null
     }
   }
 }
