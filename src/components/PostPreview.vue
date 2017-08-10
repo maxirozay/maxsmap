@@ -1,9 +1,6 @@
 <template>
   <div class="card h-50v w-100 scrollable pb-footer">
     <div class="card-content">
-      <p class="is-size-5">
-        Preview
-      </p>
       <div class="content">
         <p class="break-word">
           <strong>
@@ -31,8 +28,8 @@
           <i class="material-icons">arrow_back</i>
         </a>
         <a class="card-footer-item" @click="open">
-          <i class="material-icons">launch</i>
-          Open
+          <i class="material-icons">chat_bubble_outline</i>
+          Comments
         </a>
         <a class="card-footer-item" @click="close">
           <i class="material-icons">close</i>
