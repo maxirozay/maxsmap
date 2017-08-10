@@ -29,7 +29,7 @@
               <i class="material-icons">access_time</i>
             </span>
             <span>
-              Order by date
+              Newest Posts
             </span>
           </a>
           <br><br>
@@ -38,7 +38,7 @@
               <i class="material-icons">chat_bubble_outline</i>
             </span>
             <span>
-              Order by comments
+              Most Popular Posts
             </span>
           </a>
         </div>

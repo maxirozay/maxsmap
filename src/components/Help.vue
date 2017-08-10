@@ -11,7 +11,9 @@
         </div>
         <div class="media-content">
           <p>
-            Click on the "X" icon to open a post.
+            "X" icons are posts. You can click on it to open a post. If you want
+            to see more posts for a specific location, you have to zoom on this
+            location. The more you zoom the more you will see posts per area.
           </p>
         </div>
       </div>
