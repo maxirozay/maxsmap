@@ -2,9 +2,6 @@
   <div :class="style">
     <div class="card-content">
       <div class="content">
-        <div class="is-size-5 inherit">
-          Post
-        </div>
         <p class="break-word">
           <strong class="inherit">
             {{ post.username }}
@@ -27,7 +24,7 @@
         @verified="passwordVerified">
           <p>{{ passwordValidatorLabel }}</p>
         </password-validator>
-        <div v-if="!post.cypherKey || post.isVerified" class="pb-1">
+        <div v-if="!post.cypherKey || post.isVerified">
           <div class="is-size-5 inherit">
             Comments
           </div>
@@ -64,19 +61,22 @@
               </span>
             </a>
           </div>
-        </div>
-        <br>
-        <div v-for="comment in comments">
-          <p class="break-word">
-            <strong class="inherit">
-              {{ comment.username }}
-            </strong>
-            <small>
-              {{ dateAgo(comment.createdAt) }}
-            </small>
-            <br>
-            {{ comment.text }}
+          <br><br>
+          <p v-if="comments.length === 0" class="has-text-centered">
+            There's no comment yet be the first one to comment!
           </p>
+          <div v-for="comment in comments">
+            <p class="break-word">
+              <strong class="inherit">
+                {{ comment.username }}
+              </strong>
+              <small>
+                {{ dateAgo(comment.createdAt) }}
+              </small>
+              <br>
+              {{ comment.text }}
+            </p>
+          </div>
         </div>
       </div>
     </div>
