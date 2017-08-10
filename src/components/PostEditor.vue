@@ -1,12 +1,12 @@
 <template>
   <div class="card h-100 w-sm scrollable pb-footer">
     <div class="card-content">
-      <div class="title is-4">
+      <div class="title is-5">
         <p>
           New Post
         </p>
         <p class="help">
-          Try to drag the "NEW" icon to change the post location.
+          Try to drag the "NEW" icon on the map to change the post location.
           Read the conditions at the bottom and accept them by posting your content.
         </p>
       </div>
@@ -73,12 +73,14 @@
           Your passwords doesn't match.
         </p>
       </div>
-      <label class="is-fullwidth button is-primary is-outlined">
-        <input type="checkbox" v-model="post.isPrivate" class="opacity-0">
-        <i v-if="post.isPrivate" class="material-icons">lock_outline</i>
-        <i v-else class="material-icons">lock_open</i>
-        Private post
-      </label>
+      <div class="field">
+        <label class="is-fullwidth button is-primary is-outlined">
+          <input type="checkbox" v-model="post.isPrivate" class="opacity-0">
+          <i v-if="post.isPrivate" class="material-icons">lock_outline</i>
+          <i v-else class="material-icons">lock_open</i>
+          Private post
+        </label>
+      </div>
       <div v-if="post.isPrivate">
         <div class="field">
           <label class="label">
@@ -114,13 +116,19 @@
           your password can see this post. Your username will not be encrypted
           to help people to find your post easily.
         </p>
+        <br>
       </div>
-      <p class="help">
-        By uploading or posting content on this service you agree to make your
-        content public and give the rights to use it to anybody. Any of your
-        content can be deleted, seen, used at any time, for any reason, by anybody.
-        You may also not be able to delete your content.
-      </p>
+      <div class="title is-5">
+        <p>
+          Terms And Conditions
+        </p>
+        <p class="help">
+          By uploading or posting content on this service you agree to make your
+          content public and give the rights to use it to anybody. Any of your
+          content can be deleted, seen, used at any time, for any reason, by anybody.
+          You may also not be able to delete your content.
+        </p>
+      </div>
     </div>
     <footer class="sticky-footer w-sm fade-top-light">
       <div class="card-footer light">

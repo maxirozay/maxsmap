@@ -1,6 +1,9 @@
 <template>
   <div class="card h-33v w-100 scrollable pb-footer">
     <div class="card-content">
+      <p class="is-size-5">
+        Preview
+      </p>
       <div class="content">
         <p class="break-word">
           <strong>

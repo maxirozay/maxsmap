@@ -2,6 +2,9 @@
   <div :class="style">
     <div class="card-content">
       <div class="content">
+        <div class="is-size-5 inherit">
+          Post
+        </div>
         <p class="break-word">
           <strong class="inherit">
             {{ post.username }}
@@ -25,7 +28,9 @@
           <p>{{ passwordValidatorLabel }}</p>
         </password-validator>
         <div v-if="!post.cypherKey || post.isVerified" class="pb-1">
-          <label class="label inherit">Comment</label>
+          <div class="is-size-5 inherit">
+            Comments
+          </div>
           <div class="field">
             <input
             class="input"
@@ -44,13 +49,23 @@
             rows= "3"
             maxlength="200"
             v-model="newComment.text"
-            placeholder="Your comment..."
-            @keyup.enter="sendComment"></textarea>
+            placeholder="Write a new comment."></textarea>
             <p class="help is-danger" v-show="textError">
               {{ textError }}
             </p>
           </div>
+          <div class="field">
+            <a @click="sendComment" class="button is-primary is-outlined is-pulled-right">
+              <span class="icon">
+                <i class="material-icons">chat_bubble_outline</i>
+              </span>
+              <span>
+                Comment
+              </span>
+            </a>
+          </div>
         </div>
+        <br>
         <div v-for="comment in comments">
           <p class="break-word">
             <strong class="inherit">
@@ -70,7 +85,11 @@
         <a v-if="hasNext" class="card-footer-item" @click="$emit('previous')">
           <i class="material-icons">arrow_back</i>
         </a>
-        <a v-if="!isDeleting" class="card-footer-item" @click="deletePost">
+        <a
+        v-if="!isDeleting"
+        class="card-footer-item"
+        @click="deletePost"
+        title="Delete This Post">
           <i class="material-icons">delete</i>
           Delete
         </a>
@@ -128,7 +147,8 @@ export default {
       imageUrl: null,
       showPasswordValidator: false,
       passwordValidatorLabel: '',
-      isDeleting: false
+      isDeleting: false,
+      commentSending: false
     }
   },
   created () {
@@ -170,6 +190,7 @@ export default {
     },
     sendComment () {
       ga('send', 'event', 'post', 'comment post', this.post.id)
+      if (this.commentSending) return
       if (this.newComment.username.length < 3) {
         this.usernameError = 'Please write at least 3 characters.'
         return
@@ -179,14 +200,16 @@ export default {
         return
       } else this.textError = ''
       database.setUsername(this.newComment.username)
-
+      this.commentSending = true
       database
       .comment(this.post, this.newComment)
       .then(value => {
+        this.commentSending = false
         this.newComment.text = ''
         this.commentButtonText = 'Send'
       })
       .catch(error => {
+        this.commentSending = false
         if (error) this.commentButtonText = 'Retry'
       })
     },
