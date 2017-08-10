@@ -72,7 +72,7 @@
       class="post"
       v-if="showPostEditor"
       :position="newPostPosition"
-      @created="addMarker">
+      @created="addMarker; newPostMarker.setMap(null); newPostMarker = null">
       </post-editor>
     </transition>
     <transition name="slide-left">
