@@ -7,6 +7,7 @@ const GEOHASH_PRECISION = 6
 export default {
   regionsRefs: [],
   regionRefs: [],
+  commentsLimit: 40,
   getRegionId (position, precision) {
     let regionId = geohash.encode(
       position.lat,
@@ -175,7 +176,7 @@ export default {
     )
     this.commentsRef = database
     .ref(`regions/${this.commentRegionId}/comments/${post.id}`)
-    .limitToLast(50)
+    .limitToLast(this.commentsLimit)
     this.commentsRef.on('child_added', (data) => {
       let comment = data.val()
       if (post.cypherKey) {
@@ -188,6 +189,7 @@ export default {
           comment.text
         )
       }
+      comment.id = data.key
       newCommentCallback(comment)
     })
   },

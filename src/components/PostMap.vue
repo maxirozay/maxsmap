@@ -147,6 +147,7 @@ export default {
   },
   beforeDestroy () {
     database.removeRegionsListeners()
+    database.removeCommentsListener()
   },
   methods: {
     checkState () {
@@ -334,6 +335,7 @@ export default {
             this.removeMarker(key)
           })
       })
+      setTimeout(() => { database.removeRegionsListeners() }, 1000)
     },
     findRegions () {
       let precision = 1

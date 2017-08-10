@@ -53,7 +53,8 @@
           </div>
           <div class="field">
             <a @click="sendComment" class="button is-primary is-outlined is-pulled-right">
-              <span class="icon">
+            <i v-if="commentSending" class="loading"></i>
+              <span v-else class="icon">
                 <i class="material-icons">chat_bubble_outline</i>
               </span>
               <span>
@@ -174,14 +175,19 @@ export default {
         this.passwordValidatorLabel = 'This post is private, enter the password to see the content. '
       } else {
         this.getImageUrl()
-        this.getComments()
+        if (this.post.commentsCount) this.getComments()
       }
     },
     getComments () {
       database
       .getComments(this.post,
         (comment) => {
-          this.comments.unshift(comment)
+          if (this.comments.length === 0 || comment.id > this.comments[0].id) {
+            this.comments.unshift(comment)
+            if (this.comments.length === database.commentsLimit) {
+              database.removeCommentsListener()
+            }
+          } else database.removeCommentsListener()
         })
     },
     sendComment () {
@@ -203,6 +209,7 @@ export default {
         this.commentSending = false
         this.newComment.text = ''
         this.commentButtonText = 'Send'
+        this.getComments()
       })
       .catch(error => {
         this.commentSending = false
