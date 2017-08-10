@@ -16,8 +16,8 @@
           <span v-if="!post.cypherKey || post.isVerified">
             {{ post.text }}
           </span>
-          <figure v-show="imageUrl" class="image">
-            <img :src="imageUrl" alt="post image">
+          <figure v-show="post.imageUrl" class="image">
+            <img :src="post.imageUrl" alt="post image">
           </figure>
         </p>
         <password-validator
@@ -141,7 +141,6 @@ export default {
       comments: [],
       usernameError: null,
       textError: null,
-      imageUrl: null,
       showPasswordValidator: false,
       passwordValidatorLabel: '',
       isDeleting: false,
@@ -174,7 +173,7 @@ export default {
       if (this.post.cypherKey && !this.post.isVerified) {
         this.passwordValidatorLabel = 'This post is private, enter the password to see the content. '
       } else {
-        this.loadImages()
+        this.getImageUrl()
         this.getComments()
       }
     },
@@ -233,15 +232,9 @@ export default {
         if (error) this.deleteButtonText = 'Retry'
       })
     },
-    loadImages () {
+    getImageUrl () {
       if (this.post.imagesCount) {
-        storage.getUrl(`posts/${this.post.id}/0.jpg`)
-        .then(url => {
-          this.imageUrl = url
-        })
-        .catch(error => {
-          if (error) this.imageUrl = null
-        })
+        this.post.imageUrl = storage.getUrl(this.post.id)
       }
     },
     closePasswordValidator () {
@@ -258,7 +251,7 @@ export default {
           this.post.cypherKey,
           this.post.text
         )
-        this.loadImages()
+        this.getImageUrl()
         this.getComments()
       } else {
         ga('send', 'event', 'post', 'admin verified', this.post.id)

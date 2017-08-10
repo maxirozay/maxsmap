@@ -19,15 +19,7 @@ export default {
   delete (path) {
     storage.ref().child(path).delete()
   },
-  getUrl (path) {
-    return new Promise((resolve, reject) => {
-      storage.ref().child(path).getDownloadURL()
-      .then((url) => {
-        resolve(url)
-      })
-      .catch((error) => {
-        if (error) reject(error)
-      })
-    })
+  getUrl (postId) {
+    return `https://firebasestorage.googleapis.com/v0/b/props-dd456.appspot.com/o/posts%2F${postId}%2F0.jpg?alt=media`
   }
 }
