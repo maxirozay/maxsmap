@@ -83,7 +83,10 @@
     </div>
     <footer :class="footerStyle">
       <div :class="footerBgStyle">
-        <a class="card-footer-item" @click="$emit('previous')">
+        <a
+        class="card-footer-item"
+        @click="$emit('previous')"
+        title="Previous Post">
           <i class="material-icons">arrow_back</i>
         </a>
         <a
@@ -92,20 +95,17 @@
         @click="deletePost"
         title="Delete This Post">
           <i class="material-icons">delete</i>
-          Delete
         </a>
         <a v-else class="card-footer-item">
           <i class="loading"></i>
         </a>
-        <a class="card-footer-item" @click="close">
+        <a class="card-footer-item" @click="close" title="Close Post">
           <i class="material-icons">close</i>
-          Close
         </a>
         <a @click="$emit('locate')" class="card-footer-item" title="Locate Post">
           <i class="material-icons p-icon">my_location</i>
-          Locate
         </a>
-        <a class="card-footer-item" @click="$emit('next')">
+        <a class="card-footer-item" @click="$emit('next')" title="Next Post">
           <i class="material-icons">arrow_forward</i>
         </a>
       </div>

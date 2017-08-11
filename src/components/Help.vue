@@ -5,6 +5,9 @@
       <p class="title is-5">
         Help
       </p>
+      <p class="title is-6">
+        Map
+      </p>
       <div class="media">
         <div class="media-left">
           <img src="../assets/post-icon.png" alt="Post Icon" width="32px">
@@ -30,7 +33,7 @@
       </div>
       <div class="media">
         <div class="media-left">
-          <i class="material-icons is-size-3 has-text-primary">my_location</i>
+          <i class="material-icons has-text-primary">my_location</i>
         </div>
         <div class="media-content">
           <p>
@@ -42,8 +45,8 @@
       </div>
       <div class="media">
         <div class="media-left">
-          <i class="material-icons is-size-3 has-text-primary">access_time</i>
-          <i class="material-icons is-size-3 has-text-primary">chat_bubble_outline</i>
+          <i class="material-icons has-text-primary">access_time</i>
+          <i class="material-icons has-text-primary">chat_bubble_outline</i>
         </div>
         <div class="media-content">
           <p>
@@ -54,12 +57,66 @@
       </div>
       <div class="media">
         <div class="media-left">
-          <i class="material-icons is-size-3 has-text-primary">add_circle_outline</i>
+          <i class="material-icons has-text-primary">add_circle_outline</i>
         </div>
         <div class="media-content">
           <p>
             This button create the "NEW" icon and center it on the map so you
             can create a new post.
+          </p>
+        </div>
+      </div>
+      <br>
+      <p class="title is-6">
+        Post
+      </p>
+      <div class="media">
+        <div class="media-left">
+          <i class="material-icons has-text-primary">arrow_back</i>
+        </div>
+        <div class="media-content">
+          <p>
+            Go to the previous post.
+          </p>
+        </div>
+      </div>
+      <div class="media">
+        <div class="media-left">
+          <i class="material-icons has-text-primary">delete</i>
+        </div>
+        <div class="media-content">
+          <p>
+            Delete the post permanently. You need a password to delete a post.
+          </p>
+        </div>
+      </div>
+      <div class="media">
+        <div class="media-left">
+          <i class="material-icons has-text-primary">close</i>
+        </div>
+        <div class="media-content">
+          <p>
+            Close the post
+          </p>
+        </div>
+      </div>
+      <div class="media">
+        <div class="media-left">
+          <i class="material-icons has-text-primary">my_location</i>
+        </div>
+        <div class="media-content">
+          <p>
+            Center the map on the post's location.
+          </p>
+        </div>
+      </div>
+      <div class="media">
+        <div class="media-left">
+          <i class="material-icons has-text-primary">arrow_forward</i>
+        </div>
+        <div class="media-content">
+          <p>
+            Go to the next post.
           </p>
         </div>
       </div>

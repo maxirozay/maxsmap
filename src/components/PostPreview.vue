@@ -28,7 +28,7 @@
           <i class="material-icons">arrow_back</i>
         </a>
         <a class="card-footer-item" @click="open">
-          <i class="material-icons">chat_bubble_outline</i>
+          <i class="material-icons p-icon">chat_bubble_outline</i>
           Comments
         </a>
         <a class="card-footer-item" @click="close">
