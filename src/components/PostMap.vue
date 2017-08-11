@@ -84,7 +84,8 @@
       class="post"
       v-show="showPost"
       @previous="displayPost(--currentPostPosition)"
-      @next="displayPost(++currentPostPosition)">
+      @next="displayPost(++currentPostPosition)"
+      @locate="locatePost()">
       </post>
     </transition>
   </section>
@@ -463,6 +464,9 @@ export default {
       this.currentPostPosition = i
       this.post = this.postMarkers[i].post
       if (this.showPost) this.$refs.post.init(this.post)
+    },
+    locatePost () {
+      this.map.setCenter(new google.maps.LatLng(this.post.lat, this.post.lng))
     },
     changeOrder (order) {
       ga('send', 'event', 'map', 'changeOrder', order.toString())

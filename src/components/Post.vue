@@ -101,6 +101,10 @@
           <i class="material-icons">close</i>
           Close
         </a>
+        <a @click="$emit('locate')" class="card-footer-item" title="Locate Post">
+          <i class="material-icons p-icon">my_location</i>
+          Locate
+        </a>
         <a class="card-footer-item" @click="$emit('next')">
           <i class="material-icons">arrow_forward</i>
         </a>
