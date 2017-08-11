@@ -75,7 +75,7 @@
       class="post"
       v-if="showPostEditor"
       :position="newPostPosition"
-      @created="addMarker; newPostMarker.setMap(null); newPostMarker = null">
+      @created="postCreated">
       </post-editor>
     </transition>
     <transition name="slide-left">
@@ -85,7 +85,8 @@
       v-show="showPost"
       @previous="displayPost(--currentPostPosition)"
       @next="displayPost(++currentPostPosition)"
-      @locate="locatePost()">
+      @locate="locatePost()"
+      @deleted="removeMarker">
       </post>
     </transition>
   </section>
@@ -405,6 +406,11 @@ export default {
         if (regionId.indexOf(region) === -1) regionId.push(region)
       })
       return regionId
+    },
+    postCreated (post) {
+      this.newPostMarker.setMap(null)
+      this.newPostMarker = null
+      this.addMarker(post)
     },
     addMarker (post) {
       let size = 32

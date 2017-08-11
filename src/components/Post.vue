@@ -236,6 +236,7 @@ export default {
       .deletePost(this.post)
       .then(value => {
         this.isDeleting = false
+        this.$emit('deleted', this.post.id)
         this.close()
       })
       .catch(error => {

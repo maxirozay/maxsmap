@@ -211,9 +211,9 @@ export default {
       this.isSending = true
       database
       .createPost(this.post, this.position)
-      .then(value => {
+      .then(post => {
         this.imageToDelete = 0
-        this.$emit('created', value)
+        this.$emit('created', post)
         this.close()
       })
       .catch(error => {

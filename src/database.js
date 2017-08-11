@@ -42,6 +42,7 @@ export default {
       .set(newPost)
       .then(value => {
         newPost.id = post.id
+        newPost.region = regionId
         resolve(newPost)
       })
       .catch(error => {
