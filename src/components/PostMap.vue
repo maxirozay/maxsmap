@@ -147,7 +147,6 @@ export default {
   },
   beforeDestroy () {
     database.removeRegionsListeners()
-    database.removeCommentsListener()
   },
   methods: {
     checkState () {
@@ -162,6 +161,15 @@ export default {
             this.showPostEditor = true
             break
         }
+      } else if (window.location.pathname.startsWith('/post')) {
+        database.getPost(
+          window.location.pathname.substring(5, 11).split('').join('/'),
+          window.location.pathname.substring(11),
+          (post) => {
+            this.post = post
+            this.openPost()
+          }
+        )
       }
     },
     initMap () {
@@ -250,19 +258,27 @@ export default {
       if (this.showPost) {
         this.showPost = false
         this.resizeMapNormal()
-        history.replaceState({
-          type: 'post-editor',
-          position: this.newPostPosition
-        }, null, 'post-editor')
+        history.replaceState(
+          {
+            type: 'post-editor',
+            position: this.newPostPosition
+          },
+          null,
+          'post-editor'
+        )
         setTimeout(() => {
           this.showPostEditor = true
           this.resizeMapWithPost()
         }, 300)
       } else {
-        history.pushState({
-          type: 'post-editor',
-          position: this.newPostPosition
-        }, null, 'post-editor')
+        history.pushState(
+          {
+            type: 'post-editor',
+            position: this.newPostPosition
+          },
+          null,
+          'post-editor'
+        )
         this.showPostEditor = true
         this.resizeMapWithPost()
       }
@@ -273,9 +289,23 @@ export default {
         this.willShowPostPreview = true
       }
       if (history.state) {
-        history.replaceState({ type: 'post', post: this.post }, null, 'post')
+        history.replaceState(
+          {
+            type: 'post',
+            post: this.post
+          },
+          null,
+          `post${this.post.region.replace(/\/*/g, '')}${this.post.id}`
+        )
       } else {
-        history.pushState({ type: 'post', post: this.post }, null, 'post')
+        history.pushState(
+          {
+            type: 'post',
+            post: this.post
+          },
+          null,
+          `post${this.post.region.replace(/\/*/g, '')}${this.post.id}`
+        )
       }
       if (this.showPostEditor) {
         this.showPostEditor = false
@@ -327,8 +357,7 @@ export default {
           region,
           8,
           postsLimit,
-          (key, post) => {
-            post.id = key
+          (post) => {
             this.addMarker(post)
           },
           (key) => {

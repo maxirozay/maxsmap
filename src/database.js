@@ -80,13 +80,26 @@ export default {
         .limitToLast(postsLimit)
       }
       regionRef.on('child_added', (data) => {
-        newPostCallback(data.key, data.val())
+        let post = data.val()
+        post.id = data.key
+        post.region = regionId
+        newPostCallback(post)
       })
       regionRef.on('child_removed', (data) => {
         postRemovedCallback(data.key)
       })
       this.regionRefs.push(regionRef)
     }
+  },
+  getPost (region, postId, callback) {
+    database.ref(`regions/${region}/posts/${postId}`)
+    .once('value')
+    .then(data => {
+      let post = data.val()
+      post.id = data.key
+      post.region = region
+      callback(post)
+    })
   },
   verifyPassword (encryptedPassword, password) {
     try {
@@ -112,12 +125,8 @@ export default {
   },
   deletePost (post) {
     return new Promise((resolve, reject) => {
-      const regionId = this.getRegionId(
-        {lat: post.lat, lng: post.lng},
-        GEOHASH_PRECISION
-      )
       database
-      .ref(`regions/${regionId}/posts/${post.id}`)
+      .ref(`regions/${post.region}/posts/${post.id}`)
       .remove()
       .then(value => {
         resolve(value)
@@ -126,14 +135,11 @@ export default {
         reject(error)
       })
       database
-      .ref(`regions/${regionId}/comments/${post.id}`)
+      .ref(`regions/${post.region}/comments/${post.id}`)
       .remove()
     })
   },
   comment (post, comment) {
-    if (!this.commentRegionId) {
-      return new Promise((resolve, reject) => { reject('no region') })
-    }
     const newComment = {
       createdAt: Date.now(),
       username: comment.username,
@@ -150,13 +156,13 @@ export default {
       )
     }
     const newCommentRef = database
-    .ref(`regions/${this.commentRegionId}/comments/${post.id}`).push()
+    .ref(`regions/${post.region}/comments/${post.id}`).push()
     return new Promise((resolve, reject) => {
       newCommentRef
       .set(newComment)
       .then(value => {
         database
-        .ref(`regions/${this.commentRegionId}/posts/${post.id}`)
+        .ref(`regions/${post.region}/posts/${post.id}`)
         .transaction((post) => {
           if (post.commentsCount === undefined) post.commentsCount = 1
           else post.commentsCount++
@@ -170,12 +176,8 @@ export default {
     })
   },
   getComments (post, newCommentCallback) {
-    this.commentRegionId = this.getRegionId(
-      {lat: post.lat, lng: post.lng},
-      GEOHASH_PRECISION
-    )
     this.commentsRef = database
-    .ref(`regions/${this.commentRegionId}/comments/${post.id}`)
+    .ref(`regions/${post.region}/comments/${post.id}`)
     .limitToLast(this.commentsLimit)
     this.commentsRef.on('child_added', (data) => {
       let comment = data.val()
