@@ -17,9 +17,11 @@
         </a>
       </div>
     </div>
-    <a @click="showHelp = true" class="help text-shadow" title="Locate Me">
-      <i class="material-icons is-size-2">help_outline</i>
-    </a>
+    <div :class="mapSize + ' help'">
+      <a @click="showHelp = true" class="text-shadow" title="Locate Me">
+        <i class="material-icons is-size-2">help_outline</i>
+      </a>
+    </div>
     <help v-if="showHelp" @close="showHelp = false"></help>
     <transition name="slide-up-margin">
       <div v-show="showOrder" class="absolute-footer w-100 mb-footer has-text-centered">
