@@ -26,6 +26,7 @@
         class="textarea"
         type="text"
         rows= "10"
+        maxlength="10000"
         v-model="post.text"
         placeholder="Write something that you want to share."></textarea>
         <p class="help is-danger" v-show="textError">

@@ -46,7 +46,7 @@
             class="textarea"
             type="text"
             rows= "3"
-            maxlength="200"
+            maxlength="1000"
             v-model="newComment.text"
             placeholder="Write a new comment."></textarea>
             <p class="help is-danger" v-show="textError">
