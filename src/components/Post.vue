@@ -2,7 +2,7 @@
   <div :class="style">
     <div class="card-content">
       <div class="content">
-        <p class="break-word">
+        <div class="break-word">
           <strong class="inherit">
             {{ post.username }}
           </strong>
@@ -10,13 +10,15 @@
             {{ dateAgo(post.createdAt) }}
           </small>
           <br>
-          <span v-if="!post.cypherKey || post.isVerified">
+          <p v-if="!post.cypherKey || post.isVerified">
             {{ post.text }}
-          </span>
-          <figure v-show="post.imageUrl" class="image">
-            <img :src="post.imageUrl" alt="post image">
-          </figure>
-        </p>
+          </p>
+          <img
+            v-if="post.imageUrl"
+            :src="post.imageUrl"
+            alt="post image"
+          >
+        </div>
         <password-validator
         v-if="post.cypherKey && !post.isVerified"
         :encryptedPassword="post.cypherKey"
