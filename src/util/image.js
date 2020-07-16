@@ -2,7 +2,7 @@ export default {
   resizeImage (file, width, callback) {
     /* global Image, URL */
     /* eslint no-undef: "error" */
-    let img = new Image()
+    const img = new Image()
     img.onload = () => {
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')

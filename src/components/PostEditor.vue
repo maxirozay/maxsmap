@@ -26,7 +26,6 @@
         class="textarea"
         type="text"
         rows= "10"
-        maxlength="400"
         v-model="post.text"
         placeholder="Write something that you want to share."></textarea>
         <p class="help is-danger" v-show="textError">
@@ -50,7 +49,11 @@
           {{ uploadImageError }}
         </p>
       </div>
-      <img v-for="url in post.imagesUrls" :src="url"/>
+      <img
+        v-for="(url, i) in post.imagesUrls"
+        :key="i"
+        :src="url"
+      />
       <div class="field">
         <label class="label">
           Enter a password that will allow you to delete your post.
@@ -210,32 +213,32 @@ export default {
       database.setUsername(this.post.username)
       this.isSending = true
       database
-      .createPost(this.post, this.position)
-      .then(post => {
-        this.imageToDelete = 0
-        this.$emit('created', post)
-        this.close()
-      })
-      .catch(error => {
-        this.isSending = false
-        if (error) this.sendPostButtonText = 'Retry'
-      })
+        .createPost(this.post, this.position)
+        .then(post => {
+          this.imageToDelete = 0
+          this.$emit('created', post)
+          this.close()
+        })
+        .catch(error => {
+          this.isSending = false
+          if (error) this.sendPostButtonText = 'Retry'
+        })
     },
     uploadImage (event) {
       ga('send', 'event', 'new post', 'upload image')
       image.resizeImage(event.target.files[0], 480, (blob) => {
         this.imageUploading = true
         storage.uploadImage(blob, `posts/${this.post.id}/0.jpg`)
-        .then(url => {
-          this.imageUploading = false
-          this.post.imagesUrls = [ url ]
-          this.uploadImageError = null
-          this.imageToDelete = 1
-        })
-        .catch(error => {
-          this.imageUploading = false
-          if (error) this.uploadImageError = `Your image couldn't be uploaded.`
-        })
+          .then(url => {
+            this.imageUploading = false
+            this.post.imagesUrls = [url]
+            this.uploadImageError = null
+            this.imageToDelete = 1
+          })
+          .catch(error => {
+            this.imageUploading = false
+            if (error) this.uploadImageError = 'Your image couldn\'t be uploaded.'
+          })
       })
     },
     close () {

@@ -66,7 +66,10 @@
           <p v-if="comments.length === 0" class="has-text-centered">
             There's no comment yet be the first one to comment!
           </p>
-          <div v-for="comment in comments">
+          <div
+            v-for="(comment, i) in comments"
+            :key="i"
+          >
             <p class="break-word">
               <strong class="inherit">
                 {{ comment.username }}
@@ -184,15 +187,15 @@ export default {
     },
     getComments () {
       database
-      .getComments(this.post,
-        (comment) => {
-          if (this.comments.length === 0 || comment.id > this.comments[0].id) {
-            this.comments.unshift(comment)
-            if (this.comments.length === database.commentsLimit) {
-              database.removeCommentsListener()
-            }
-          } else database.removeCommentsListener()
-        })
+        .getComments(this.post,
+          (comment) => {
+            if (this.comments.length === 0 || comment.id > this.comments[0].id) {
+              this.comments.unshift(comment)
+              if (this.comments.length === database.commentsLimit) {
+                database.removeCommentsListener()
+              }
+            } else database.removeCommentsListener()
+          })
     },
     sendComment () {
       ga('send', 'event', 'post', 'comment post', this.post.id)
@@ -208,17 +211,17 @@ export default {
       database.setUsername(this.newComment.username)
       this.commentSending = true
       database
-      .comment(this.post, this.newComment)
-      .then(value => {
-        this.commentSending = false
-        this.newComment.text = ''
-        this.commentButtonText = 'Send'
-        this.getComments()
-      })
-      .catch(error => {
-        this.commentSending = false
-        if (error) this.commentButtonText = 'Retry'
-      })
+        .comment(this.post, this.newComment)
+        .then(value => {
+          this.commentSending = false
+          this.newComment.text = ''
+          this.commentButtonText = 'Send'
+          this.getComments()
+        })
+        .catch(error => {
+          this.commentSending = false
+          if (error) this.commentButtonText = 'Retry'
+        })
     },
     dateAgo (timestamp) {
       return date.dateAgo(timestamp)
@@ -233,16 +236,16 @@ export default {
       ga('send', 'event', 'post', 'delete post', this.post.id)
       this.isDeleting = true
       database
-      .deletePost(this.post)
-      .then(value => {
-        this.isDeleting = false
-        this.$emit('deleted', this.post.id)
-        this.close()
-      })
-      .catch(error => {
-        this.isDeleting = false
-        if (error) this.deleteButtonText = 'Retry'
-      })
+        .deletePost(this.post)
+        .then(value => {
+          this.isDeleting = false
+          this.$emit('deleted', this.post.id)
+          this.close()
+        })
+        .catch(error => {
+          this.isDeleting = false
+          if (error) this.deleteButtonText = 'Retry'
+        })
     },
     getImageUrl () {
       if (this.post.imagesCount) {

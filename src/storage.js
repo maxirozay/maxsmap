@@ -1,5 +1,6 @@
-import { storage } from './main'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+
+const storage = firebase.storage()
 
 export default {
   uploadImage (file, filePath) {

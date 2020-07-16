@@ -1,7 +1,8 @@
-import { database } from './main'
+import firebase from 'firebase/app'
 import geohash from './util/geohash'
 import sjcl from '../node_modules/sjcl/sjcl'
 
+const database = firebase.database()
 const GEOHASH_PRECISION = 6
 
 export default {
@@ -9,7 +10,7 @@ export default {
   regionRefs: [],
   commentsLimit: 40,
   getRegionId (position, precision) {
-    let regionId = geohash.encode(
+    const regionId = geohash.encode(
       position.lat,
       position.lng,
       precision
@@ -21,7 +22,7 @@ export default {
     const timestamp = Date.now()
     const newPostRef = database.ref(`regions/${regionId}/posts/${post.id}`)
     return new Promise((resolve, reject) => {
-      let newPost = {
+      const newPost = {
         createdAt: timestamp,
         lat: position.lat,
         lng: position.lng,
@@ -39,15 +40,15 @@ export default {
         newPost.text = sjcl.encrypt(post.cypherKey, post.text)
       }
       newPostRef
-      .set(newPost)
-      .then(value => {
-        newPost.id = post.id
-        newPost.region = regionId
-        resolve(newPost)
-      })
-      .catch(error => {
-        reject(error)
-      })
+        .set(newPost)
+        .then(value => {
+          newPost.id = post.id
+          newPost.region = regionId
+          resolve(newPost)
+        })
+        .catch(error => {
+          reject(error)
+        })
     })
   },
   getPosts (
@@ -59,7 +60,7 @@ export default {
   ) {
     if (regionId.length < GEOHASH_PRECISION * 2 - 1) {
       const regionsRef = database.ref('regions/' + regionId)
-      .limitToFirst(regionDivider)
+        .limitToFirst(regionDivider)
       regionsRef.on('child_added', (data) => {
         this.getPosts(
           `${regionId}/${data.key}`,
@@ -74,14 +75,14 @@ export default {
       let regionRef
       if (this.getPostsOrder() === 0) {
         regionRef = database.ref(`regions/${regionId}/posts`)
-        .limitToLast(postsLimit)
+          .limitToLast(postsLimit)
       } else {
         regionRef = database.ref(`regions/${regionId}/posts`)
-        .orderByChild('commentsCount')
-        .limitToLast(postsLimit)
+          .orderByChild('commentsCount')
+          .limitToLast(postsLimit)
       }
       regionRef.on('child_added', (data) => {
-        let post = data.val()
+        const post = data.val()
         post.id = data.key
         post.region = regionId
         newPostCallback(post)
@@ -94,13 +95,13 @@ export default {
   },
   getPost (region, postId, callback) {
     database.ref(`regions/${region}/posts/${postId}`)
-    .once('value')
-    .then(data => {
-      let post = data.val()
-      post.id = data.key
-      post.region = region
-      callback(post)
-    })
+      .once('value')
+      .then(data => {
+        const post = data.val()
+        post.id = data.key
+        post.region = region
+        callback(post)
+      })
   },
   verifyPassword (encryptedPassword, password) {
     try {
@@ -127,17 +128,17 @@ export default {
   deletePost (post) {
     return new Promise((resolve, reject) => {
       database
-      .ref(`regions/${post.region}/posts/${post.id}`)
-      .remove()
-      .then(value => {
-        resolve(value)
-      })
-      .catch(error => {
-        reject(error)
-      })
+        .ref(`regions/${post.region}/posts/${post.id}`)
+        .remove()
+        .then(value => {
+          resolve(value)
+        })
+        .catch(error => {
+          reject(error)
+        })
       database
-      .ref(`regions/${post.region}/comments/${post.id}`)
-      .remove()
+        .ref(`regions/${post.region}/comments/${post.id}`)
+        .remove()
     })
   },
   comment (post, comment) {
@@ -157,31 +158,31 @@ export default {
       )
     }
     const newCommentRef = database
-    .ref(`regions/${post.region}/comments/${post.id}`).push()
+      .ref(`regions/${post.region}/comments/${post.id}`).push()
     return new Promise((resolve, reject) => {
       newCommentRef
-      .set(newComment)
-      .then(value => {
-        database
-        .ref(`regions/${post.region}/posts/${post.id}`)
-        .transaction((post) => {
-          if (post.commentsCount === undefined) post.commentsCount = 1
-          else post.commentsCount++
-          return post
+        .set(newComment)
+        .then(value => {
+          database
+            .ref(`regions/${post.region}/posts/${post.id}`)
+            .transaction((post) => {
+              if (post.commentsCount === undefined) post.commentsCount = 1
+              else post.commentsCount++
+              return post
+            })
+          resolve(value)
         })
-        resolve(value)
-      })
-      .catch(error => {
-        reject(error)
-      })
+        .catch(error => {
+          reject(error)
+        })
     })
   },
   getComments (post, newCommentCallback) {
     this.commentsRef = database
-    .ref(`regions/${post.region}/comments/${post.id}`)
-    .limitToLast(this.commentsLimit)
+      .ref(`regions/${post.region}/comments/${post.id}`)
+      .limitToLast(this.commentsLimit)
     this.commentsRef.on('child_added', (data) => {
-      let comment = data.val()
+      const comment = data.val()
       if (post.cypherKey) {
         comment.username = sjcl.decrypt(
           post.cypherKey,

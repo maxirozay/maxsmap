@@ -377,7 +377,7 @@ export default {
       else if (this.map.zoom > 11) precision = 4
       else if (this.map.zoom > 9) precision = 3
       else if (this.map.zoom > 7) precision = 2
-      let corners = []
+      const corners = []
       corners.push({
         lat: (this.map.getBounds().getNorthEast().lat() +
         this.map.getCenter().lat()) / 2,
@@ -402,7 +402,7 @@ export default {
         lng: (this.map.getBounds().getNorthEast().lng() +
         this.map.getCenter().lng()) / 2
       })
-      let regionId = []
+      const regionId = []
       corners.map(corner => {
         const region = database.getRegionId(corner, precision)
         if (regionId.indexOf(region) === -1) regionId.push(region)
@@ -423,7 +423,7 @@ export default {
         this.postMarkers.filter(marker => {
           return marker.post.id === post.id
         })
-        .length === 0
+          .length === 0
       ) {
         const icon = {
           url: postIcon,
