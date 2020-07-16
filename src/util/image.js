@@ -12,7 +12,7 @@ export default {
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
       canvas.toBlob(blob => {
         callback(blob)
-      }, 'image/jpeg', 0.7)
+      }, 'image/png', 0.7)
     }
     img.src = URL.createObjectURL(file)
   }

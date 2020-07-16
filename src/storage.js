@@ -12,7 +12,9 @@ export default {
           reject(error)
         },
         () => {
-          resolve(uploadTask.snapshot.downloadURL)
+          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+            resolve(downloadURL)
+          })
         }
       )
     })
@@ -21,6 +23,6 @@ export default {
     storage.ref().child(path).delete()
   },
   getUrl (postId) {
-    return `https://firebasestorage.googleapis.com/v0/b/props-dd456.appspot.com/o/posts%2F${postId}%2F0.jpg?alt=media`
+    return `https://firebasestorage.googleapis.com/v0/b/props-dd456.appspot.com/o/posts%2F${postId}%2F0.png?alt=media`
   }
 }

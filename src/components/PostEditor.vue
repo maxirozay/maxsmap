@@ -192,7 +192,7 @@ export default {
   },
   beforeDestroy () {
     for (let i = 0; i < this.imageToDelete; i++) {
-      storage.delete(`posts/${this.post.id}/${i}.jpg`)
+      storage.delete(`posts/${this.post.id}/${i}.png`)
     }
   },
   methods: {
@@ -228,7 +228,7 @@ export default {
       ga('send', 'event', 'new post', 'upload image')
       image.resizeImage(event.target.files[0], 480, (blob) => {
         this.imageUploading = true
-        storage.uploadImage(blob, `posts/${this.post.id}/0.jpg`)
+        storage.uploadImage(blob, `posts/${this.post.id}/0.png`)
           .then(url => {
             this.imageUploading = false
             this.post.imagesUrls = [url]
