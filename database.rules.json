@@ -1,0 +1,48 @@
+{
+  "rules": {
+    "regions": {
+      ".read": true,
+      "$region1": {
+      "$region2": {
+      "$region3": {
+      "$region4": {
+      "$region5": {
+      "$region6": {
+        "comments": {
+          "$post": {
+            ".write": true,
+            "$comment": {
+              ".validate": "(newData.hasChildren(['createdAt', 'username', 'text']) && newData.child('username').val().length <= 40 && newData.child('text').val().length <= 10000) || newData.hasChild('')",
+            	"username": {
+            		".write": "!data.exists()"
+              },
+              "text": {
+            		".write": "!data.exists()"
+              }
+            }
+          }
+        },
+        "posts": {
+          ".indexOn": "commentsCount",
+          "$post": {
+            ".write": true,
+            ".validate": "newData.hasChildren(['createdAt', 'username', 'text'])  && newData.child('username').val().length <= 40 && newData.child('text').val().length <= 10000",
+            "username": {
+              ".write": "!data.exists()",
+              ".validate": "newData.val().length <= 40"
+            },
+            "text": {
+              ".write": "!data.exists()",
+              ".validate": "newData.val().length <= 10000"
+            }
+          }
+        }
+      }
+      }
+      }
+      }
+      }
+      }
+    }
+  }
+}
