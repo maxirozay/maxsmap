@@ -2,7 +2,7 @@
   <div class="card h-50v w-100 scrollable pb-footer">
     <div class="card-content">
       <div class="content">
-        <p class="break-word">
+        <div class="break-word">
           <strong>
             {{ post.username }}
           </strong>
@@ -10,16 +10,18 @@
             {{ dateAgo(post.createdAt) }}
           </small>
           <br>
-          <span v-if="!post.cypherKey || post.isVerified">
+          <p v-if="!post.cypherKey || post.isVerified">
             {{ post.text }}
-          </span>
+          </p>
           <span v-else>
             <i class="material-icons">lock_outline</i>
           </span>
-          <figure v-show="getImageUrl" class="image">
-            <img :src="getImageUrl" alt="post image">
-          </figure>
-        </p>
+          <img
+            v-if="(!post.cypherKey || post.isVerified) && getImageUrl"
+            :src="getImageUrl"
+            alt="post image"
+          >
+        </div>
       </div>
     </div>
     <footer class="sticky-footer w-100 fade-top-light">
